@@ -1,4 +1,4 @@
-using DocFinder.Domain.Settings;
+using System.Windows; // pro Application.Current
 using Microsoft.Extensions.Hosting;
 using DocFinder.Services;
 using DocFinder.UI.Views;
@@ -11,14 +11,19 @@ public class ApplicationHostService : IHostedService
     private readonly ITrayService _tray;
     private readonly SearchOverlay _overlay;
     private readonly SettingsWindow _settings;
-    private readonly WatcherService _watcher;
+    private readonly IWatcherService _watcher; // <-- abstrakce
 
-    public ApplicationHostService(ITrayService tray, SearchOverlay overlay, SettingsWindow settings, IIndexer indexer, ISettingsService settingsService)
+    public ApplicationHostService(
+        ITrayService tray,
+        SearchOverlay overlay,
+        SettingsWindow settings,
+        IWatcherService watcher // <-- injektuj watcher
+    )
     {
         _tray = tray;
         _overlay = overlay;
         _settings = settings;
-        _watcher = new WatcherService(settingsService.Current.WatchedRoots, indexer);
+        _watcher = watcher;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -32,19 +37,11 @@ public class ApplicationHostService : IHostedService
 
     private void ToggleOverlay()
     {
-        if (_overlay.IsVisible)
-            _overlay.Hide();
-        else
-        {
-            _overlay.Show();
-            _overlay.Activate();
-        }
+        if (_overlay.IsVisible) _overlay.Hide();
+        else { _overlay.Show(); _overlay.Activate(); }
     }
 
-    private void ShowSettings()
-    {
-        _settings.Show();
-    }
+    private void ShowSettings() => _settings.Show();
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
