@@ -1,25 +1,48 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22 d17.14
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocFinder", "DocFinder\DocFinder.csproj", "{474DFDE3-397E-444D-8543-21298EC98AD9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2A22B6F0-0E5B-49E7-BD4F-9A0DE80DD509}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocFinder.Domain", "src\DocFinder.Domain\DocFinder.Domain.csproj", "{DFB87B26-36DB-4902-A6EC-8B9E431FB181}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocFinder.Services", "src\DocFinder.Services\DocFinder.Services.csproj", "{EDA3C2D3-D881-4257-8A78-99FFA17FE7B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocFinder.Search", "src\DocFinder.Search\DocFinder.Search.csproj", "{50C66B63-7F89-4242-897E-E8098B8BEFB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocFinder.Tests", "src\DocFinder.Tests\DocFinder.Tests.csproj", "{5513B9B6-2AE7-4DD7-843C-593A17FAC3AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{474DFDE3-397E-444D-8543-21298EC98AD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{474DFDE3-397E-444D-8543-21298EC98AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{474DFDE3-397E-444D-8543-21298EC98AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{474DFDE3-397E-444D-8543-21298EC98AD9}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {63ED1495-7236-4922-B065-D68E7B27CB9F}
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DFB87B26-36DB-4902-A6EC-8B9E431FB181}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFB87B26-36DB-4902-A6EC-8B9E431FB181}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFB87B26-36DB-4902-A6EC-8B9E431FB181}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFB87B26-36DB-4902-A6EC-8B9E431FB181}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDA3C2D3-D881-4257-8A78-99FFA17FE7B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDA3C2D3-D881-4257-8A78-99FFA17FE7B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDA3C2D3-D881-4257-8A78-99FFA17FE7B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDA3C2D3-D881-4257-8A78-99FFA17FE7B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50C66B63-7F89-4242-897E-E8098B8BEFB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50C66B63-7F89-4242-897E-E8098B8BEFB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50C66B63-7F89-4242-897E-E8098B8BEFB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50C66B63-7F89-4242-897E-E8098B8BEFB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5513B9B6-2AE7-4DD7-843C-593A17FAC3AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5513B9B6-2AE7-4DD7-843C-593A17FAC3AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5513B9B6-2AE7-4DD7-843C-593A17FAC3AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5513B9B6-2AE7-4DD7-843C-593A17FAC3AC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DFB87B26-36DB-4902-A6EC-8B9E431FB181} = {2A22B6F0-0E5B-49E7-BD4F-9A0DE80DD509}
+		{EDA3C2D3-D881-4257-8A78-99FFA17FE7B3} = {2A22B6F0-0E5B-49E7-BD4F-9A0DE80DD509}
+		{50C66B63-7F89-4242-897E-E8098B8BEFB6} = {2A22B6F0-0E5B-49E7-BD4F-9A0DE80DD509}
+		{5513B9B6-2AE7-4DD7-843C-593A17FAC3AC} = {2A22B6F0-0E5B-49E7-BD4F-9A0DE80DD509}
 	EndGlobalSection
 EndGlobal
