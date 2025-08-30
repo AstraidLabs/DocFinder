@@ -1,4 +1,3 @@
-using System.Windows; // pro Application.Current
 using Microsoft.Extensions.Hosting;
 using DocFinder.Services;
 using DocFinder.UI.Views;
@@ -11,14 +10,9 @@ public class ApplicationHostService : IHostedService
     private readonly ITrayService _tray;
     private readonly SearchOverlay _overlay;
     private readonly SettingsWindow _settings;
-    private readonly IWatcherService _watcher; // <-- abstrakce
+    private readonly WatcherService _watcher;
 
-    public ApplicationHostService(
-        ITrayService tray,
-        SearchOverlay overlay,
-        SettingsWindow settings,
-        IWatcherService watcher // <-- injektuj watcher
-    )
+    public ApplicationHostService(ITrayService tray, SearchOverlay overlay, SettingsWindow settings, IIndexer indexer, ISettingsService settingsService)
     {
         _tray = tray;
         _overlay = overlay;
