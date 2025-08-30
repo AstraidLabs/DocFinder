@@ -19,7 +19,10 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <ui:Button x:Name="MenuButton" Width="36" Height="36" Appearance="Secondary" CornerRadius="8" SymbolIcon="Navigation16" Click="MenuButton_Click">
+        <ui:Button x:Name="MenuButton" Width="36" Height="36" Appearance="Secondary" CornerRadius="8" Click="MenuButton_Click">
+            <ui:Button.Icon>
+                <ui:SymbolIcon Symbol="Navigation16"/>
+            </ui:Button.Icon>
             <ui:Button.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="New search" Click="Menu_NewSearch_Click">
