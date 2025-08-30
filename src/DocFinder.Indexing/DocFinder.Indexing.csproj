@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="UglyToad.PdfPig" Version="0.1.8" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DocFinder.Domain\DocFinder.Domain.csproj" />
+    <ProjectReference Include="..\DocFinder.Search\DocFinder.Search.csproj" />
+    <ProjectReference Include="..\DocFinder.Catalog\DocFinder.Catalog.csproj" />
+  </ItemGroup>
+</Project>

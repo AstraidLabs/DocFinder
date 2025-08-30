@@ -1,0 +1,14 @@
+<ui:FluentWindow x:Class="DocFinder.UI.Views.SettingsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="Settings" Width="500" Height="400"
+    WindowStartupLocation="CenterOwner"
+    WindowBackdropType="Mica">
+    <StackPanel Margin="20">
+        <TextBlock Text="Source Folder"/>
+        <TextBox Text="{Binding Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}"/>
+        <CheckBox Content="Enable OCR" IsChecked="{Binding Settings.EnableOcr}"/>
+        <Button Content="Save" Command="{Binding SaveCommand}" Margin="0,20,0,0"/>
+    </StackPanel>
+</ui:FluentWindow>

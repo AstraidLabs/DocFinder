@@ -1,59 +1,53 @@
-﻿using DocFinder.Views.Pages;
-using DocFinder.Views.Windows;
-using Microsoft.Extensions.DependencyInjection;
+using DocFinder.Domain.Settings;
 using Microsoft.Extensions.Hosting;
-using Wpf.Ui;
+using DocFinder.Services;
+using DocFinder.UI.Views;
+using DocFinder.Indexing;
 
-namespace DocFinder.Services
+namespace DocFinder.Services;
+
+public class ApplicationHostService : IHostedService
 {
-    /// <summary>
-    /// Managed host of the application.
-    /// </summary>
-    public class ApplicationHostService : IHostedService
+    private readonly ITrayService _tray;
+    private readonly SearchOverlay _overlay;
+    private readonly SettingsWindow _settings;
+    private readonly WatcherService _watcher;
+
+    public ApplicationHostService(ITrayService tray, SearchOverlay overlay, SettingsWindow settings, DocumentIndexer indexer, ISettingsService settingsService)
     {
-        private readonly IServiceProvider _serviceProvider;
+        _tray = tray;
+        _overlay = overlay;
+        _settings = settings;
+        _watcher = new WatcherService(settingsService.Current.WatchedRoots, indexer);
+    }
 
-        private INavigationWindow _navigationWindow;
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        _watcher.Start();
+        _tray.Initialize(ToggleOverlay, () => Application.Current.Shutdown(), ShowSettings);
+        return Task.CompletedTask;
+    }
 
-        public ApplicationHostService(IServiceProvider serviceProvider)
+    private void ToggleOverlay()
+    {
+        if (_overlay.IsVisible)
+            _overlay.Hide();
+        else
         {
-            _serviceProvider = serviceProvider;
+            _overlay.Show();
+            _overlay.Activate();
         }
+    }
 
-        /// <summary>
-        /// Triggered when the application host is ready to start the service.
-        /// </summary>
-        /// <param name="cancellationToken">Indicates that the start process has been aborted.</param>
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            await HandleActivationAsync();
-        }
+    private void ShowSettings()
+    {
+        _settings.Show();
+    }
 
-        /// <summary>
-        /// Triggered when the application host is performing a graceful shutdown.
-        /// </summary>
-        /// <param name="cancellationToken">Indicates that the shutdown process should no longer be graceful.</param>
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            await Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Creates main window during activation.
-        /// </summary>
-        private async Task HandleActivationAsync()
-        {
-            if (!Application.Current.Windows.OfType<MainWindow>().Any())
-            {
-                _navigationWindow = (
-                    _serviceProvider.GetService(typeof(INavigationWindow)) as INavigationWindow
-                )!;
-                _navigationWindow!.ShowWindow();
-
-                _navigationWindow.Navigate(typeof(Views.Pages.DashboardPage));
-            }
-
-            await Task.CompletedTask;
-        }
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        _tray.Dispose();
+        _watcher.Dispose();
+        return Task.CompletedTask;
     }
 }
