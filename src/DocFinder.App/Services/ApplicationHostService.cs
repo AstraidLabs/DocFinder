@@ -13,7 +13,7 @@ public class ApplicationHostService : IHostedService
     private readonly SettingsWindow _settings;
     private readonly WatcherService _watcher;
 
-    public ApplicationHostService(ITrayService tray, SearchOverlay overlay, SettingsWindow settings, DocumentIndexer indexer, ISettingsService settingsService)
+    public ApplicationHostService(ITrayService tray, SearchOverlay overlay, SettingsWindow settings, IIndexer indexer, ISettingsService settingsService)
     {
         _tray = tray;
         _overlay = overlay;

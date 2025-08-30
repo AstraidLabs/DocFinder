@@ -7,10 +7,10 @@ namespace DocFinder.Indexing;
 public sealed class WatcherService : IDisposable
 {
     private readonly IEnumerable<string> _roots;
-    private readonly DocumentIndexer _indexer;
+    private readonly IIndexer _indexer;
     private readonly List<FileSystemWatcher> _watchers = new();
 
-    public WatcherService(IEnumerable<string> roots, DocumentIndexer indexer)
+    public WatcherService(IEnumerable<string> roots, IIndexer indexer)
     {
         _roots = roots;
         _indexer = indexer;

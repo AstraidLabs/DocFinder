@@ -6,6 +6,7 @@ namespace DocFinder.Services;
 public interface ITrayService : IDisposable
 {
     void Initialize(Action showOverlay, Action exitApp, Action showSettings);
+    void ShowNotification(string title, string message);
 }
 
 public sealed class TrayService : ITrayService
@@ -30,6 +31,11 @@ public sealed class TrayService : ITrayService
             if (e.Button == MouseButtons.Left)
                 showOverlay();
         };
+    }
+
+    public void ShowNotification(string title, string message)
+    {
+        _icon?.ShowBalloonTip(3000, title, message, ToolTipIcon.Info);
     }
 
     public void Dispose()
