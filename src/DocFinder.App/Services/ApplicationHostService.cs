@@ -25,6 +25,8 @@ public class ApplicationHostService : IHostedService
     {
         _watcher.Start();
         _tray.Initialize(ToggleOverlay, () => Application.Current.Shutdown(), ShowSettings);
+        _overlay.Show();
+        _overlay.Activate();
         return Task.CompletedTask;
     }
 

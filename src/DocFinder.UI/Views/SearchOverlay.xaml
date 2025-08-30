@@ -8,7 +8,7 @@
     WindowCornerPreference="Round"
     WindowBackdropType="Mica"
     ResizeMode="NoResize"
-    ShowInTaskbar="False">
+    ShowInTaskbar="True">
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
