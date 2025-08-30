@@ -4,7 +4,7 @@ using System.IO;
 
 namespace DocFinder.Indexing;
 
-public sealed class WatcherService : IDisposable
+public sealed class WatcherService : IWatcherService
 {
     private readonly IEnumerable<string> _roots;
     private readonly IIndexer _indexer;
