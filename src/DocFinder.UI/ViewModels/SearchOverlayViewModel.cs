@@ -46,9 +46,9 @@ public partial class SearchOverlayViewModel : ObservableObject
     [RelayCommand]
     private void OpenSelected()
     {
-        if (_selectedResult != null)
+        if (SelectedResult != null)
         {
-            var psi = new System.Diagnostics.ProcessStartInfo(_selectedResult.Path) { UseShellExecute = true };
+            var psi = new System.Diagnostics.ProcessStartInfo(SelectedResult.Path) { UseShellExecute = true };
             System.Diagnostics.Process.Start(psi);
         }
     }

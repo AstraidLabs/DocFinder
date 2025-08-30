@@ -1,49 +1,51 @@
-﻿using System.Windows.Media;
+using System;
+using System.Collections.Generic;
+using System.Windows.Media;
 using DocFinder.Models;
 using Wpf.Ui.Abstractions.Controls;
 
-namespace DocFinder.ViewModels.Pages
+namespace DocFinder.ViewModels.Pages;
+
+public partial class DataViewModel : ObservableObject, INavigationAware
 {
-    public partial class DataViewModel : ObservableObject, INavigationAware
+    private bool _isInitialized = false;
+
+    [ObservableProperty]
+    private IEnumerable<DataColor> _colors = Array.Empty<DataColor>();
+
+    public Task OnNavigatedToAsync()
     {
-        private bool _isInitialized = false;
+        if (!_isInitialized)
+            InitializeViewModel();
 
-        [ObservableProperty]
-        private IEnumerable<DataColor> _colors;
+        return Task.CompletedTask;
+    }
 
-        public Task OnNavigatedToAsync()
-        {
-            if (!_isInitialized)
-                InitializeViewModel();
+    public Task OnNavigatedFromAsync() => Task.CompletedTask;
 
-            return Task.CompletedTask;
-        }
+    private void InitializeViewModel()
+    {
+        var random = new Random();
+        var colorCollection = new List<DataColor>();
 
-        public Task OnNavigatedFromAsync() => Task.CompletedTask;
-
-        private void InitializeViewModel()
-        {
-            var random = new Random();
-            var colorCollection = new List<DataColor>();
-
-            for (int i = 0; i < 8192; i++)
-                colorCollection.Add(
-                    new DataColor
-                    {
-                        Color = new SolidColorBrush(
-                            Color.FromArgb(
-                                (byte)200,
-                                (byte)random.Next(0, 250),
-                                (byte)random.Next(0, 250),
-                                (byte)random.Next(0, 250)
-                            )
+        for (int i = 0; i < 8192; i++)
+            colorCollection.Add(
+                new DataColor
+                {
+                    Color = new SolidColorBrush(
+                        Color.FromArgb(
+                            (byte)200,
+                            (byte)random.Next(0, 250),
+                            (byte)random.Next(0, 250),
+                            (byte)random.Next(0, 250)
                         )
-                    }
-                );
+                    )
+                }
+            );
 
-            Colors = colorCollection;
+        Colors = colorCollection;
 
-            _isInitialized = true;
-        }
+        _isInitialized = true;
     }
 }
+

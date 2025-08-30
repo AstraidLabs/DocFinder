@@ -26,8 +26,7 @@ public partial class App
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<ISearchService, LuceneSearchService>();
             services.AddSingleton<CatalogRepository>();
-            services.AddSingleton<DocumentIndexer>();
-            services.AddSingleton<IIndexer>(sp => sp.GetRequiredService<DocumentIndexer>());
+            services.AddSingleton<IIndexer, DocumentIndexer>();
             services.AddSingleton<SearchOverlayViewModel>();
             services.AddSingleton<SearchOverlay>();
             services.AddSingleton<SettingsViewModel>();
