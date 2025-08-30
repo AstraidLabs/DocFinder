@@ -6,6 +6,7 @@
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     WindowCornerPreference="Round"
+    ExtendsContentIntoTitleBar="True"
     WindowBackdropType="Mica"
     ResizeMode="NoResize"
     ShowInTaskbar="True">
