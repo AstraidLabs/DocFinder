@@ -12,10 +12,11 @@ using DocumentFormat.OpenXml.Packaging;
 
 namespace DocFinder.Indexing;
 
-public sealed class DocumentIndexer
+public sealed class DocumentIndexer : IIndexer
 {
     private readonly ISearchService _search;
     private readonly CatalogRepository _catalog;
+    private IndexingState _state = IndexingState.Indexing;
 
     public DocumentIndexer(ISearchService search, CatalogRepository catalog)
     {
@@ -25,6 +26,9 @@ public sealed class DocumentIndexer
 
     public async Task IndexFileAsync(string path, CancellationToken ct = default)
     {
+        if (_state == IndexingState.Paused)
+            return;
+
         var fileInfo = new FileInfo(path);
         if (!fileInfo.Exists)
             return;
@@ -41,6 +45,14 @@ public sealed class DocumentIndexer
         await _search.IndexAsync(doc, ct);
         await _catalog.UpsertFileAsync(doc, ct);
     }
+
+    public Task ReindexAllAsync() => Task.CompletedTask;
+
+    public void Pause() => _state = IndexingState.Paused;
+
+    public void Resume() => _state = IndexingState.Indexing;
+
+    public IndexingState State => _state;
 
     private static string ExtractPdf(string path)
     {
