@@ -9,18 +9,15 @@ namespace DocFinder.Services;
 
 public sealed class SettingsService : ISettingsService
 {
-    private readonly IHotkeyService _hotkeyService;
     private readonly string _filePath;
     private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web)
     {
         WriteIndented = true
     };
 
-    public SettingsService(IHotkeyService hotkeyService, string? filePath = null)
+    public SettingsService(string? filePath = null)
     {
-        _hotkeyService = hotkeyService;
-        _filePath = filePath ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "DocFinder", "settings.json");
+        _filePath = filePath ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "DocFinder", "settings.json");
     }
 
     public AppSettings Current { get; private set; } = new();
@@ -52,7 +49,5 @@ public sealed class SettingsService : ISettingsService
         await stream.FlushAsync(ct);
 
         Current = settings;
-        await _hotkeyService.UnregisterAsync(ct);
-        await _hotkeyService.RegisterAsync(settings.GlobalHotkey, ct);
     }
 }
