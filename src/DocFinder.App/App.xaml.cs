@@ -1,7 +1,9 @@
 using System.IO;
 using System.Windows.Threading;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using DocFinder.Domain;
 using DocFinder.Domain.Settings;
 using DocFinder.Services;
 using DocFinder.UI.Views;
