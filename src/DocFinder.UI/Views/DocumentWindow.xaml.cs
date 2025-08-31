@@ -21,11 +21,17 @@ public partial class DocumentWindow : Window
     private readonly ObservableCollection<Document> _documents;
     private readonly ICollectionView _view;
 
-    public DocumentWindow()
+    public DocumentWindow() : this(null)
+    {
+    }
+
+    public DocumentWindow(DbContextOptions<DocumentDbContext>? dbOptions)
     {
         InitializeComponent();
         var index = new LuceneIndexService();
-        _context = new DocumentDbContext(index);
+        _context = dbOptions != null
+            ? new DocumentDbContext(dbOptions, index)
+            : new DocumentDbContext(index);
         _context.Database.EnsureCreated();
         _documents = new ObservableCollection<Document>(_context.Documents.ToList());
         documentsGrid.ItemsSource = _documents;
