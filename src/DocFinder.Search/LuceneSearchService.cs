@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DocFinder.Domain;
 using Lucene.Net.Analysis.Standard;
+using LuceneDocument = Lucene.Net.Documents.Document;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
@@ -35,7 +36,7 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
 
     public Task IndexAsync(IndexDocument doc, CancellationToken ct = default)
     {
-        var document = new Document
+        var document = new LuceneDocument
         {
             new StringField("fileId", doc.FileId.ToString(), Field.Store.YES),
             new StringField("path", doc.Path, Field.Store.YES),
