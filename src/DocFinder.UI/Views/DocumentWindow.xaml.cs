@@ -24,11 +24,8 @@ public partial class DocumentWindow : Window
     public DocumentWindow()
     {
         InitializeComponent();
-        var options = new DbContextOptionsBuilder<DocumentDbContext>()
-            .UseSqlite("Data Source=documents.db")
-            .Options;
         var index = new LuceneIndexService();
-        _context = new DocumentDbContext(options, index);
+        _context = new DocumentDbContext(index);
         _context.Database.EnsureCreated();
         _documents = new ObservableCollection<Document>(_context.Documents.ToList());
         documentsGrid.ItemsSource = _documents;
