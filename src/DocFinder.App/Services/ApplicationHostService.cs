@@ -2,7 +2,6 @@ using Microsoft.Extensions.Hosting;
 using DocFinder.Services;
 using DocFinder.UI.Views;
 using DocFinder.Indexing;
-using DocFinder.Domain.Settings;
 
 namespace DocFinder.Services;
 
@@ -13,7 +12,7 @@ public class ApplicationHostService : IHostedService
     private readonly SettingsWindow _settings;
     private readonly IWatcherService _watcher;
 
-    public ApplicationHostService(ITrayService tray, SearchOverlay overlay, SettingsWindow settings, IIndexer indexer, ISettingsService settingsService, IWatcherService watcher)
+    public ApplicationHostService(ITrayService tray, SearchOverlay overlay, SettingsWindow settings, IWatcherService watcher)
     {
         _tray = tray;
         _overlay = overlay;
