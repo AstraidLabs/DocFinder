@@ -43,11 +43,21 @@ public partial class App
 
     private async void OnStartup(object sender, StartupEventArgs e)
     {
+        // Load user settings before any services are started so that other
+        // services (like the file watcher) receive the correct configuration.
+        var settings = Services.GetRequiredService<ISettingsService>();
+        await settings.LoadAsync();
+
         await _host.StartAsync();
     }
 
     private async void OnExit(object sender, ExitEventArgs e)
     {
+        // Persist user changes.  Like .NET user scoped settings, values are only
+        // written when SaveAsync is called explicitly.
+        var settings = Services.GetRequiredService<ISettingsService>();
+        await settings.SaveAsync(settings.Current);
+
         await _host.StopAsync();
         _host.Dispose();
     }
