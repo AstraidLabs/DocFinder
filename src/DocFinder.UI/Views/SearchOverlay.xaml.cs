@@ -1,9 +1,12 @@
 using System;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using Wpf.Ui.Controls;
 using DocFinder.UI.ViewModels;
 using DocFinder.Indexing;
 using DocFinder.Services;
+using DocFinder.UI.Services;
 
 namespace DocFinder.UI.Views;
 
@@ -13,16 +16,19 @@ public partial class SearchOverlay : FluentWindow
     private readonly IIndexer _indexer;
     private readonly ITrayService _tray;
     private readonly SettingsWindow _settings;
+    private readonly IDocumentViewService _documentViewService;
 
-    public SearchOverlay(SearchOverlayViewModel viewModel, IIndexer indexer, ITrayService tray, SettingsWindow settings)
+    public SearchOverlay(SearchOverlayViewModel viewModel, IIndexer indexer, ITrayService tray, SettingsWindow settings, IDocumentViewService documentViewService)
     {
         _viewModel = viewModel;
         _indexer = indexer;
         _tray = tray;
         _settings = settings;
+        _documentViewService = documentViewService;
 
         InitializeComponent();
         DataContext = _viewModel;
+        _viewModel.PropertyChanged += ViewModel_PropertyChanged;
     }
 
     private void MenuButton_Click(object sender, RoutedEventArgs e)
@@ -79,5 +85,29 @@ public partial class SearchOverlay : FluentWindow
     private void Menu_Exit_Click(object sender, RoutedEventArgs e)
     {
         Application.Current.Shutdown();
+    }
+
+    private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(SearchOverlayViewModel.SelectedDocument))
+        {
+            UpdatePreview();
+        }
+    }
+
+    private void UpdatePreview()
+    {
+        PreviewHost.Content = _viewModel.SelectedDocument != null
+            ? _documentViewService.GetViewer(_viewModel.SelectedDocument)
+            : null;
+    }
+
+    private void FilterCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (FilterCombo.SelectedItem is ComboBoxItem item && item.Tag is string tag)
+        {
+            if (_viewModel.FilterByExtensionCommand.CanExecute(tag))
+                _viewModel.FilterByExtensionCommand.Execute(tag);
+        }
     }
 }

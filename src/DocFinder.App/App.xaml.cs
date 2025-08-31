@@ -8,6 +8,7 @@ using DocFinder.Domain.Settings;
 using DocFinder.Services;
 using DocFinder.UI.Views;
 using DocFinder.UI.ViewModels;
+using DocFinder.UI.Services;
 using DocFinder.Search;
 using DocFinder.Catalog;
 using DocFinder.Indexing;
@@ -31,6 +32,7 @@ public partial class App
                 new WatcherService(
                     sp.GetRequiredService<ISettingsService>().Current.WatchedRoots,
                     sp.GetRequiredService<IIndexer>()));
+            services.AddSingleton<IDocumentViewService, DocumentViewService>();
             services.AddSingleton<SearchOverlayViewModel>();
             services.AddSingleton<SearchOverlay>();
             services.AddSingleton<SettingsViewModel>();
