@@ -1,0 +1,15 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Neutral palette for light theme -->
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFFDFDFD"/>
+    <SolidColorBrush x:Key="SurfaceBackgroundBrush" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#FF1B1B1B"/>
+    <SolidColorBrush x:Key="StrokeBrush" Color="#FFE1E1E1"/>
+
+    <!-- Accent and interaction colors -->
+    <SolidColorBrush x:Key="AccentBrush" Color="#FF0078D4"/>
+    <SolidColorBrush x:Key="ControlHoverBrush" Color="#FFF2F2F2"/>
+    <SolidColorBrush x:Key="ControlPressedBrush" Color="#FFE5E5E5"/>
+    <SolidColorBrush x:Key="ListItemHoverBrush" Color="#FFF5F5F5"/>
+    <SolidColorBrush x:Key="ListItemSelectedBrush" Color="#FFE5F1FB"/>
+</ResourceDictionary>
