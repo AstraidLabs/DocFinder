@@ -5,11 +5,21 @@
     Title="Settings" Width="500" Height="400"
     WindowStartupLocation="CenterOwner"
     ExtendsContentIntoTitleBar="True"
-    WindowBackdropType="Mica">
-    <StackPanel Margin="20">
-        <TextBlock Text="Source Folder"/>
-        <TextBox Text="{Binding Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}"/>
-        <CheckBox Content="Enable OCR" IsChecked="{Binding Settings.EnableOcr}"/>
-        <Button Content="Save" Command="{Binding SaveCommand}" Margin="0,20,0,0"/>
-    </StackPanel>
+    WindowBackdropType="Mica"
+    ResizeMode="CanResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Grid.Row="0" Title="Settings" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+        <StackPanel Grid.Row="1" Margin="20">
+            <TextBlock Text="Source Folder"/>
+            <TextBox Text="{Binding Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}"/>
+            <CheckBox Content="Enable OCR" IsChecked="{Binding Settings.EnableOcr}"/>
+            <Button Content="Save" Command="{Binding SaveCommand}" Margin="0,20,0,0"/>
+        </StackPanel>
+    </Grid>
 </ui:FluentWindow>
