@@ -6,7 +6,7 @@ namespace DocFinder.Indexing;
 
 public sealed class WatcherService : IWatcherService
 {
-    private readonly IEnumerable<string> _roots;
+    private IEnumerable<string> _roots;
     private readonly IIndexer _indexer;
     private readonly List<FileSystemWatcher> _watchers = new();
 
@@ -30,6 +30,18 @@ public sealed class WatcherService : IWatcherService
             watcher.Changed += OnChanged;
             _watchers.Add(watcher);
         }
+    }
+
+    public void UpdateRoots(IEnumerable<string> roots)
+    {
+        _roots = roots;
+        Restart();
+    }
+
+    private void Restart()
+    {
+        Dispose();
+        Start();
     }
 
     private void OnChanged(object sender, FileSystemEventArgs e)

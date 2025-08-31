@@ -24,7 +24,7 @@ public class DocumentIndexerTests
             Current = new AppSettings { WatchedRoots = { root } };
         }
         public AppSettings Current { get; }
-        public Task LoadAsync(System.Threading.CancellationToken ct = default) => Task.CompletedTask;
+        public Task<AppSettings> LoadAsync(System.Threading.CancellationToken ct = default) => Task.FromResult(Current);
         public Task SaveAsync(AppSettings settings, System.Threading.CancellationToken ct = default) => Task.CompletedTask;
     }
 
