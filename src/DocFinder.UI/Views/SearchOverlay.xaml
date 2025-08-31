@@ -124,18 +124,12 @@
                             Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}" Padding="{StaticResource Space12}"
                             PlaceholderEnabled="True" PlaceholderText="Hledat…"/>
 
-                <ui:Button Grid.Column="2" Style="{StaticResource IconButtonStyle}" ToolTip="Filtry">
-                    <ui:Button.Icon>
-                        <ui:SymbolIcon Symbol="Filter24" FontSize="{StaticResource IconSize}" />
-                    </ui:Button.Icon>
-                    <ui:Button.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Vše" Command="{Binding FilterByExtensionCommand}" CommandParameter="all" />
-                            <MenuItem Header="PDF" Command="{Binding FilterByExtensionCommand}" CommandParameter="pdf" />
-                            <MenuItem Header="DOCX" Command="{Binding FilterByExtensionCommand}" CommandParameter="docx" />
-                        </ContextMenu>
-                    </ui:Button.ContextMenu>
-                </ui:Button>
+                <ComboBox Grid.Column="2" SelectedValuePath="Tag" SelectedValue="{Binding FileTypeFilter}"
+                          Width="100" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}">
+                    <ComboBoxItem Content="Vše" Tag="all" />
+                    <ComboBoxItem Content="PDF" Tag="pdf" />
+                    <ComboBoxItem Content="DOCX" Tag="docx" />
+                </ComboBox>
 
                 <ui:Button Grid.Column="3" Style="{StaticResource IconButtonStyle}" ToolTip="Hledat" Command="{Binding SearchCommand}">
                     <ui:Button.Icon>
