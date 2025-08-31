@@ -4,6 +4,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:converters="clr-namespace:DocFinder.UI.Converters"
     Title="DocFinder" Width="900" Height="520"
+    FontSize="{StaticResource BodyFontSize}"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     WindowCornerPreference="Round"
@@ -12,44 +13,79 @@
     ResizeMode="CanResize"
     ShowInTaskbar="True">
     <ui:FluentWindow.Resources>
-        <converters:FileSizeConverter x:Key="FileSizeConverter" />
-        <converters:UtcToLocalConverter x:Key="UtcToLocalConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DocFinder.UI;component/Resources/DesignTokens.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:FileSizeConverter x:Key="FileSizeConverter" />
+            <converters:UtcToLocalConverter x:Key="UtcToLocalConverter" />
+
+            <!-- Reusable button style with interaction states -->
+            <Style x:Key="IconButtonStyle" TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                <Setter Property="Width" Value="{StaticResource ControlHeight}" />
+                <Setter Property="Height" Value="{StaticResource ControlHeight}" />
+                <Setter Property="Margin" Value="{StaticResource Space4}" />
+                <Setter Property="Appearance" Value="Secondary" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource ControlHoverBrush}" />
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource ControlPressedBrush}" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Foreground" Value="{DynamicResource StrokeBrush}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- Data grid row style for hover and selection -->
+            <Style x:Key="SearchRowStyle" TargetType="DataGridRow">
+                <Setter Property="Height" Value="{StaticResource ControlHeight}" />
+                <Setter Property="Margin" Value="0,0,0,1" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource ListItemHoverBrush}" />
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource ListItemSelectedBrush}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                        <Setter Property="BorderThickness" Value="4,0,0,0" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
     </ui:FluentWindow.Resources>
-    <Grid>
+    <Grid Background="{DynamicResource SurfaceBackgroundBrush}" Foreground="{DynamicResource TextPrimaryBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Grid.Row="0" Title="DocFinder" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+        <ui:TitleBar Grid.Row="0" Title="DocFinder" Foreground="{DynamicResource TextPrimaryBrush}" />
 
-        <Grid Grid.Row="1" Margin="16">
+        <Grid Grid.Row="1" Margin="{StaticResource Space24}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <!-- Search bar -->
-            <Grid Grid.Row="0">
+            <Grid Grid.Row="0" Margin="0,0,0,{StaticResource Space16}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <ui:Button
-                    x:Name="MenuButton"
-                    Width="36"
-                    Height="36"
-                    Appearance="Secondary"
-                    CornerRadius="8"
-                    Click="MenuButton_Click">
+
+                <ui:Button x:Name="MenuButton" Grid.Column="0" Style="{StaticResource IconButtonStyle}" ToolTip="Menu" Click="MenuButton_Click">
                     <ui:Button.Icon>
-                        <ui:SymbolIcon Symbol="Navigation16" />
+                        <ui:SymbolIcon Symbol="Navigation16" FontSize="{StaticResource IconSize}" />
                     </ui:Button.Icon>
                     <ui:Button.ContextMenu>
                         <ContextMenu>
@@ -82,15 +118,13 @@
                     </ui:Button.ContextMenu>
                 </ui:Button>
 
-                <ui:Button
-                    Grid.Row="1"
-                    Width="36"
-                    Height="36"
-                    Appearance="Secondary"
-                    CornerRadius="8"
-                    ToolTip="Filtry">
+                <ui:TextBox x:Name="QueryTextBox" Grid.Column="1" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}"
+                            Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}" Padding="{StaticResource Space12}"
+                            PlaceholderEnabled="True" PlaceholderText="Hledat…"/>
+
+                <ui:Button Grid.Column="2" Style="{StaticResource IconButtonStyle}" ToolTip="Filtry">
                     <ui:Button.Icon>
-                        <ui:SymbolIcon Symbol="Filter24" />
+                        <ui:SymbolIcon Symbol="Filter24" FontSize="{StaticResource IconSize}" />
                     </ui:Button.Icon>
                     <ui:Button.ContextMenu>
                         <ContextMenu>
@@ -101,59 +135,45 @@
                     </ui:Button.ContextMenu>
                 </ui:Button>
 
-                <ui:TextBox
-                    x:Name="QueryTextBox"
-                    Grid.Column="1"
-                    Grid.RowSpan="2"
-                    Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
-                    Height="40"
-                    Padding="10"
-                    Margin="8,0,8,0"
-                    PlaceholderEnabled="True"
-                    PlaceholderText="Hledat…" />
-
-                <ui:Button
-                    Grid.Column="2"
-                    Grid.RowSpan="2"
-                    Width="36"
-                    Height="36"
-                    Appearance="Secondary"
-                    Command="{Binding SearchCommand}">
+                <ui:Button Grid.Column="3" Style="{StaticResource IconButtonStyle}" ToolTip="Hledat" Command="{Binding SearchCommand}">
                     <ui:Button.Icon>
-                        <ui:SymbolIcon Symbol="Search28" />
+                        <ui:SymbolIcon Symbol="Search28" FontSize="{StaticResource IconSize}" />
                     </ui:Button.Icon>
                 </ui:Button>
             </Grid>
 
             <!-- Results and detail -->
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" x:Name="ResultsColumn"/>
+                    <ColumnDefinition Width="320" x:Name="DetailColumn"/>
                 </Grid.ColumnDefinitions>
-                <ui:DataGrid Grid.Column="0"
+
+                <ui:DataGrid x:Name="ResultsGrid" Grid.Column="0" Margin="0,0,{StaticResource Space16},0"
                               ItemsSource="{Binding Results}"
                               SelectedItem="{Binding SelectedDocument}"
                               AutoGenerateColumns="False"
                               CanUserSortColumns="True"
-                              IsReadOnly="True">
+                              IsReadOnly="True"
+                              RowStyle="{StaticResource SearchRowStyle}"
+                              Loaded="ResultsGrid_Loaded">
                     <ui:DataGrid.Columns>
-                        <DataGridTextColumn Header="Název" Binding="{Binding FileName}" />
-                        <DataGridTextColumn Header="Typ" Binding="{Binding Ext}" />
-                        <DataGridTextColumn Header="Velikost" Binding="{Binding SizeBytes, Converter={StaticResource FileSizeConverter}}" />
-                        <DataGridTextColumn Header="Změněno" Binding="{Binding ModifiedUtc, Converter={StaticResource UtcToLocalConverter}}" />
+                        <DataGridTextColumn Header="Název" Binding="{Binding FileName}" Width="*"/>
+                        <DataGridTextColumn Header="Typ" Binding="{Binding Ext}" Width="80"/>
+                        <DataGridTextColumn Header="Velikost" Binding="{Binding SizeBytes, Converter={StaticResource FileSizeConverter}}" Width="100"/>
+                        <DataGridTextColumn Header="Změněno" Binding="{Binding ModifiedUtc, Converter={StaticResource UtcToLocalConverter}}" Width="140"/>
                     </ui:DataGrid.Columns>
                 </ui:DataGrid>
 
-                <Grid Grid.Column="1" Margin="8">
+                <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" BorderThickness="1" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
+                    <Border Grid.Row="0" BorderThickness="1" BorderBrush="{DynamicResource StrokeBrush}">
                         <ContentControl x:Name="PreviewHost" />
                     </Border>
-                    <Button Grid.Row="1" Content="Otevřít" Command="{Binding OpenDocumentCommand}" Margin="0,8,0,0" />
+                    <ui:Button Grid.Row="1" Content="Otevřít" Command="{Binding OpenDocumentCommand}" Margin="0,{StaticResource Space16},0,0"/>
                 </Grid>
             </Grid>
         </Grid>

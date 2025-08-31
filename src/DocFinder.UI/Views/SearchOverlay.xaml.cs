@@ -2,6 +2,8 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
+using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 using DocFinder.UI.ViewModels;
 using DocFinder.Indexing;
@@ -17,6 +19,7 @@ public partial class SearchOverlay : FluentWindow
     private readonly ITrayService _tray;
     private readonly SettingsWindow _settings;
     private readonly IDocumentViewService _documentViewService;
+    private ResourceDictionary? _themeDictionary;
 
     public SearchOverlay(SearchOverlayViewModel viewModel, IIndexer indexer, ITrayService tray, SettingsWindow settings, IDocumentViewService documentViewService)
     {
@@ -27,8 +30,39 @@ public partial class SearchOverlay : FluentWindow
         _documentViewService = documentViewService;
 
         InitializeComponent();
+        ApplyTheme(ApplicationThemeManager.GetAppTheme());
+        SystemThemeWatcher.Watch(this, OnThemeChanged);
+        SizeChanged += SearchOverlay_SizeChanged;
+
         DataContext = _viewModel;
         _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+        ApplyResponsiveLayout(ActualWidth);
+    }
+
+    private void OnThemeChanged(ApplicationTheme newTheme)
+        => ApplyTheme(newTheme);
+
+    private void ApplyTheme(ApplicationTheme theme)
+    {
+        if (_themeDictionary != null)
+            Resources.MergedDictionaries.Remove(_themeDictionary);
+
+        var source = theme == ApplicationTheme.Dark
+            ? new Uri("/DocFinder.UI;component/Resources/Theme.Dark.xaml", UriKind.Relative)
+            : new Uri("/DocFinder.UI;component/Resources/Theme.Light.xaml", UriKind.Relative);
+
+        _themeDictionary = new ResourceDictionary { Source = source };
+        Resources.MergedDictionaries.Add(_themeDictionary);
+    }
+
+    private void SearchOverlay_SizeChanged(object sender, SizeChangedEventArgs e)
+        => ApplyResponsiveLayout(e.NewSize.Width);
+
+    private void ApplyResponsiveLayout(double width)
+    {
+        DetailColumn.Width = width < 700
+            ? new GridLength(0)
+            : new GridLength(320);
     }
 
     private void MenuButton_Click(object sender, RoutedEventArgs e)
@@ -100,6 +134,15 @@ public partial class SearchOverlay : FluentWindow
         PreviewHost.Content = _viewModel.SelectedDocument != null
             ? _documentViewService.GetViewer(_viewModel.SelectedDocument)
             : null;
+    }
+
+    private void ResultsGrid_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is DataGrid dg)
+        {
+            var animation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(200));
+            dg.BeginAnimation(UIElement.OpacityProperty, animation);
+        }
     }
 
 }
