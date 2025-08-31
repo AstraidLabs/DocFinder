@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using DocFinder.Domain.Settings;
 using DocFinder.Services;
 using DocFinder.Indexing;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading.Tasks;
 using Wpf.Ui.Appearance;
 using System;
@@ -13,14 +15,19 @@ public partial class SettingsViewModel : ObservableObject
 {
     private readonly ISettingsService _settingsService;
     private readonly IWatcherService _watcherService;
+    private readonly IIndexer _indexer;
 
     [ObservableProperty]
     private AppSettings _settings = new();
 
-    public SettingsViewModel(ISettingsService settingsService, IWatcherService watcherService)
+    /// <summary>List of files indexed from the selected source root.</summary>
+    public ObservableCollection<string> IndexedFiles { get; } = new();
+
+    public SettingsViewModel(ISettingsService settingsService, IWatcherService watcherService, IIndexer indexer)
     {
         _settingsService = settingsService;
         _watcherService = watcherService;
+        _indexer = indexer;
         _settings = settingsService.Current;
     }
 
@@ -37,5 +44,17 @@ public partial class SettingsViewModel : ObservableObject
             ? ApplicationTheme.Dark
             : ApplicationTheme.Light;
         ApplicationThemeManager.Apply(theme);
+
+        // Enumerate and index files from the configured source root
+        IndexedFiles.Clear();
+        if (!string.IsNullOrWhiteSpace(Settings.SourceRoot) && Directory.Exists(Settings.SourceRoot))
+        {
+            foreach (var file in Directory.EnumerateFiles(Settings.SourceRoot, "*.*", SearchOption.AllDirectories))
+            {
+                IndexedFiles.Add(file);
+            }
+        }
+
+        await _indexer.ReindexAllAsync();
     }
 }

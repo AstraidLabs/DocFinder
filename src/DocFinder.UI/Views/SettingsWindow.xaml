@@ -27,6 +27,12 @@
             <CheckBox Content="Auto index on startup" IsChecked="{Binding Settings.AutoIndexOnStartup}"/>
             <CheckBox Content="Use fuzzy search" IsChecked="{Binding Settings.UseFuzzySearch}"/>
             <Button Content="Save" Command="{Binding SaveCommand}" Margin="0,20,0,0"/>
+
+            <DataGrid ItemsSource="{Binding IndexedFiles}" Margin="0,20,0,0" Height="150" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Soubor" Binding="{Binding}" />
+                </DataGrid.Columns>
+            </DataGrid>
         </StackPanel>
     </Grid>
 </ui:FluentWindow>
