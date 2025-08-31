@@ -12,5 +12,6 @@ public partial class SettingsWindow : FluentWindow
         ViewModel = viewModel;
         DataContext = viewModel;
         InitializeComponent();
+        Closing += (_, e) => { e.Cancel = true; Hide(); };
     }
 }

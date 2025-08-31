@@ -83,9 +83,7 @@ public partial class SearchOverlay : FluentWindow
 
     private void Menu_Settings_Click(object sender, RoutedEventArgs e)
     {
-        _settings.Owner = this;
         _settings.Show();
-        _settings.Activate();
     }
 
     private async void Menu_Reindex_Click(object sender, RoutedEventArgs e)
