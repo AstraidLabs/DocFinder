@@ -38,25 +38,54 @@ public sealed class DocumentIndexer : IIndexer
             return;
 
         var ext = fileInfo.Extension.Trim('.').ToLowerInvariant();
-        string content = ext switch
+
+        string content;
+        string? author = null;
+        string? version = null;
+        DateTime created = fileInfo.CreationTimeUtc;
+        DateTime modified = fileInfo.LastWriteTimeUtc;
+
+        switch (ext)
         {
-            "pdf" => ExtractPdf(path),
-            "docx" => ExtractDocx(path),
-            _ => string.Empty
-        };
+            case "pdf":
+                var pdf = ExtractPdf(path);
+                content = pdf.content;
+                author = pdf.author;
+                version = pdf.version;
+                if (pdf.created.HasValue) created = pdf.created.Value;
+                if (pdf.modified.HasValue) modified = pdf.modified.Value;
+                break;
+            case "docx":
+                var docx = ExtractDocx(path);
+                content = docx.content;
+                author = docx.author;
+                version = docx.version;
+                if (docx.created.HasValue) created = docx.created.Value;
+                if (docx.modified.HasValue) modified = docx.modified.Value;
+                break;
+            default:
+                content = string.Empty;
+                break;
+        }
 
         var sha = ComputeSha256(path);
+        var meta = new Dictionary<string,string>();
+        if (!string.IsNullOrEmpty(author)) meta["author"] = author;
+        if (!string.IsNullOrEmpty(version)) meta["version"] = version;
+
         var doc = new IndexDocument(
             Guid.NewGuid(),
             path,
             fileInfo.Name,
             ext,
             fileInfo.Length,
-            fileInfo.CreationTimeUtc,
-            fileInfo.LastWriteTimeUtc,
+            created,
+            modified,
             sha,
+            author,
+            version,
             content,
-            new Dictionary<string,string>());
+            meta);
         await _search.IndexAsync(doc, ct);
         await _catalog.UpsertFileAsync(doc, ct);
     }
@@ -83,7 +112,7 @@ public sealed class DocumentIndexer : IIndexer
 
     public IndexingState State => _state;
 
-    private static string ExtractPdf(string path)
+    private static (string content, string? author, string? version, DateTime? created, DateTime? modified) ExtractPdf(string path)
     {
         using var pdf = PdfDocument.Open(path);
         var sb = new StringBuilder();
@@ -91,13 +120,18 @@ public sealed class DocumentIndexer : IIndexer
         {
             sb.AppendLine(page.Text);
         }
-        return sb.ToString();
+        var info = pdf.Information;
+        DateTime? created = DateTime.TryParse(info.CreationDate, out var c) ? c : null;
+        DateTime? modified = DateTime.TryParse(info.ModifiedDate, out var m) ? m : null;
+        return (sb.ToString(), info.Author, pdf.Version.ToString(), created, modified);
     }
 
-    private static string ExtractDocx(string path)
+    private static (string content, string? author, string? version, DateTime? created, DateTime? modified) ExtractDocx(string path)
     {
         using var doc = WordprocessingDocument.Open(path, false);
-        return doc.MainDocumentPart?.Document?.InnerText ?? string.Empty;
+        var text = doc.MainDocumentPart?.Document?.InnerText ?? string.Empty;
+        var props = doc.PackageProperties;
+        return (text, props.Creator, props.Version ?? props.Revision, props.Created, props.Modified);
     }
 
     private static string ComputeSha256(string path)

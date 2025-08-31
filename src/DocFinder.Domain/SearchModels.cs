@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,6 +26,8 @@ public record DocumentRecord(
     DateTime CreatedUtc,
     DateTime ModifiedUtc,
     string Sha256,
+    string? Author,
+    string? Version,
     string? CaseNumber,
     string? ParcelId,
     string? Address,
@@ -38,13 +42,15 @@ public sealed record IndexDocument(
     DateTime CreatedUtc,
     DateTime ModifiedUtc,
     string Sha256,
+    string? Author,
+    string? Version,
     string Content,
     IDictionary<string,string> Metadata,
     string? CaseNumber = null,
     string? ParcelId = null,
     string? Address = null,
     string? Tags = null)
-    : DocumentRecord(FileId, Path, FileName, Ext, SizeBytes, CreatedUtc, ModifiedUtc, Sha256, CaseNumber, ParcelId, Address, Tags);
+    : DocumentRecord(FileId, Path, FileName, Ext, SizeBytes, CreatedUtc, ModifiedUtc, Sha256, Author, Version, CaseNumber, ParcelId, Address, Tags);
 
 public sealed record SearchHit(
     Guid FileId,
@@ -55,9 +61,28 @@ public sealed record SearchHit(
     DateTime CreatedUtc,
     DateTime ModifiedUtc,
     string Sha256,
+    string? Author,
+    string? Version,
     float Score,
     string? Snippet,
-    IReadOnlyDictionary<string,string> Meta);
+    IReadOnlyDictionary<string,string> Meta)
+{
+    // Sort key ignoring case and diacritics for alphabetical ordering
+    // https://learn.microsoft.com/dotnet/desktop/wpf/data/how-to-sort-data-in-a-view
+    public string SortKey => RemoveDiacritics(FileName).ToLowerInvariant();
+
+    private static string RemoveDiacritics(string text)
+    {
+        var normalized = text.Normalize(NormalizationForm.FormD);
+        var sb = new StringBuilder();
+        foreach (var c in normalized)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                sb.Append(c);
+        }
+        return sb.ToString().Normalize(NormalizationForm.FormC);
+    }
+}
 
 public sealed record SearchResult(
     int Total,
