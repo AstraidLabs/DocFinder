@@ -4,7 +4,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:converters="clr-namespace:DocFinder.UI.Converters"
     Title="DocFinder" Width="900" Height="520"
-    FontSize="{StaticResource BodyFontSize}"
+    FontSize="{DynamicResource BodyFontSize}"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     WindowCornerPreference="Round"
