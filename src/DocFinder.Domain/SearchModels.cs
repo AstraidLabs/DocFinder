@@ -15,22 +15,46 @@ public sealed record UserQuery(
     int PageSize = 20,
     string? Sort = null);
 
+public record DocumentRecord(
+    Guid FileId,
+    string Path,
+    string FileName,
+    string Ext,
+    long SizeBytes,
+    DateTime CreatedUtc,
+    DateTime ModifiedUtc,
+    string Sha256,
+    string? CaseNumber,
+    string? ParcelId,
+    string? Address,
+    string? Tags);
+
 public sealed record IndexDocument(
     Guid FileId,
     string Path,
     string FileName,
     string Ext,
+    long SizeBytes,
+    DateTime CreatedUtc,
+    DateTime ModifiedUtc,
+    string Sha256,
     string Content,
     IDictionary<string,string> Metadata,
-    DateTime CreatedUtc,
-    DateTime ModifiedUtc);
+    string? CaseNumber = null,
+    string? ParcelId = null,
+    string? Address = null,
+    string? Tags = null)
+    : DocumentRecord(FileId, Path, FileName, Ext, SizeBytes, CreatedUtc, ModifiedUtc, Sha256, CaseNumber, ParcelId, Address, Tags);
 
 public sealed record SearchHit(
     Guid FileId,
     string FileName,
     string Path,
     string Ext,
+    long SizeBytes,
+    DateTime CreatedUtc,
     DateTime ModifiedUtc,
+    string Sha256,
     float Score,
     string? Snippet,
     IReadOnlyDictionary<string,string> Meta);
