@@ -72,13 +72,26 @@
                     </ui:Button.ContextMenu>
                 </ui:Button>
 
-                <TextBox x:Name="QueryTextBox" Grid.Column="1" Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}" Height="40" Padding="10" Margin="8,0,8,0"/>
+                <ui:TextBox
+                    x:Name="QueryTextBox"
+                    Grid.Column="1"
+                    Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
+                    Height="40"
+                    Padding="10"
+                    Margin="8,0,8,0"
+                    PlaceholderEnabled="True"
+                    PlaceholderText="Hledat…" />
 
-                <ComboBox Grid.Column="2" Width="100" SelectedValuePath="Tag" SelectedValue="{Binding FileTypeFilter, UpdateSourceTrigger=PropertyChanged}">
-                    <ComboBoxItem Content="Vše" Tag="all" IsSelected="True" />
-                    <ComboBoxItem Content="PDF" Tag="pdf" />
-                    <ComboBoxItem Content="DOCX" Tag="docx" />
-                </ComboBox>
+                <ui:Button
+                    Grid.Column="2"
+                    Width="36"
+                    Height="36"
+                    Appearance="Secondary"
+                    Command="{Binding SearchCommand}">
+                    <ui:Button.Icon>
+                        <ui:SymbolIcon Symbol="Search28" />
+                    </ui:Button.Icon>
+                </ui:Button>
             </Grid>
 
             <!-- Results and detail -->
