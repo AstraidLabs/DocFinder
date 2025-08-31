@@ -31,7 +31,10 @@ public sealed class CatalogRepository
             Path TEXT NOT NULL,
             FileName TEXT NOT NULL,
             Ext TEXT NOT NULL,
-            ModifiedUtc TEXT NOT NULL
+            SizeBytes INTEGER NOT NULL,
+            CreatedUtc TEXT NOT NULL,
+            ModifiedUtc TEXT NOT NULL,
+            Sha256 TEXT NOT NULL
         );";
         cmd.ExecuteNonQuery();
 
@@ -52,12 +55,15 @@ public sealed class CatalogRepository
         await using var tx = await connection.BeginTransactionAsync(ct);
 
         var cmd = connection.CreateCommand();
-        cmd.CommandText = @"INSERT OR REPLACE INTO Files(FileId,Path,FileName,Ext,ModifiedUtc) VALUES($id,$path,$name,$ext,$mod);";
+        cmd.CommandText = @"INSERT OR REPLACE INTO Files(FileId,Path,FileName,Ext,SizeBytes,CreatedUtc,ModifiedUtc,Sha256) VALUES($id,$path,$name,$ext,$size,$created,$mod,$sha);";
         cmd.Parameters.AddWithValue("$id", doc.FileId.ToString());
         cmd.Parameters.AddWithValue("$path", doc.Path);
         cmd.Parameters.AddWithValue("$name", doc.FileName);
         cmd.Parameters.AddWithValue("$ext", doc.Ext);
+        cmd.Parameters.AddWithValue("$size", doc.SizeBytes);
+        cmd.Parameters.AddWithValue("$created", doc.CreatedUtc.ToString("o"));
         cmd.Parameters.AddWithValue("$mod", doc.ModifiedUtc.ToString("o"));
+        cmd.Parameters.AddWithValue("$sha", doc.Sha256);
         await cmd.ExecuteNonQueryAsync(ct);
 
         var del = connection.CreateCommand();

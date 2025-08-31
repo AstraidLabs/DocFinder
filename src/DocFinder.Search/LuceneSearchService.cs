@@ -27,7 +27,7 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
     public LuceneSearchService(LuceneDirectory? directory = null)
     {
         _directory = directory ?? new RAMDirectory();
-        _analyzer = new StandardAnalyzer(LuceneVersion.LUCENE_48);
+        _analyzer = new CzechFoldingAnalyzer(LuceneVersion.LUCENE_48);
         var config = new IndexWriterConfig(LuceneVersion.LUCENE_48, _analyzer);
         _writer = new IndexWriter(_directory, config);
         _manager = new SearcherManager(_writer, true, null);
@@ -41,9 +41,20 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
             new StringField("path", doc.Path, Field.Store.YES),
             new TextField("filename", doc.FileName, Field.Store.YES),
             new StringField("ext", doc.Ext, Field.Store.YES),
-            new TextField("content", doc.Content ?? string.Empty, Field.Store.YES),
-            new Int64Field("modifiedTicks", doc.ModifiedUtc.Ticks, Field.Store.YES)
+            new Int64Field("sizeBytes", doc.SizeBytes, Field.Store.YES),
+            new Int64Field("createdTicks", doc.CreatedUtc.Ticks, Field.Store.YES),
+            new Int64Field("modifiedTicks", doc.ModifiedUtc.Ticks, Field.Store.YES),
+            new StringField("sha256", doc.Sha256, Field.Store.YES),
+            new TextField("content", doc.Content ?? string.Empty, Field.Store.YES)
         };
+        if (!string.IsNullOrEmpty(doc.CaseNumber))
+            document.Add(new StringField("caseNumber", doc.CaseNumber, Field.Store.YES));
+        if (!string.IsNullOrEmpty(doc.ParcelId))
+            document.Add(new StringField("parcelId", doc.ParcelId, Field.Store.YES));
+        if (!string.IsNullOrEmpty(doc.Address))
+            document.Add(new TextField("address", doc.Address, Field.Store.YES));
+        if (!string.IsNullOrEmpty(doc.Tags))
+            document.Add(new TextField("tags", doc.Tags, Field.Store.YES));
         foreach (var kv in doc.Metadata)
             document.Add(new StringField($"meta_{kv.Key}", kv.Value, Field.Store.YES));
 
@@ -67,13 +78,45 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
         if (!string.IsNullOrWhiteSpace(query.FreeText))
         {
             var parser = new MultiFieldQueryParser(LuceneVersion.LUCENE_48, new[] { "content", "filename" }, _analyzer);
-            var parsed = parser.Parse(query.FreeText);
+            Query parsed;
+            if (query.UseFuzzy)
+            {
+                var tokens = query.FreeText.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                var fuzzy = string.Join(' ', tokens.Select(t => t + "~"));
+                parsed = parser.Parse(fuzzy);
+            }
+            else
+            {
+                parsed = parser.Parse(query.FreeText);
+            }
             boolean.Add(parsed, Occur.MUST);
         }
 
-        if (query.Filters != null && query.Filters.TryGetValue("type", out var ext))
+        if (query.Filters != null)
         {
-            boolean.Add(new TermQuery(new Term("ext", ext)), Occur.MUST);
+            foreach (var kv in query.Filters)
+            {
+                if (string.Equals(kv.Key, "type", StringComparison.OrdinalIgnoreCase))
+                {
+                    boolean.Add(new TermQuery(new Term("ext", kv.Value)), Occur.MUST);
+                }
+                else if (kv.Key is "caseNumber" or "parcelId" or "address" or "tags")
+                {
+                    boolean.Add(new TermQuery(new Term(kv.Key, kv.Value)), Occur.MUST);
+                }
+                else
+                {
+                    boolean.Add(new TermQuery(new Term($"meta_{kv.Key}", kv.Value)), Occur.MUST);
+                }
+            }
+        }
+
+        if (query.FromUtc.HasValue || query.ToUtc.HasValue)
+        {
+            var from = query.FromUtc?.Ticks;
+            var to = query.ToUtc?.Ticks;
+            var range = NumericRangeQuery.NewInt64Range("modifiedTicks", from, to, true, true);
+            boolean.Add(range, Occur.MUST);
         }
 
         var searcher = _manager.Acquire();
@@ -83,7 +126,7 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
             searcher.Search(boolean, collector);
             var top = collector.GetTopDocs((query.Page - 1) * query.PageSize, query.PageSize);
             var hits = new List<SearchHit>();
-            var formatter = new SimpleHTMLFormatter("<b>", "</b>");
+            var formatter = new SimpleHTMLFormatter("<strong>", "</strong>");
             var highlighter = new Highlighter(formatter, new QueryScorer(boolean));
 
             foreach (var scoreDoc in top.ScoreDocs)
@@ -98,7 +141,10 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
                     doc.Get("filename"),
                     doc.Get("path"),
                     doc.Get("ext"),
+                    long.Parse(doc.Get("sizeBytes") ?? "0"),
+                    new DateTime(long.Parse(doc.Get("createdTicks") ?? "0")),
                     new DateTime(long.Parse(doc.Get("modifiedTicks") ?? "0")),
+                    doc.Get("sha256") ?? string.Empty,
                     scoreDoc.Score,
                     snippet,
                     meta));

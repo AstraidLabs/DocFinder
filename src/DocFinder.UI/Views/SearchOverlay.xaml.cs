@@ -52,11 +52,11 @@ public partial class SearchOverlay : FluentWindow
         try
         {
             await _indexer.ReindexAllAsync();
-            _tray.ShowNotification("DocFinder", "Reindex completed");
+            _tray.ShowNotification("DocFinder", "Přeindexování dokončeno");
         }
         catch (Exception ex)
         {
-            _tray.ShowNotification("DocFinder", $"Reindex failed: {ex.Message}");
+            _tray.ShowNotification("DocFinder", $"Přeindexování selhalo: {ex.Message}");
         }
     }
 
@@ -65,13 +65,13 @@ public partial class SearchOverlay : FluentWindow
         if (_indexer.State == IndexingState.Indexing)
         {
             _indexer.Pause();
-            PauseResumeMenuItem.Header = "Resume indexing";
+            PauseResumeMenuItem.Header = "Pokračovat v indexaci";
             PauseResumeIcon.Symbol = SymbolRegular.PlayCircle24;
         }
         else
         {
             _indexer.Resume();
-            PauseResumeMenuItem.Header = "Pause indexing";
+            PauseResumeMenuItem.Header = "Pozastavit indexaci";
             PauseResumeIcon.Symbol = SymbolRegular.PauseCircle24;
         }
     }

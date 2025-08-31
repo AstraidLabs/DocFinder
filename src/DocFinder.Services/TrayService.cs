@@ -1,3 +1,4 @@
+#if WINDOWS
 using System;
 using System.Windows.Forms;
 
@@ -48,3 +49,23 @@ public sealed class TrayService : ITrayService
         }
     }
 }
+#else
+using System;
+
+namespace DocFinder.Services;
+
+public interface ITrayService : IDisposable
+{
+    void Initialize(Action showOverlay, Action exitApp, Action showSettings);
+    void ShowNotification(string title, string message);
+}
+
+public sealed class TrayService : ITrayService
+{
+    public void Initialize(Action showOverlay, Action exitApp, Action showSettings) { }
+
+    public void ShowNotification(string title, string message) { }
+
+    public void Dispose() { }
+}
+#endif
