@@ -102,12 +102,4 @@ public partial class SearchOverlay : FluentWindow
             : null;
     }
 
-    private void FilterCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (FilterCombo.SelectedItem is ComboBoxItem item && item.Tag is string tag)
-        {
-            if (_viewModel.FilterByExtensionCommand.CanExecute(tag))
-                _viewModel.FilterByExtensionCommand.Execute(tag);
-        }
-    }
 }
