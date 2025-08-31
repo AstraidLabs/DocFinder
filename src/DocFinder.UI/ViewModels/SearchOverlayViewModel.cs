@@ -96,12 +96,6 @@ public partial class SearchOverlayViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
-    private void FilterByExtension(string extension)
-    {
-        FileTypeFilter = extension;
-    }
-
     private void ApplyFilter(object? sender, FilterEventArgs e)
     {
         if (e.Item is not SearchHit hit)
