@@ -12,10 +12,23 @@ public class DocumentDbContext : DbContext
 {
     private readonly ILuceneIndexService? _index;
 
+    public DocumentDbContext(ILuceneIndexService? index = null)
+    {
+        _index = index;
+    }
+
     public DocumentDbContext(DbContextOptions<DocumentDbContext> options, ILuceneIndexService? index = null)
         : base(options)
     {
         _index = index;
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlite("Data Source=documents.db");
+        }
     }
 
     public DbSet<Document> Documents => Set<Document>();
