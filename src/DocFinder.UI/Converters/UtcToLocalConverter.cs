@@ -10,7 +10,7 @@ public sealed class UtcToLocalConverter : IValueConverter
     {
         if (value is DateTime dt)
         {
-            return dt.ToLocalTime().ToString(culture);
+            return dt.ToLocalTime().ToString("g", culture);
         }
         return value;
     }
