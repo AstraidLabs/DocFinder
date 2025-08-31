@@ -47,6 +47,10 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
             new StringField("sha256", doc.Sha256, Field.Store.YES),
             new TextField("content", doc.Content ?? string.Empty, Field.Store.YES)
         };
+        if (!string.IsNullOrEmpty(doc.Author))
+            document.Add(new StringField("author", doc.Author, Field.Store.YES));
+        if (!string.IsNullOrEmpty(doc.Version))
+            document.Add(new StringField("version", doc.Version, Field.Store.YES));
         if (!string.IsNullOrEmpty(doc.CaseNumber))
             document.Add(new StringField("caseNumber", doc.CaseNumber, Field.Store.YES));
         if (!string.IsNullOrEmpty(doc.ParcelId))
@@ -145,6 +149,8 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
                     new DateTime(long.Parse(doc.Get("createdTicks") ?? "0")),
                     new DateTime(long.Parse(doc.Get("modifiedTicks") ?? "0")),
                     doc.Get("sha256") ?? string.Empty,
+                    doc.Get("author"),
+                    doc.Get("version"),
                     scoreDoc.Score,
                     snippet,
                     meta));

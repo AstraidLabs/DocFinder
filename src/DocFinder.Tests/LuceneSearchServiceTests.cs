@@ -15,7 +15,7 @@ public class LuceneSearchServiceTests
     {
         using var service = new LuceneSearchService(new RAMDirectory());
         var id = Guid.NewGuid();
-        await service.IndexAsync(new IndexDocument(id, "/file.pdf", "file.pdf", "pdf", 5, DateTime.UtcNow, DateTime.UtcNow, "hash", "hello world", new Dictionary<string, string>()));
+        await service.IndexAsync(new IndexDocument(id, "/file.pdf", "file.pdf", "pdf", 5, DateTime.UtcNow, DateTime.UtcNow, "hash", null, null, "hello world", new Dictionary<string, string>()));
         var result = await service.QueryAsync(new UserQuery("hello", false, null, null, null));
         Assert.Equal(1, result.Total);
         Assert.Equal(id, result.Hits[0].FileId);
@@ -27,7 +27,7 @@ public class LuceneSearchServiceTests
     {
         using var service = new LuceneSearchService(new RAMDirectory());
         var id = Guid.NewGuid();
-        await service.IndexAsync(new IndexDocument(id, "/file.pdf", "file.pdf", "pdf", 5, DateTime.UtcNow, DateTime.UtcNow, "hash", "hello", new Dictionary<string, string>()));
+        await service.IndexAsync(new IndexDocument(id, "/file.pdf", "file.pdf", "pdf", 5, DateTime.UtcNow, DateTime.UtcNow, "hash", null, null, "hello", new Dictionary<string, string>()));
         var result = await service.QueryAsync(new UserQuery("helo", true, null, null, null));
         Assert.Equal(1, result.Total);
     }
@@ -37,7 +37,7 @@ public class LuceneSearchServiceTests
     {
         using var service = new LuceneSearchService(new RAMDirectory());
         var id = Guid.NewGuid();
-        await service.IndexAsync(new IndexDocument(id, "/file.pdf", "file.pdf", "pdf", 5, DateTime.UtcNow, DateTime.UtcNow, "hash", "Příliš žluťoučký kůň", new Dictionary<string, string>()));
+        await service.IndexAsync(new IndexDocument(id, "/file.pdf", "file.pdf", "pdf", 5, DateTime.UtcNow, DateTime.UtcNow, "hash", null, null, "Příliš žluťoučký kůň", new Dictionary<string, string>()));
         var result = await service.QueryAsync(new UserQuery("prilis zlutoucky kun", false, null, null, null));
         Assert.Equal(1, result.Total);
     }
