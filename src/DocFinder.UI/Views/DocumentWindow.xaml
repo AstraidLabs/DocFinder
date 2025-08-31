@@ -24,7 +24,8 @@
             </ComboBox>
         </StackPanel>
         <DataGrid x:Name="documentsGrid" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True" IsReadOnly="False"
-                  RowEditEnding="DataGrid_RowEditEnding" PreviewKeyDown="DataGrid_PreviewKeyDown">
+                  RowEditEnding="DataGrid_RowEditEnding" PreviewKeyDown="DataGrid_PreviewKeyDown"
+                  AllowDrop="True" Drop="DocumentsGrid_Drop">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Budova" Binding="{Binding BuildingName}"/>
                 <DataGridTextColumn Header="Název" Binding="{Binding Name}"/>

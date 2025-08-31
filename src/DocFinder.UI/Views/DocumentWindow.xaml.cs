@@ -88,6 +88,33 @@ public partial class DocumentWindow : Window
         }
     }
 
+    private void DocumentsGrid_Drop(object sender, DragEventArgs e)
+    {
+        if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+        if (e.Data.GetData(DataFormats.FileDrop) is not string[] paths) return;
+        foreach (var path in paths)
+        {
+            if (!File.Exists(path))
+                continue;
+            if (_documents.Any(d => string.Equals(d.FileLink, path, StringComparison.OrdinalIgnoreCase)))
+                continue;
+            var info = new FileInfo(path);
+            var doc = new Document
+            {
+                BuildingName = Path.GetFileName(Path.GetDirectoryName(path) ?? string.Empty),
+                Name = Path.GetFileNameWithoutExtension(path),
+                Author = string.Empty,
+                ModifiedAt = info.LastWriteTime,
+                Version = string.Empty,
+                Type = info.Extension.Trim('.'),
+                FileLink = path
+            };
+            _context.Documents.Add(doc);
+            _documents.Add(doc);
+        }
+        _context.SaveChanges();
+    }
+
     private void FileLink_Click(object sender, MouseButtonEventArgs e)
     {
         if (sender is TextBlock tb && tb.DataContext is Document doc)
