@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:System="clr-namespace:System;assembly=mscorlib">
     <!--
         Design tokens for DocFinder UI.
         Spacing values follow the Fluent design 4px ramp and
@@ -13,11 +14,16 @@
     <Thickness x:Key="Space24">24</Thickness>
     <Thickness x:Key="Space32">32</Thickness>
 
+    <!-- Derived margin thicknesses -->
+    <Thickness x:Key="MarginBottomSpace16">0,0,0,16</Thickness>
+    <Thickness x:Key="MarginRightSpace16">0,0,16,0</Thickness>
+    <Thickness x:Key="MarginTopSpace16">0,16,0,0</Thickness>
+
     <!-- Control sizing -->
-    <Double x:Key="ControlHeight">40</Double>
-    <Double x:Key="IconSize">24</Double>
+    <System:Double x:Key="ControlHeight">40</System:Double>
+    <System:Double x:Key="IconSize">24</System:Double>
 
     <!-- Typography -->
-    <Double x:Key="BodyFontSize">14</Double>
-    <Double x:Key="HeaderFontSize">18</Double>
+    <System:Double x:Key="BodyFontSize">14</System:Double>
+    <System:Double x:Key="HeaderFontSize">18</System:Double>
 </ResourceDictionary>
