@@ -56,6 +56,9 @@ public partial class SearchOverlayViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private Task Search() => RunQueryAsync(Query);
+
+    [RelayCommand]
     private void OpenSelected()
     {
         if (SelectedResult != null)
