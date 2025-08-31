@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
@@ -31,7 +31,8 @@ public partial class SearchOverlay : FluentWindow
 
         InitializeComponent();
         ApplyTheme(ApplicationThemeManager.GetAppTheme());
-        SystemThemeWatcher.Watch(this, OnThemeChanged);
+        ApplicationThemeManager.Changed += OnThemeChanged;
+        SystemThemeWatcher.Watch(this);
         SizeChanged += SearchOverlay_SizeChanged;
 
         DataContext = _viewModel;
@@ -39,7 +40,7 @@ public partial class SearchOverlay : FluentWindow
         ApplyResponsiveLayout(ActualWidth);
     }
 
-    private void OnThemeChanged(ApplicationTheme newTheme)
+    private void OnThemeChanged(ApplicationTheme newTheme, Color accentColor)
         => ApplyTheme(newTheme);
 
     private void ApplyTheme(ApplicationTheme theme)
