@@ -21,7 +21,7 @@ public partial class SearchOverlayViewModel : ObservableObject
     public ObservableCollection<SearchHit> Results { get; } = new();
 
     [ObservableProperty]
-    private SearchHit? _selectedResult;
+    private SearchHit? _selectedDocument;
 
     public SearchOverlayViewModel(ISearchService searchService)
     {
@@ -59,12 +59,18 @@ public partial class SearchOverlayViewModel : ObservableObject
     private Task Search() => RunQueryAsync(Query);
 
     [RelayCommand]
-    private void OpenSelected()
+    private void OpenDocument()
     {
-        if (SelectedResult != null)
+        if (SelectedDocument != null)
         {
-            var psi = new System.Diagnostics.ProcessStartInfo(SelectedResult.Path) { UseShellExecute = true };
+            var psi = new System.Diagnostics.ProcessStartInfo(SelectedDocument.Path) { UseShellExecute = true };
             System.Diagnostics.Process.Start(psi);
         }
+    }
+
+    [RelayCommand]
+    private void FilterByExtension(string extension)
+    {
+        FileTypeFilter = extension;
     }
 }
