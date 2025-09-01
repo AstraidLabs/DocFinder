@@ -139,11 +139,7 @@ public sealed class DocumentIndexer : IIndexer
             var hash = SHA256.HashData(stream);
             return Convert.ToHexString(hash);
         }
-        catch (IOException ex)
-        {
-            Console.Error.WriteLine($"Failed to compute SHA256 for {path}: {ex.Message}");
-        }
-        catch (UnauthorizedAccessException ex)
+        catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
         {
             Console.Error.WriteLine($"Failed to compute SHA256 for {path}: {ex.Message}");
         }
