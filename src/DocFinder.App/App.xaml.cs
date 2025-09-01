@@ -12,6 +12,9 @@ using DocFinder.UI.Services;
 using DocFinder.Search;
 using DocFinder.Catalog;
 using DocFinder.Indexing;
+using DocFinder.Application;
+using DocFinder.Application.Commands;
+using DocFinder.Application.Handlers;
 
 namespace DocFinder;
 
@@ -28,6 +31,10 @@ public partial class App
             services.AddSingleton<ISearchService, LuceneSearchService>();
             services.AddSingleton<CatalogRepository>();
             services.AddSingleton<IIndexer, DocumentIndexer>();
+            services.AddSingleton<CommandDispatcher>();
+            services.AddTransient<ICommandHandler<SearchDocumentsCommand, SearchResult>, SearchDocumentsHandler>();
+            services.AddTransient<ICommandHandler<IndexFileCommand, Unit>, IndexFileHandler>();
+            services.AddTransient<ICommandHandler<DeleteDocumentCommand, Unit>, DeleteDocumentHandler>();
             services.AddSingleton<IWatcherService>(sp =>
                 new WatcherService(
                     sp.GetRequiredService<ISettingsService>().Current.WatchedRoots,

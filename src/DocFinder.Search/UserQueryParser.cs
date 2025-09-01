@@ -12,8 +12,8 @@ public static class UserQueryParser
     public static UserQuery Parse(string input)
     {
         var filters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        DateTime? from = null;
-        DateTime? to = null;
+        DateTimeOffset? from = null;
+        DateTimeOffset? to = null;
         var text = input;
 
         foreach (Match match in _tokenRegex.Matches(input))
@@ -25,10 +25,10 @@ public static class UserQueryParser
             switch (key.ToLowerInvariant())
             {
                 case "from":
-                    if (DateTime.TryParse(value, out var f)) from = f;
+                    if (DateTimeOffset.TryParse(value, out var f)) from = f.ToUniversalTime();
                     break;
                 case "to":
-                    if (DateTime.TryParse(value, out var t)) to = t;
+                    if (DateTimeOffset.TryParse(value, out var t)) to = t.ToUniversalTime();
                     break;
                 default:
                     filters[key] = value;
@@ -39,6 +39,11 @@ public static class UserQueryParser
         }
 
         var free = text.Trim();
-        return new UserQuery(free, false, filters, from, to);
+        return new UserQuery(free)
+        {
+            Filters = filters,
+            FromUtc = from,
+            ToUtc = to
+        };
     }
 }

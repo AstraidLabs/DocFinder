@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocFinder.Catalog", "src\Do
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocFinder.Indexing", "src\DocFinder.Indexing\DocFinder.Indexing.csproj", "{3B986244-4D6E-46A1-9CCA-66EE9775B473}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocFinder.Application", "src\DocFinder.Application\DocFinder.Application.csproj", "{278A4B6D-AF71-4978-8B10-C645E5420C58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,10 +58,14 @@ Global
 		{2396F162-7C2B-4D89-987C-D1201EDBF065}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3B986244-4D6E-46A1-9CCA-66EE9775B473}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3B986244-4D6E-46A1-9CCA-66EE9775B473}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B986244-4D6E-46A1-9CCA-66EE9775B473}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B986244-4D6E-46A1-9CCA-66EE9775B473}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
+                {3B986244-4D6E-46A1-9CCA-66EE9775B473}.Release|Any CPU.ActiveCfg = Release|Any CPU
+                {3B986244-4D6E-46A1-9CCA-66EE9775B473}.Release|Any CPU.Build.0 = Release|Any CPU
+                {278A4B6D-AF71-4978-8B10-C645E5420C58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+                {278A4B6D-AF71-4978-8B10-C645E5420C58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+                {278A4B6D-AF71-4978-8B10-C645E5420C58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+                {278A4B6D-AF71-4978-8B10-C645E5420C58}.Release|Any CPU.Build.0 = Release|Any CPU
+        EndGlobalSection
+        GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
@@ -70,6 +76,7 @@ Global
 		{6BC0E4C4-EB98-48A3-B26D-97F52AAF49E5} = {2A22B6F0-0E5B-49E7-BD4F-9A0DE80DD509}
 		{F19A1AC8-B6B0-4C86-8F33-050B5A0AB54E} = {2A22B6F0-0E5B-49E7-BD4F-9A0DE80DD509}
 		{2396F162-7C2B-4D89-987C-D1201EDBF065} = {2A22B6F0-0E5B-49E7-BD4F-9A0DE80DD509}
-		{3B986244-4D6E-46A1-9CCA-66EE9775B473} = {2A22B6F0-0E5B-49E7-BD4F-9A0DE80DD509}
-	EndGlobalSection
+                {3B986244-4D6E-46A1-9CCA-66EE9775B473} = {2A22B6F0-0E5B-49E7-BD4F-9A0DE80DD509}
+                {278A4B6D-AF71-4978-8B10-C645E5420C58} = {2A22B6F0-0E5B-49E7-BD4F-9A0DE80DD509}
+        EndGlobalSection
 EndGlobal

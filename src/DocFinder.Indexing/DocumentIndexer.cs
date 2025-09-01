@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,42 +40,39 @@ public sealed class DocumentIndexer : IIndexer
 
         var ext = fileInfo.Extension.Trim('.').ToLowerInvariant();
 
-        string content;
+        string content = string.Empty;
         string? author = null;
         string? version = null;
         DateTime created = fileInfo.CreationTimeUtc;
         DateTime modified = fileInfo.LastWriteTimeUtc;
 
+        (string content, string? author, string? version, DateTimeOffset? created, DateTimeOffset? modified) meta;
         switch (ext)
         {
             case "pdf":
-                var pdf = ExtractPdf(path);
-                content = pdf.content;
-                author = pdf.author;
-                version = pdf.version;
-                if (pdf.created.HasValue) created = pdf.created.Value;
-                if (pdf.modified.HasValue) modified = pdf.modified.Value;
+                meta = await ExtractPdfAsync(path, ct);
                 break;
             case "docx":
-                var docx = ExtractDocx(path);
-                content = docx.content;
-                author = docx.author;
-                version = docx.version;
-                if (docx.created.HasValue) created = docx.created.Value;
-                if (docx.modified.HasValue) modified = docx.modified.Value;
+                meta = await ExtractDocxAsync(path, ct);
                 break;
             default:
-                content = string.Empty;
+                meta = (string.Empty, null, null, null, null);
                 break;
         }
+        content = meta.content;
+        author = meta.author;
+        version = meta.version;
+        if (meta.created.HasValue) created = meta.created.Value.UtcDateTime;
+        if (meta.modified.HasValue) modified = meta.modified.Value.UtcDateTime;
 
         var sha = ComputeSha256(path);
-        var meta = new Dictionary<string,string>();
-        if (!string.IsNullOrEmpty(author)) meta["author"] = author;
-        if (!string.IsNullOrEmpty(version)) meta["version"] = version;
+        var fileId = ComputeFileId(path, sha);
+        var metaDict = new Dictionary<string,string>();
+        if (!string.IsNullOrEmpty(author)) metaDict["author"] = author;
+        if (!string.IsNullOrEmpty(version)) metaDict["version"] = version;
 
         var doc = new IndexDocument(
-            Guid.NewGuid(),
+            fileId,
             path,
             fileInfo.Name,
             ext,
@@ -85,7 +83,7 @@ public sealed class DocumentIndexer : IIndexer
             author,
             version,
             content,
-            meta);
+            metaDict);
         await _search.IndexAsync(doc, ct);
         await _catalog.UpsertFileAsync(doc, ct);
     }
@@ -112,26 +110,35 @@ public sealed class DocumentIndexer : IIndexer
 
     public IndexingState State => _state;
 
-    private static (string content, string? author, string? version, DateTime? created, DateTime? modified) ExtractPdf(string path)
+    private static async Task<(string content, string? author, string? version, DateTimeOffset? created, DateTimeOffset? modified)> ExtractPdfAsync(string path, CancellationToken ct)
     {
-        using var pdf = PdfDocument.Open(path);
-        var sb = new StringBuilder();
-        foreach (var page in pdf.GetPages())
+        return await Task.Run(() =>
         {
-            sb.AppendLine(page.Text);
-        }
-        var info = pdf.Information;
-        DateTime? created = DateTime.TryParse(info.CreationDate, out var c) ? c : null;
-        DateTime? modified = DateTime.TryParse(info.ModifiedDate, out var m) ? m : null;
-        return (sb.ToString(), info.Author, pdf.Version.ToString(), created, modified);
+            using var pdf = PdfDocument.Open(path);
+            var sb = new StringBuilder();
+            foreach (var page in pdf.GetPages())
+            {
+                ct.ThrowIfCancellationRequested();
+                sb.AppendLine(page.Text);
+            }
+            var info = pdf.Information;
+            DateTimeOffset? created = DateTimeOffset.TryParse(info.CreationDate, out var c) ? c.ToUniversalTime() : null;
+            DateTimeOffset? modified = DateTimeOffset.TryParse(info.ModifiedDate, out var m) ? m.ToUniversalTime() : null;
+            return (sb.ToString(), info.Author, pdf.Version.ToString(), created, modified);
+        }, ct);
     }
 
-    private static (string content, string? author, string? version, DateTime? created, DateTime? modified) ExtractDocx(string path)
+    private static async Task<(string content, string? author, string? version, DateTimeOffset? created, DateTimeOffset? modified)> ExtractDocxAsync(string path, CancellationToken ct)
     {
-        using var doc = WordprocessingDocument.Open(path, false);
-        var text = doc.MainDocumentPart?.Document?.InnerText ?? string.Empty;
-        var props = doc.PackageProperties;
-        return (text, props.Creator, props.Version ?? props.Revision, props.Created, props.Modified);
+        return await Task.Run(() =>
+        {
+            using var doc = WordprocessingDocument.Open(path, false);
+            var text = doc.MainDocumentPart?.Document?.InnerText ?? string.Empty;
+            var props = doc.PackageProperties;
+            DateTimeOffset? created = props.Created.HasValue ? new DateTimeOffset(props.Created.Value).ToUniversalTime() : null;
+            DateTimeOffset? modified = props.Modified.HasValue ? new DateTimeOffset(props.Modified.Value).ToUniversalTime() : null;
+            return (text, props.Creator, props.Version ?? props.Revision, created, modified);
+        }, ct);
     }
 
     private static string ComputeSha256(string path)
@@ -139,5 +146,14 @@ public sealed class DocumentIndexer : IIndexer
         using var stream = File.OpenRead(path);
         var hash = SHA256.HashData(stream);
         return Convert.ToHexString(hash);
+    }
+
+    private static Guid ComputeFileId(string path, string sha)
+    {
+        var bytes = Encoding.UTF8.GetBytes(path + sha);
+        var hash = SHA256.HashData(bytes);
+        Span<byte> guidBytes = stackalloc byte[16];
+        hash.AsSpan(0, 16).CopyTo(guidBytes);
+        return new Guid(guidBytes);
     }
 }

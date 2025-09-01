@@ -16,7 +16,7 @@ public class LuceneSearchServiceTests
         using var service = new LuceneSearchService(new RAMDirectory());
         var id = Guid.NewGuid();
         await service.IndexAsync(new IndexDocument(id, "/file.pdf", "file.pdf", "pdf", 5, DateTime.UtcNow, DateTime.UtcNow, "hash", null, null, "hello world", new Dictionary<string, string>()));
-        var result = await service.QueryAsync(new UserQuery("hello", false, null, null, null));
+        var result = await service.QueryAsync(new UserQuery("hello"));
         Assert.Equal(1, result.Total);
         Assert.Equal(id, result.Hits[0].FileId);
         Assert.Contains("<strong>hello</strong>", result.Hits[0].Snippet, StringComparison.OrdinalIgnoreCase);
@@ -28,7 +28,7 @@ public class LuceneSearchServiceTests
         using var service = new LuceneSearchService(new RAMDirectory());
         var id = Guid.NewGuid();
         await service.IndexAsync(new IndexDocument(id, "/file.pdf", "file.pdf", "pdf", 5, DateTime.UtcNow, DateTime.UtcNow, "hash", null, null, "hello", new Dictionary<string, string>()));
-        var result = await service.QueryAsync(new UserQuery("helo", true, null, null, null));
+        var result = await service.QueryAsync(new UserQuery("helo") { UseFuzzy = true });
         Assert.Equal(1, result.Total);
     }
 
@@ -38,7 +38,7 @@ public class LuceneSearchServiceTests
         using var service = new LuceneSearchService(new RAMDirectory());
         var id = Guid.NewGuid();
         await service.IndexAsync(new IndexDocument(id, "/file.pdf", "file.pdf", "pdf", 5, DateTime.UtcNow, DateTime.UtcNow, "hash", null, null, "Příliš žluťoučký kůň", new Dictionary<string, string>()));
-        var result = await service.QueryAsync(new UserQuery("prilis zlutoucky kun", false, null, null, null));
+        var result = await service.QueryAsync(new UserQuery("prilis zlutoucky kun"));
         Assert.Equal(1, result.Total);
     }
 }

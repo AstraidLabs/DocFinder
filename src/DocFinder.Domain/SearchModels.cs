@@ -7,15 +7,19 @@ using System.Threading.Tasks;
 
 namespace DocFinder.Domain;
 
-public sealed record UserQuery(
-    string FreeText,
-    bool UseFuzzy,
-    IReadOnlyDictionary<string,string>? Filters,
-    DateTime? FromUtc,
-    DateTime? ToUtc,
-    int Page = 1,
-    int PageSize = 20,
-    string? Sort = null);
+public sealed record UserQuery
+{
+    public string FreeText { get; init; }
+    public bool UseFuzzy { get; init; } = false;
+    public IReadOnlyDictionary<string, string> Filters { get; init; } = new Dictionary<string, string>();
+    public DateTimeOffset? FromUtc { get; init; }
+    public DateTimeOffset? ToUtc { get; init; }
+    public int Page { get; init; } = 1;
+    public int PageSize { get; init; } = 20;
+    public string? Sort { get; init; }
+
+    public UserQuery(string freeText) => FreeText = freeText;
+}
 
 public record DocumentRecord(
     Guid FileId,
@@ -65,7 +69,7 @@ public sealed record SearchHit(
     string? Version,
     float Score,
     string? Snippet,
-    IReadOnlyDictionary<string,string> Meta)
+    IDictionary<string,string> Meta)
 {
     // Sort key ignoring case and diacritics for alphabetical ordering
     // https://learn.microsoft.com/dotnet/desktop/wpf/data/how-to-sort-data-in-a-view
@@ -93,6 +97,6 @@ public interface ISearchService
 {
     Task IndexAsync(IndexDocument doc, CancellationToken ct = default);
     Task DeleteByFileIdAsync(Guid fileId, CancellationToken ct = default);
-    Task<SearchResult> QueryAsync(UserQuery query, CancellationToken ct = default);
+    ValueTask<SearchResult> QueryAsync(UserQuery query, CancellationToken ct = default);
     Task OptimizeAsync(CancellationToken ct = default);
 }
