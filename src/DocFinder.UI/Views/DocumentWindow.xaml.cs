@@ -99,16 +99,19 @@ public partial class DocumentWindow : Window
             if (_documents.Any(d => string.Equals(d.FileLink, path, StringComparison.OrdinalIgnoreCase)))
                 continue;
             var info = new FileInfo(path);
-            var doc = new Document
-            {
-                BuildingName = Path.GetFileName(Path.GetDirectoryName(path) ?? string.Empty),
-                Name = Path.GetFileNameWithoutExtension(path),
-                Author = string.Empty,
-                ModifiedAt = info.LastWriteTime,
-                Version = string.Empty,
-                Type = info.Extension.Trim('.'),
-                FileLink = path
-            };
+            var doc = new Document(
+                id: 0,
+                buildingName: Path.GetFileName(Path.GetDirectoryName(path) ?? string.Empty),
+                name: Path.GetFileNameWithoutExtension(path),
+                author: string.Empty,
+                modifiedAt: info.LastWriteTime,
+                version: string.Empty,
+                type: info.Extension.Trim('.'),
+                issuedAt: null,
+                validUntil: null,
+                canPrint: false,
+                isElectronic: false,
+                fileLink: path);
             _context.Documents.Add(doc);
             _documents.Add(doc);
         }

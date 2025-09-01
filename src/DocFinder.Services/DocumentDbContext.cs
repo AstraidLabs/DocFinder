@@ -74,13 +74,9 @@ public class DocumentDbContext : DbContext
     private void PostSave(List<(Document doc, string action)> changes)
     {
         if (changes.Count == 0) return;
-        var audits = changes.Select(c => new AuditEntry
-        {
-            DocumentId = c.doc.Id,
-            Action = c.action,
-            Timestamp = DateTime.UtcNow,
-            UserName = Environment.UserName
-        }).ToList();
+        var audits = changes
+            .Select(c => new AuditEntry(c.doc.Id, c.action, DateTime.UtcNow, Environment.UserName))
+            .ToList();
         AuditEntries.AddRange(audits);
         base.SaveChanges();
         if (_index != null)
@@ -98,13 +94,9 @@ public class DocumentDbContext : DbContext
     private async Task PostSaveAsync(List<(Document doc, string action)> changes, CancellationToken ct)
     {
         if (changes.Count == 0) return;
-        var audits = changes.Select(c => new AuditEntry
-        {
-            DocumentId = c.doc.Id,
-            Action = c.action,
-            Timestamp = DateTime.UtcNow,
-            UserName = Environment.UserName
-        }).ToList();
+        var audits = changes
+            .Select(c => new AuditEntry(c.doc.Id, c.action, DateTime.UtcNow, Environment.UserName))
+            .ToList();
         await AuditEntries.AddRangeAsync(audits, ct);
         await base.SaveChangesAsync(ct);
         if (_index != null)

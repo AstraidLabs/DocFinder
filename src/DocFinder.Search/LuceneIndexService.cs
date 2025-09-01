@@ -66,15 +66,19 @@ public sealed class LuceneIndexService : ILuceneIndexService, IDisposable
             foreach (var hit in hits)
             {
                 var d = searcher.Doc(hit.Doc);
-                yield return new DocFinder.Domain.Document
-                {
-                    Id = int.Parse(d.Get("id")),
-                    BuildingName = d.Get("building"),
-                    Name = d.Get("name"),
-                    Author = d.Get("author"),
-                    Type = d.Get("type"),
-                    FileLink = d.Get("fileLink")
-                };
+                yield return new DocFinder.Domain.Document(
+                    id: int.Parse(d.Get("id")),
+                    buildingName: d.Get("building"),
+                    name: d.Get("name"),
+                    author: d.Get("author"),
+                    modifiedAt: DateTime.MinValue,
+                    version: string.Empty,
+                    type: d.Get("type"),
+                    issuedAt: null,
+                    validUntil: null,
+                    canPrint: false,
+                    isElectronic: false,
+                    fileLink: d.Get("fileLink"));
             }
         }
         finally

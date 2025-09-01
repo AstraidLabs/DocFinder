@@ -32,16 +32,19 @@ public class DocumentDbContextTests
         using var ctx = new DocumentDbContext(options, index);
         ctx.Database.EnsureCreated();
 
-        var doc = new Document
-        {
-            BuildingName = "A",
-            Name = "Doc",
-            Author = "Auth",
-            ModifiedAt = DateTime.UtcNow,
-            Version = "1.0",
-            Type = "txt",
-            FileLink = "test.txt"
-        };
+        var doc = new Document(
+            id: 0,
+            buildingName: "A",
+            name: "Doc",
+            author: "Auth",
+            modifiedAt: DateTime.UtcNow,
+            version: "1.0",
+            type: "txt",
+            issuedAt: null,
+            validUntil: null,
+            canPrint: false,
+            isElectronic: false,
+            fileLink: "test.txt");
         ctx.Documents.Add(doc);
         ctx.SaveChanges();
 
@@ -49,7 +52,7 @@ public class DocumentDbContextTests
         Assert.Equal("Insert", ctx.AuditEntries.First().Action);
         Assert.Contains(doc.Id, index.Indexed);
 
-        doc.Name = "Doc2";
+        doc.UpdateName("Doc2");
         ctx.SaveChanges();
         Assert.Equal(2, ctx.AuditEntries.Count());
         Assert.Equal("Update", ctx.AuditEntries.OrderBy(a => a.Id).Last().Action);
