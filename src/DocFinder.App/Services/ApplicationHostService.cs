@@ -40,7 +40,7 @@ public class ApplicationHostService : IHostedService
     public Task StopAsync(CancellationToken cancellationToken)
     {
         _tray.Dispose();
-        _watcher.Dispose();
+        _watcher.Stop();
         return Task.CompletedTask;
     }
 }

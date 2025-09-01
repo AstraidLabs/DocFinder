@@ -3,6 +3,7 @@ using System.Windows.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using DocFinder.Domain;
 using DocFinder.Domain.Settings;
 using DocFinder.Services;
@@ -38,7 +39,8 @@ public partial class App
             services.AddSingleton<IWatcherService>(sp =>
                 new WatcherService(
                     sp.GetRequiredService<ISettingsService>().Current.WatchedRoots,
-                    sp.GetRequiredService<IIndexer>()));
+                    sp.GetRequiredService<IIndexer>(),
+                    sp.GetRequiredService<ILogger<WatcherService>>()));
             services.AddSingleton<IDocumentViewService, DocumentViewService>();
             services.AddSingleton<SearchOverlayViewModel>();
             services.AddSingleton<SearchOverlay>();
