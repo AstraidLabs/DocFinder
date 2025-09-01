@@ -12,10 +12,11 @@ using DocFinder.Domain;
 using DocFinder.Services;
 using DocFinder.Search;
 using Microsoft.EntityFrameworkCore;
+using Wpf.Ui.Controls;
 
 namespace DocFinder.UI.Views;
 
-public partial class DocumentWindow : Window
+public partial class DocumentWindow : FluentWindow
 {
     private readonly DocumentDbContext _context;
     private readonly ObservableCollection<Document> _documents;

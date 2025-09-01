@@ -1,51 +1,64 @@
-<Window x:Class="DocFinder.UI.Views.DocumentWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Documents" Height="450" Width="900">
-    <DockPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <TextBox x:Name="BuildingFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
-            <TextBox x:Name="NameFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
-            <TextBox x:Name="AuthorFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
-            <TextBox x:Name="ModifiedFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
-            <TextBox x:Name="VersionFilter" Width="60" Margin="2" TextChanged="OnTextFilterChanged"/>
-            <TextBox x:Name="TypeFilter" Width="60" Margin="2" TextChanged="OnTextFilterChanged"/>
-            <TextBox x:Name="IssuedFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
-            <TextBox x:Name="ValidFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
-            <ComboBox x:Name="CanPrintFilter" Width="60" Margin="2" SelectionChanged="OnBoolFilterChanged">
-                <ComboBoxItem Content=""/>
-                <ComboBoxItem Content="True"/>
-                <ComboBoxItem Content="False"/>
-            </ComboBox>
-            <ComboBox x:Name="ElectronicFilter" Width="60" Margin="2" SelectionChanged="OnBoolFilterChanged">
-                <ComboBoxItem Content=""/>
-                <ComboBoxItem Content="True"/>
-                <ComboBoxItem Content="False"/>
-            </ComboBox>
-        </StackPanel>
-        <DataGrid x:Name="documentsGrid" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True" IsReadOnly="False"
-                  RowEditEnding="DataGrid_RowEditEnding" PreviewKeyDown="DataGrid_PreviewKeyDown"
-                  AllowDrop="True" Drop="DocumentsGrid_Drop">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Budova" Binding="{Binding BuildingName}"/>
-                <DataGridTextColumn Header="Název" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="Autor" Binding="{Binding Author}"/>
-                <DataGridTextColumn Header="Změněno" Binding="{Binding ModifiedAt}"/>
-                <DataGridTextColumn Header="Verze" Binding="{Binding Version}"/>
-                <DataGridTextColumn Header="Typ" Binding="{Binding Type}"/>
-                <DataGridTextColumn Header="Dokument vystaven" Binding="{Binding IssuedAt}"/>
-                <DataGridTextColumn Header="Platnost do" Binding="{Binding ValidUntil}"/>
-                <DataGridCheckBoxColumn Header="Tisk" Binding="{Binding CanPrint}"/>
-                <DataGridCheckBoxColumn Header="Elektron. ve smlouvě" Binding="{Binding IsElectronic}"/>
-                <DataGridTemplateColumn Header="Odkaz na soubor">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding FileLink}" Foreground="Blue" TextDecorations="Underline" Cursor="Hand"
-                                       MouseLeftButtonUp="FileLink_Click"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-    </DockPanel>
-</Window>
+<ui:FluentWindow x:Class="DocFinder.UI.Views.DocumentWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 Title="Documents" Width="900" Height="450"
+                 ExtendsContentIntoTitleBar="True"
+                 WindowBackdropType="Mica"
+                 ResizeMode="CanResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Grid.Row="0" Title="Documents" />
+
+        <DockPanel Grid.Row="1">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                <ui:TextBox x:Name="BuildingFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
+                <ui:TextBox x:Name="NameFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
+                <ui:TextBox x:Name="AuthorFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
+                <ui:TextBox x:Name="ModifiedFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
+                <ui:TextBox x:Name="VersionFilter" Width="60" Margin="2" TextChanged="OnTextFilterChanged"/>
+                <ui:TextBox x:Name="TypeFilter" Width="60" Margin="2" TextChanged="OnTextFilterChanged"/>
+                <ui:TextBox x:Name="IssuedFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
+                <ui:TextBox x:Name="ValidFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
+                <ui:ComboBox x:Name="CanPrintFilter" Width="60" Margin="2" SelectionChanged="OnBoolFilterChanged">
+                    <ComboBoxItem Content=""/>
+                    <ComboBoxItem Content="True"/>
+                    <ComboBoxItem Content="False"/>
+                </ui:ComboBox>
+                <ui:ComboBox x:Name="ElectronicFilter" Width="60" Margin="2" SelectionChanged="OnBoolFilterChanged">
+                    <ComboBoxItem Content=""/>
+                    <ComboBoxItem Content="True"/>
+                    <ComboBoxItem Content="False"/>
+                </ui:ComboBox>
+            </StackPanel>
+            <ui:DataGrid x:Name="documentsGrid" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True" IsReadOnly="False"
+                         RowEditEnding="DataGrid_RowEditEnding" PreviewKeyDown="DataGrid_PreviewKeyDown"
+                         AllowDrop="True" Drop="DocumentsGrid_Drop">
+                <ui:DataGrid.Columns>
+                    <DataGridTextColumn Header="Budova" Binding="{Binding BuildingName}"/>
+                    <DataGridTextColumn Header="Název" Binding="{Binding Name}"/>
+                    <DataGridTextColumn Header="Autor" Binding="{Binding Author}"/>
+                    <DataGridTextColumn Header="Změněno" Binding="{Binding ModifiedAt}"/>
+                    <DataGridTextColumn Header="Verze" Binding="{Binding Version}"/>
+                    <DataGridTextColumn Header="Typ" Binding="{Binding Type}"/>
+                    <DataGridTextColumn Header="Dokument vystaven" Binding="{Binding IssuedAt}"/>
+                    <DataGridTextColumn Header="Platnost do" Binding="{Binding ValidUntil}"/>
+                    <DataGridCheckBoxColumn Header="Tisk" Binding="{Binding CanPrint}"/>
+                    <DataGridCheckBoxColumn Header="Elektron. ve smlouvě" Binding="{Binding IsElectronic}"/>
+                    <DataGridTemplateColumn Header="Odkaz na soubor">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding FileLink}" Foreground="Blue" TextDecorations="Underline" Cursor="Hand"
+                                           MouseLeftButtonUp="FileLink_Click"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </ui:DataGrid.Columns>
+            </ui:DataGrid>
+        </DockPanel>
+    </Grid>
+</ui:FluentWindow>
