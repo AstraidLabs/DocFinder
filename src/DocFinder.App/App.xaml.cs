@@ -30,6 +30,8 @@ public partial class App
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<ISearchService, LuceneSearchService>();
             services.AddSingleton<CatalogRepository>();
+            services.AddSingleton<IContentExtractor, PdfContentExtractor>();
+            services.AddSingleton<IContentExtractor, DocxContentExtractor>();
             services.AddSingleton<IIndexer, DocumentIndexer>();
             services.AddSingleton<CommandDispatcher>();
             services.AddTransient<ICommandHandler<SearchDocumentsCommand, SearchResult>, SearchDocumentsHandler>();

@@ -10,8 +10,6 @@ using DocFinder.Domain;
 using DocFinder.Domain.Settings;
 using DocFinder.Search;
 using DocFinder.Catalog;
-using UglyToad.PdfPig;
-using DocumentFormat.OpenXml.Packaging;
 
 namespace DocFinder.Indexing;
 
@@ -20,13 +18,19 @@ public sealed class DocumentIndexer : IIndexer
     private readonly ISearchService _search;
     private readonly CatalogRepository _catalog;
     private readonly ISettingsService _settings;
+    private readonly IEnumerable<IContentExtractor> _extractors;
     private IndexingState _state = IndexingState.Indexing;
 
-    public DocumentIndexer(ISearchService search, CatalogRepository catalog, ISettingsService settings)
+    public DocumentIndexer(
+        ISearchService search,
+        CatalogRepository catalog,
+        ISettingsService settings,
+        IEnumerable<IContentExtractor> extractors)
     {
         _search = search;
         _catalog = catalog;
         _settings = settings;
+        _extractors = extractors;
     }
 
     public async Task IndexFileAsync(string path, CancellationToken ct = default)
@@ -46,24 +50,21 @@ public sealed class DocumentIndexer : IIndexer
         DateTime created = fileInfo.CreationTimeUtc;
         DateTime modified = fileInfo.LastWriteTimeUtc;
 
-        (string content, string? author, string? version, DateTimeOffset? created, DateTimeOffset? modified) meta;
-        switch (ext)
+        var extractor = _extractors.FirstOrDefault(e => e.CanHandle(ext));
+        ExtractedContent meta;
+        if (extractor is null)
         {
-            case "pdf":
-                meta = await ExtractPdfAsync(path, ct);
-                break;
-            case "docx":
-                meta = await ExtractDocxAsync(path, ct);
-                break;
-            default:
-                meta = (string.Empty, null, null, null, null);
-                break;
+            meta = new ExtractedContent(string.Empty, null, null, null, null);
         }
-        content = meta.content;
-        author = meta.author;
-        version = meta.version;
-        if (meta.created.HasValue) created = meta.created.Value.UtcDateTime;
-        if (meta.modified.HasValue) modified = meta.modified.Value.UtcDateTime;
+        else
+        {
+            meta = await extractor.ExtractAsync(path, ct);
+        }
+        content = meta.Content;
+        author = meta.Author;
+        version = meta.Version;
+        if (meta.Created.HasValue) created = meta.Created.Value.UtcDateTime;
+        if (meta.Modified.HasValue) modified = meta.Modified.Value.UtcDateTime;
 
         var sha = ComputeSha256(path);
         var fileId = ComputeFileId(path, sha);
@@ -96,7 +97,7 @@ public sealed class DocumentIndexer : IIndexer
             foreach (var file in Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories))
             {
                 var ext = Path.GetExtension(file).Trim('.').ToLowerInvariant();
-                if (ext is "pdf" or "docx")
+                if (_extractors.Any(e => e.CanHandle(ext)))
                 {
                     await IndexFileAsync(file);
                 }
@@ -109,37 +110,6 @@ public sealed class DocumentIndexer : IIndexer
     public void Resume() => _state = IndexingState.Indexing;
 
     public IndexingState State => _state;
-
-    private static async Task<(string content, string? author, string? version, DateTimeOffset? created, DateTimeOffset? modified)> ExtractPdfAsync(string path, CancellationToken ct)
-    {
-        return await Task.Run(() =>
-        {
-            using var pdf = PdfDocument.Open(path);
-            var sb = new StringBuilder();
-            foreach (var page in pdf.GetPages())
-            {
-                ct.ThrowIfCancellationRequested();
-                sb.AppendLine(page.Text);
-            }
-            var info = pdf.Information;
-            DateTimeOffset? created = DateTimeOffset.TryParse(info.CreationDate, out var c) ? c.ToUniversalTime() : null;
-            DateTimeOffset? modified = DateTimeOffset.TryParse(info.ModifiedDate, out var m) ? m.ToUniversalTime() : null;
-            return (sb.ToString(), info.Author, pdf.Version.ToString(), created, modified);
-        }, ct);
-    }
-
-    private static async Task<(string content, string? author, string? version, DateTimeOffset? created, DateTimeOffset? modified)> ExtractDocxAsync(string path, CancellationToken ct)
-    {
-        return await Task.Run(() =>
-        {
-            using var doc = WordprocessingDocument.Open(path, false);
-            var text = doc.MainDocumentPart?.Document?.InnerText ?? string.Empty;
-            var props = doc.PackageProperties;
-            DateTimeOffset? created = props.Created.HasValue ? new DateTimeOffset(props.Created.Value).ToUniversalTime() : null;
-            DateTimeOffset? modified = props.Modified.HasValue ? new DateTimeOffset(props.Modified.Value).ToUniversalTime() : null;
-            return (text, props.Creator, props.Version ?? props.Revision, created, modified);
-        }, ct);
-    }
 
     private static string ComputeSha256(string path)
     {

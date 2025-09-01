@@ -45,7 +45,12 @@ public class DocumentIndexerTests
         var settings = new FakeSettingsService(temp);
         var catalog = new CatalogRepository(Path.Combine(temp, "catalog.db"));
         using var search = new LuceneSearchService(new RAMDirectory());
-        var indexer = new DocumentIndexer(search, catalog, settings);
+        var extractors = new IContentExtractor[]
+        {
+            new DocxContentExtractor(),
+            new PdfContentExtractor()
+        };
+        var indexer = new DocumentIndexer(search, catalog, settings, extractors);
         await indexer.IndexFileAsync(file);
 
         await using var connection = new SqliteConnection($"Data Source={Path.Combine(temp, "catalog.db")}");
