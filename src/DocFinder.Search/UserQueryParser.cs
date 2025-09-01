@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using DocFinder.Domain;
 
@@ -14,7 +15,8 @@ public static class UserQueryParser
         var filters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         DateTimeOffset? from = null;
         DateTimeOffset? to = null;
-        var text = input;
+        var sb = new StringBuilder();
+        var lastIndex = 0;
 
         foreach (Match match in _tokenRegex.Matches(input))
         {
@@ -35,10 +37,13 @@ public static class UserQueryParser
                     break;
             }
 
-            text = text.Replace(match.Value, string.Empty);
+            sb.Append(input, lastIndex, match.Index - lastIndex);
+            lastIndex = match.Index + match.Length;
         }
 
-        var free = text.Trim();
+        sb.Append(input, lastIndex, input.Length - lastIndex);
+        var free = sb.ToString().Trim();
+
         return new UserQuery(free)
         {
             Filters = filters,
