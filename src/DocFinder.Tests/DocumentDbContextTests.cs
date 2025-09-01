@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DocFinder.Domain;
 using DocFinder.Services;
+using DocFinder.Application;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -11,7 +12,7 @@ namespace DocFinder.Tests;
 
 public class DocumentDbContextTests
 {
-    private sealed class StubIndex : ILuceneIndexService
+    private sealed class StubIndex : IDocumentIndexService
     {
         public List<int> Indexed { get; } = new();
         public List<int> Deleted { get; } = new();

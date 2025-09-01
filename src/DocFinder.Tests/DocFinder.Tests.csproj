@@ -30,6 +30,7 @@
     <ProjectReference Include="..\DocFinder.Search\DocFinder.Search.csproj" />
     <ProjectReference Include="..\DocFinder.Catalog\DocFinder.Catalog.csproj" />
     <ProjectReference Include="..\DocFinder.Indexing\DocFinder.Indexing.csproj" />
+    <ProjectReference Include="..\DocFinder.Application\DocFinder.Application.csproj" />
   </ItemGroup>
 
 </Project>

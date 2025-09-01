@@ -29,6 +29,8 @@ public partial class App
             services.AddSingleton<ITrayService, TrayService>();
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<ISearchService, LuceneSearchService>();
+            services.AddSingleton<ILuceneIndexService, LuceneIndexService>();
+            services.AddSingleton<IDocumentIndexService, DocumentIndexService>();
             services.AddSingleton<CatalogRepository>();
             services.AddSingleton<IIndexer, DocumentIndexer>();
             services.AddSingleton<CommandDispatcher>();

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using DocFinder.Domain;
 using DocFinder.Services;
 using DocFinder.Search;
+using DocFinder.Application;
 using Microsoft.EntityFrameworkCore;
 
 namespace DocFinder.UI.Views;
@@ -28,7 +29,8 @@ public partial class DocumentWindow : Window
     public DocumentWindow(DbContextOptions<DocumentDbContext>? dbOptions)
     {
         InitializeComponent();
-        var index = new LuceneIndexService();
+        var lucene = new LuceneIndexService();
+        IDocumentIndexService index = new DocumentIndexService(lucene);
         _context = dbOptions != null
             ? new DocumentDbContext(dbOptions, index)
             : new DocumentDbContext(index);

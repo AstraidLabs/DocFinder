@@ -4,20 +4,21 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DocFinder.Domain;
+using DocFinder.Application;
 using Microsoft.EntityFrameworkCore;
 
 namespace DocFinder.Services;
 
 public class DocumentDbContext : DbContext
 {
-    private readonly ILuceneIndexService? _index;
+    private readonly IDocumentIndexService? _index;
 
-    public DocumentDbContext(ILuceneIndexService? index = null)
+    public DocumentDbContext(IDocumentIndexService? index = null)
     {
         _index = index;
     }
 
-    public DocumentDbContext(DbContextOptions<DocumentDbContext> options, ILuceneIndexService? index = null)
+    public DocumentDbContext(DbContextOptions<DocumentDbContext> options, IDocumentIndexService? index = null)
         : base(options)
     {
         _index = index;
