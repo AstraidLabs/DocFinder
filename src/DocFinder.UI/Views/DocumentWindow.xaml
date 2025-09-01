@@ -24,16 +24,16 @@
                 <ui:TextBox x:Name="TypeFilter" Width="60" Margin="2" TextChanged="OnTextFilterChanged"/>
                 <ui:TextBox x:Name="IssuedFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
                 <ui:TextBox x:Name="ValidFilter" Width="80" Margin="2" TextChanged="OnTextFilterChanged"/>
-                <ui:ComboBox x:Name="CanPrintFilter" Width="60" Margin="2" SelectionChanged="OnBoolFilterChanged">
+                <ComboBox x:Name="CanPrintFilter" Width="60" Margin="2" SelectionChanged="OnBoolFilterChanged">
                     <ComboBoxItem Content=""/>
                     <ComboBoxItem Content="True"/>
                     <ComboBoxItem Content="False"/>
-                </ui:ComboBox>
-                <ui:ComboBox x:Name="ElectronicFilter" Width="60" Margin="2" SelectionChanged="OnBoolFilterChanged">
+                </ComboBox>
+                <ComboBox x:Name="ElectronicFilter" Width="60" Margin="2" SelectionChanged="OnBoolFilterChanged">
                     <ComboBoxItem Content=""/>
                     <ComboBoxItem Content="True"/>
                     <ComboBoxItem Content="False"/>
-                </ui:ComboBox>
+                </ComboBox>
             </StackPanel>
             <ui:DataGrid x:Name="documentsGrid" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True" IsReadOnly="False"
                          RowEditEnding="DataGrid_RowEditEnding" PreviewKeyDown="DataGrid_PreviewKeyDown"
