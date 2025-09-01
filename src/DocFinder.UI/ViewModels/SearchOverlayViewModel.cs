@@ -21,6 +21,7 @@ public partial class SearchOverlayViewModel : ObservableObject
     private readonly ISearchService _searchService;
     private readonly ISettingsService _settings;
     private CancellationTokenSource _cts = new();
+    private Task? _currentQuery;
 
     [ObservableProperty]
     private string _query = string.Empty;
@@ -58,7 +59,6 @@ public partial class SearchOverlayViewModel : ObservableObject
         _searchService = searchService;
         _settings = settings;
         ResultsView.Source = Results;
-        ResultsView.Filter += ApplyFilter; // https://learn.microsoft.com/dotnet/desktop/wpf/data/how-to-filter-data-in-a-view
         UpdateSort(); // https://learn.microsoft.com/dotnet/desktop/wpf/data/how-to-sort-data-in-a-view
     }
 
@@ -67,7 +67,7 @@ public partial class SearchOverlayViewModel : ObservableObject
         _cts.Cancel();
         _cts.Dispose();
         _cts = new CancellationTokenSource();
-        _ = RunQueryAsync(value, _cts.Token);
+        _currentQuery = RunQueryAsync(value, _cts.Token);
     }
 
     partial void OnFileTypeFilterChanged(string value)
@@ -77,33 +77,54 @@ public partial class SearchOverlayViewModel : ObservableObject
             _cts.Cancel();
             _cts.Dispose();
             _cts = new CancellationTokenSource();
-            _ = RunQueryAsync(Query, _cts.Token);
+            _currentQuery = RunQueryAsync(Query, _cts.Token);
         }
     }
 
     private async Task RunQueryAsync(string value, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(value))
+        try
         {
-            Results.Clear();
-            ResultsView.View.Refresh();
-            return;
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                Results.Clear();
+                ResultsView.View.Refresh();
+                return;
+            }
+
+            var filters = new Dictionary<string, string>();
+            if (!string.Equals(FileTypeFilter, "all", StringComparison.OrdinalIgnoreCase))
+                filters["type"] = FileTypeFilter.ToLowerInvariant();
+            if (!string.IsNullOrWhiteSpace(AuthorFilter))
+                filters["author"] = AuthorFilter;
+            if (!string.IsNullOrWhiteSpace(VersionFilter))
+                filters["version"] = VersionFilter;
+
+            var query = new UserQuery(value)
+            {
+                Filters = filters,
+                FromUtc = FromDate.HasValue ? new DateTimeOffset(FromDate.Value.ToUniversalTime()) : null,
+                ToUtc = ToDate.HasValue ? new DateTimeOffset(ToDate.Value.ToUniversalTime()) : null
+            };
+
+            var result = await _searchService.QueryAsync(query, ct);
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                Results.Clear();
+                foreach (var hit in result.Hits)
+                    Results.Add(hit);
+                ResultsView.View.Refresh();
+            });
         }
-
-        Dictionary<string, string>? filters = null;
-        if (!string.Equals(FileTypeFilter, "all", StringComparison.OrdinalIgnoreCase))
-            filters = new Dictionary<string, string> { { "type", FileTypeFilter.ToLowerInvariant() } };
-
-        var query = new UserQuery(value) { Filters = filters ?? new Dictionary<string, string>() };
-        var result = await _searchService.QueryAsync(query, ct);
-
-        await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+        catch (OperationCanceledException)
         {
-            Results.Clear();
-            foreach (var hit in result.Hits)
-                Results.Add(hit);
-            ResultsView.View.Refresh();
-        });
+            // ignore
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+        }
     }
 
     [RelayCommand]
@@ -112,7 +133,8 @@ public partial class SearchOverlayViewModel : ObservableObject
         _cts.Cancel();
         _cts.Dispose();
         _cts = new CancellationTokenSource();
-        return RunQueryAsync(Query, _cts.Token);
+        _currentQuery = RunQueryAsync(Query, _cts.Token);
+        return _currentQuery;
     }
 
     [RelayCommand]
@@ -130,40 +152,49 @@ public partial class SearchOverlayViewModel : ObservableObject
         System.Diagnostics.Process.Start(psi);
     }
 
-    private void ApplyFilter(object? sender, FilterEventArgs e)
+    partial void OnFromDateChanged(DateTime? value)
     {
-        if (e.Item is not SearchHit hit)
+        if (!string.IsNullOrEmpty(Query))
         {
-            e.Accepted = false;
-            return;
+            _cts.Cancel();
+            _cts.Dispose();
+            _cts = new CancellationTokenSource();
+            _currentQuery = RunQueryAsync(Query, _cts.Token);
         }
-        if (FromDate.HasValue && hit.ModifiedUtc < FromDate.Value)
-        {
-            e.Accepted = false;
-            return;
-        }
-        if (ToDate.HasValue && hit.ModifiedUtc > ToDate.Value)
-        {
-            e.Accepted = false;
-            return;
-        }
-        if (!string.IsNullOrWhiteSpace(AuthorFilter) && !string.Equals(hit.Author, AuthorFilter, StringComparison.OrdinalIgnoreCase))
-        {
-            e.Accepted = false;
-            return;
-        }
-        if (!string.IsNullOrWhiteSpace(VersionFilter) && !string.Equals(hit.Version, VersionFilter, StringComparison.OrdinalIgnoreCase))
-        {
-            e.Accepted = false;
-            return;
-        }
-        e.Accepted = true;
     }
 
-    partial void OnFromDateChanged(DateTime? value) => ResultsView.View.Refresh();
-    partial void OnToDateChanged(DateTime? value) => ResultsView.View.Refresh();
-    partial void OnAuthorFilterChanged(string value) => ResultsView.View.Refresh();
-    partial void OnVersionFilterChanged(string value) => ResultsView.View.Refresh();
+    partial void OnToDateChanged(DateTime? value)
+    {
+        if (!string.IsNullOrEmpty(Query))
+        {
+            _cts.Cancel();
+            _cts.Dispose();
+            _cts = new CancellationTokenSource();
+            _currentQuery = RunQueryAsync(Query, _cts.Token);
+        }
+    }
+
+    partial void OnAuthorFilterChanged(string value)
+    {
+        if (!string.IsNullOrEmpty(Query))
+        {
+            _cts.Cancel();
+            _cts.Dispose();
+            _cts = new CancellationTokenSource();
+            _currentQuery = RunQueryAsync(Query, _cts.Token);
+        }
+    }
+
+    partial void OnVersionFilterChanged(string value)
+    {
+        if (!string.IsNullOrEmpty(Query))
+        {
+            _cts.Cancel();
+            _cts.Dispose();
+            _cts = new CancellationTokenSource();
+            _currentQuery = RunQueryAsync(Query, _cts.Token);
+        }
+    }
     partial void OnSortFieldChanged(string value) => UpdateSort();
     partial void OnSortAscendingChanged(bool value) => UpdateSort();
 
