@@ -63,7 +63,8 @@ public partial class SettingsViewModel : ObservableObject
             return files;
         }, ct);
 
-        var reindexTask = Task.Run(() => _indexer.ReindexAllAsync(ct), ct).Unwrap();
+        // Start reindexing concurrently without wrapping in an extra Task
+        var reindexTask = _indexer.ReindexAllAsync(ct);
 
         var filesToIndex = await enumerateTask;
         foreach (var file in filesToIndex)
