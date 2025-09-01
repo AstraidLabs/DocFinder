@@ -19,8 +19,8 @@ public sealed class DocumentViewService : IDocumentViewService
         }
         if (ext == ".doc" || ext == ".docx")
         {
-            return new TextBlock { Text = "Náhled DOC/DOCX není podporován. Použijte tlačítko Otevřít." };
+            return new System.Windows.Controls.TextBlock { Text = "Náhled DOC/DOCX není podporován. Použijte tlačítko Otevřít." };
         }
-        return new TextBlock { Text = "Náhled není k dispozici." };
+        return new System.Windows.Controls.TextBlock { Text = "Náhled není k dispozici." };
     }
 }
