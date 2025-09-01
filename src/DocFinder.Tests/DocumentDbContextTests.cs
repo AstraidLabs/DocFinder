@@ -6,6 +6,7 @@ using DocFinder.Services;
 using DocFinder.Search;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace DocFinder.Tests;
@@ -27,10 +28,20 @@ public class DocumentDbContextTests
         var index = new StubIndex();
         using var connection = new SqliteConnection("DataSource=:memory:");
         connection.Open();
-        var options = new DbContextOptionsBuilder<DocumentDbContext>()
-            .UseSqlite(connection)
-            .Options;
-        using var ctx = new DocumentDbContext(options, index);
+
+        var services = new ServiceCollection();
+        services.AddSingleton<ILuceneIndexService>(index);
+        services.AddDbContextFactory<DocumentDbContext>(o => o.UseSqlite(connection));
+        services.AddScoped<DocumentSaveChangesInterceptor>();
+        services.AddDbContext<DocumentDbContext>((sp, o) =>
+        {
+            o.UseSqlite(connection);
+            o.AddInterceptors(sp.GetRequiredService<DocumentSaveChangesInterceptor>());
+        });
+
+        var provider = services.BuildServiceProvider();
+        using var scope = provider.CreateScope();
+        using var ctx = scope.ServiceProvider.GetRequiredService<DocumentDbContext>();
         ctx.Database.EnsureCreated();
 
         var doc = new Document(

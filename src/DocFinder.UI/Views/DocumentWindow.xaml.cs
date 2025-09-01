@@ -28,10 +28,9 @@ public partial class DocumentWindow : Window
     public DocumentWindow(DbContextOptions<DocumentDbContext>? dbOptions)
     {
         InitializeComponent();
-        var lucene = new LuceneIndexService();
         _context = dbOptions != null
-            ? new DocumentDbContext(dbOptions, lucene)
-            : new DocumentDbContext(lucene);
+            ? new DocumentDbContext(dbOptions)
+            : new DocumentDbContext();
         _context.Database.EnsureCreated();
         _documents = new ObservableCollection<Document>(_context.Documents.ToList());
         documentsGrid.ItemsSource = _documents;
