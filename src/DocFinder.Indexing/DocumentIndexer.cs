@@ -89,18 +89,38 @@ public sealed class DocumentIndexer : IIndexer
         await _catalog.UpsertFileAsync(doc, ct);
     }
 
-    public async Task ReindexAllAsync()
+    public async Task ReindexAllAsync(CancellationToken ct = default)
     {
         foreach (var root in _settings.Current.WatchedRoots)
         {
+            ct.ThrowIfCancellationRequested();
             if (!Directory.Exists(root)) continue;
-            foreach (var file in Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories))
+            try
             {
-                var ext = Path.GetExtension(file).Trim('.').ToLowerInvariant();
-                if (_extractors.Any(e => e.CanHandle(ext)))
+                foreach (var file in Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories))
                 {
-                    await IndexFileAsync(file);
+                    ct.ThrowIfCancellationRequested();
+                    var ext = Path.GetExtension(file).Trim('.').ToLowerInvariant();
+                    if (_extractors.Any(e => e.CanHandle(ext)))
+                    {
+                        try
+                        {
+                            await IndexFileAsync(file, ct);
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                        }
+                        catch (IOException)
+                        {
+                        }
+                    }
                 }
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+            catch (IOException)
+            {
             }
         }
     }

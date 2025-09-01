@@ -12,7 +12,7 @@ public enum IndexingState
 public interface IIndexer
 {
     Task IndexFileAsync(string path, CancellationToken ct = default);
-    Task ReindexAllAsync();
+    Task ReindexAllAsync(CancellationToken ct = default);
     void Pause();
     void Resume();
     IndexingState State { get; }
