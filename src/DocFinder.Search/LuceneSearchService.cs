@@ -24,6 +24,8 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
     private readonly LuceneDirectory _directory;
     private readonly IndexWriter _writer;
     private readonly SearcherManager _manager;
+    private int _pending;
+    private const int CommitThreshold = 1000;
 
     public LuceneSearchService(LuceneDirectory? directory = null)
     {
@@ -36,6 +38,9 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
 
     public Task IndexAsync(IndexDocument doc, CancellationToken ct = default)
     {
+        var content = doc.Content ?? string.Empty;
+        if (content.Length > 1000)
+            content = content.Substring(0, 1000);
         var document = new LuceneDocument
         {
             new StringField("fileId", doc.FileId.ToString(), Field.Store.YES),
@@ -46,7 +51,7 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
             new Int64Field("createdTicks", doc.CreatedUtc.Ticks, Field.Store.YES),
             new Int64Field("modifiedTicks", doc.ModifiedUtc.Ticks, Field.Store.YES),
             new StringField("sha256", doc.Sha256, Field.Store.YES),
-            new TextField("content", doc.Content ?? string.Empty, Field.Store.YES)
+            new TextField("content", content, Field.Store.YES)
         };
         if (!string.IsNullOrEmpty(doc.Author))
             document.Add(new StringField("author", doc.Author, Field.Store.YES));
@@ -64,16 +69,18 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
             document.Add(new StringField($"meta_{kv.Key}", kv.Value, Field.Store.YES));
 
         _writer.UpdateDocument(new Term("fileId", doc.FileId.ToString()), document);
-        _writer.Commit();
+        _writer.Flush(triggerMerge: false, applyAllDeletes: false);
         _manager.MaybeRefreshBlocking();
+        CommitIfNeeded();
         return Task.CompletedTask;
     }
 
     public Task DeleteByFileIdAsync(Guid fileId, CancellationToken ct = default)
     {
         _writer.DeleteDocuments(new Term("fileId", fileId.ToString()));
-        _writer.Commit();
+        _writer.Flush(triggerMerge: false, applyAllDeletes: false);
         _manager.MaybeRefreshBlocking();
+        CommitIfNeeded();
         return Task.CompletedTask;
     }
 
@@ -175,9 +182,25 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
 
     public void Dispose()
     {
+        if (_pending > 0)
+        {
+            _writer.Commit();
+            _manager.MaybeRefreshBlocking();
+        }
         _manager.Dispose();
         _writer.Dispose();
         _directory.Dispose();
         _analyzer.Dispose();
+    }
+
+    private void CommitIfNeeded()
+    {
+        _pending++;
+        if (_pending >= CommitThreshold)
+        {
+            _writer.Commit();
+            _manager.MaybeRefreshBlocking();
+            _pending = 0;
+        }
     }
 }

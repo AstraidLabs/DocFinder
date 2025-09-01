@@ -8,7 +8,7 @@ namespace DocFinder.Search;
 
 public static class UserQueryParser
 {
-    private static readonly Regex _tokenRegex = new(@"(?<key>\w+):(?<value>""[^""]+""|\S+)", RegexOptions.Compiled);
+    private static readonly Regex _tokenRegex = new(@"(?<key>\w+):(?<value>""(?:(?:\\.|[^""])*)""|\S+)", RegexOptions.Compiled);
 
     public static UserQuery Parse(string input)
     {
@@ -22,7 +22,7 @@ public static class UserQueryParser
         {
             var key = match.Groups["key"].Value;
             var raw = match.Groups["value"].Value;
-            var value = raw.Trim('"');
+            var value = Regex.Unescape(raw.Trim('"'));
 
             switch (key.ToLowerInvariant())
             {
@@ -33,7 +33,7 @@ public static class UserQueryParser
                     if (DateTimeOffset.TryParse(value, out var t)) to = t.ToUniversalTime();
                     break;
                 default:
-                    filters[key] = value;
+                    filters[key] = EscapeQuotes(value);
                     break;
             }
 
@@ -42,7 +42,7 @@ public static class UserQueryParser
         }
 
         sb.Append(input, lastIndex, input.Length - lastIndex);
-        var free = sb.ToString().Trim();
+        var free = EscapeQuotes(sb.ToString().Trim());
 
         return new UserQuery(free)
         {
@@ -50,5 +50,22 @@ public static class UserQueryParser
             FromUtc = from,
             ToUtc = to
         };
+    }
+
+    private static string EscapeQuotes(string value)
+    {
+        var quoteCount = 0;
+        foreach (var c in value)
+            if (c == '"') quoteCount++;
+        if (quoteCount % 2 == 0)
+            return value;
+
+        var sb = new StringBuilder(value.Length + quoteCount);
+        foreach (var c in value)
+        {
+            if (c == '"') sb.Append('\\');
+            sb.Append(c);
+        }
+        return sb.ToString();
     }
 }

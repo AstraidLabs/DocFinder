@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -79,13 +80,21 @@ public sealed class SettingsService : ISettingsService
     /// </summary>
     private static AppSettings MergeWithDefaults(AppSettings? loaded)
     {
-        var defaults = new AppSettings();
+        var d = new AppSettings();
         if (loaded == null)
-            return defaults;
+            return d;
 
-        loaded.WatchedRoots ??= defaults.WatchedRoots;
-        loaded.Theme ??= defaults.Theme;
-        // For value types we rely on their defaults if they have not been set.
-        return loaded;
+        return new AppSettings
+        {
+            SourceRoot = loaded.SourceRoot ?? d.SourceRoot,
+            WatchedRoots = loaded.WatchedRoots != null ? new List<string>(loaded.WatchedRoots) : new List<string>(d.WatchedRoots),
+            EnableOcr = loaded.EnableOcr,
+            Theme = loaded.Theme ?? d.Theme,
+            AutoIndexOnStartup = loaded.AutoIndexOnStartup,
+            UseFuzzySearch = loaded.UseFuzzySearch,
+            PollingMinutes = loaded.PollingMinutes == 0 ? d.PollingMinutes : loaded.PollingMinutes,
+            IndexPath = loaded.IndexPath ?? d.IndexPath,
+            ThumbsPath = loaded.ThumbsPath ?? d.ThumbsPath
+        };
     }
 }

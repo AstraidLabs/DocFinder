@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DocFinder.Domain;
+using DocFinder.Search;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -12,10 +13,12 @@ namespace DocFinder.Services;
 public sealed class DocumentSaveChangesInterceptor : SaveChangesInterceptor
 {
     private readonly ILuceneIndexService? _index;
+    private readonly IDbContextFactory<DocumentDbContext> _factory;
     private List<(Document doc, string action)> _changes = new();
 
-    public DocumentSaveChangesInterceptor(ILuceneIndexService? index)
+    public DocumentSaveChangesInterceptor(IDbContextFactory<DocumentDbContext> factory, ILuceneIndexService? index)
     {
+        _factory = factory;
         _index = index;
     }
 
@@ -90,8 +93,9 @@ public sealed class DocumentSaveChangesInterceptor : SaveChangesInterceptor
             .Select(c => new AuditEntry(c.doc.Id, c.action, DateTime.UtcNow, Environment.UserName))
             .ToList();
 
-        await context.AddRangeAsync(audits, ct);
-        await context.SaveChangesAsync(ct);
+        await using var auditCtx = _factory.CreateDbContext();
+        await auditCtx.AddRangeAsync(audits, ct);
+        await auditCtx.SaveChangesAsync(ct);
 
         if (_index != null)
         {
