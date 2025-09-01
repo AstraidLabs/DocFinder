@@ -3,8 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 using DocFinder.Domain.Settings;
 using DocFinder.Services;
 using DocFinder.Indexing;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Wpf.Ui.Appearance;
 using System;
@@ -32,9 +34,9 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task SaveAsync()
+    private async Task SaveAsync(CancellationToken ct = default)
     {
-        await _settingsService.SaveAsync(Settings);
+        await _settingsService.SaveAsync(Settings, ct);
 
         // Restart file watchers to reflect the updated roots
         _watcherService.UpdateRoots(Settings.WatchedRoots);
@@ -45,16 +47,31 @@ public partial class SettingsViewModel : ObservableObject
             : ApplicationTheme.Light;
         ApplicationThemeManager.Apply(theme);
 
-        // Enumerate and index files from the configured source root
+        // Enumerate and index files from the configured source root concurrently
         IndexedFiles.Clear();
-        if (!string.IsNullOrWhiteSpace(Settings.SourceRoot) && Directory.Exists(Settings.SourceRoot))
+        var enumerateTask = Task.Run(() =>
         {
-            foreach (var file in Directory.EnumerateFiles(Settings.SourceRoot, "*.*", SearchOption.AllDirectories))
+            var files = new List<string>();
+            if (!string.IsNullOrWhiteSpace(Settings.SourceRoot) && Directory.Exists(Settings.SourceRoot))
             {
-                IndexedFiles.Add(file);
+                foreach (var file in Directory.EnumerateFiles(Settings.SourceRoot, "*.*", SearchOption.AllDirectories))
+                {
+                    ct.ThrowIfCancellationRequested();
+                    files.Add(file);
+                }
             }
+            return files;
+        }, ct);
+
+        var reindexTask = Task.Run(() => _indexer.ReindexAllAsync(ct), ct).Unwrap();
+
+        var filesToIndex = await enumerateTask;
+        foreach (var file in filesToIndex)
+        {
+            ct.ThrowIfCancellationRequested();
+            IndexedFiles.Add(file);
         }
 
-        await _indexer.ReindexAllAsync();
+        await reindexTask;
     }
 }
