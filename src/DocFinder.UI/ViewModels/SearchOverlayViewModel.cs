@@ -97,7 +97,7 @@ public partial class SearchOverlayViewModel : ObservableObject
         var query = new UserQuery(value) { Filters = filters ?? new Dictionary<string, string>() };
         var result = await _searchService.QueryAsync(query, ct);
 
-        await Application.Current.Dispatcher.InvokeAsync(() =>
+        await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
         {
             Results.Clear();
             foreach (var hit in result.Hits)

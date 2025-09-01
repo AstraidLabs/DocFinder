@@ -23,7 +23,7 @@ public class ApplicationHostService : IHostedService
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _watcher.Start();
-        _tray.Initialize(ToggleOverlay, () => Application.Current.Shutdown(), ShowSettings);
+        _tray.Initialize(ToggleOverlay, () => System.Windows.Application.Current.Shutdown(), ShowSettings);
         _overlay.Show();
         _overlay.Activate();
         return Task.CompletedTask;
