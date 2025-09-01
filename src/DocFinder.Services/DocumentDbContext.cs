@@ -5,6 +5,8 @@ namespace DocFinder.Services;
 
 public class DocumentDbContext : DbContext
 {
+    public const string DefaultConnectionString = "Data Source=documents.db";
+
     public DocumentDbContext()
     {
     }
@@ -18,7 +20,7 @@ public class DocumentDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlite("Data Source=documents.db");
+            optionsBuilder.UseSqlite(DefaultConnectionString);
         }
     }
 
