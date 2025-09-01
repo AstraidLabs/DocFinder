@@ -10,6 +10,7 @@ namespace DocFinder.Services;
 public sealed class SettingsService : ISettingsService
 {
     private readonly string _filePath;
+    private readonly SemaphoreSlim _semaphore = new(1, 1);
     private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web)
     {
         WriteIndented = true
@@ -25,35 +26,51 @@ public sealed class SettingsService : ISettingsService
 
     public async Task<AppSettings> LoadAsync(CancellationToken ct = default)
     {
-        AppSettings? loaded = null;
-        if (File.Exists(_filePath))
+        await _semaphore.WaitAsync(ct);
+        try
         {
-            await using var stream = File.OpenRead(_filePath);
-            loaded = await JsonSerializer.DeserializeAsync<AppSettings>(stream, _jsonOptions, ct);
-        }
+            AppSettings? loaded = null;
+            if (File.Exists(_filePath))
+            {
+                await using var stream = File.OpenRead(_filePath);
+                loaded = await JsonSerializer.DeserializeAsync<AppSettings>(stream, _jsonOptions, ct);
+            }
 
-        Current = MergeWithDefaults(loaded);
-        return Current;
+            Current = MergeWithDefaults(loaded);
+            return Current;
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
     }
 
     public async Task SaveAsync(AppSettings settings, CancellationToken ct = default)
     {
-        // When saving, ensure that SourceRoot is included in the watched list so that it will be monitored next run.
-        if (!string.IsNullOrWhiteSpace(settings.SourceRoot) &&
-            !settings.WatchedRoots.Contains(settings.SourceRoot, StringComparer.OrdinalIgnoreCase))
+        await _semaphore.WaitAsync(ct);
+        try
         {
-            settings.WatchedRoots.Add(settings.SourceRoot);
+            // When saving, ensure that SourceRoot is included in the watched list so that it will be monitored next run.
+            if (!string.IsNullOrWhiteSpace(settings.SourceRoot) &&
+                !settings.WatchedRoots.Contains(settings.SourceRoot, StringComparer.OrdinalIgnoreCase))
+            {
+                settings.WatchedRoots.Add(settings.SourceRoot);
+            }
+
+            var dir = Path.GetDirectoryName(_filePath);
+            if (!string.IsNullOrEmpty(dir))
+                Directory.CreateDirectory(dir);
+
+            await using var stream = new FileStream(_filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+            await JsonSerializer.SerializeAsync(stream, settings, _jsonOptions, ct);
+            await stream.FlushAsync(ct);
+
+            Current = MergeWithDefaults(settings);
         }
-
-        var dir = Path.GetDirectoryName(_filePath);
-        if (!string.IsNullOrEmpty(dir))
-            Directory.CreateDirectory(dir);
-
-        await using var stream = File.Create(_filePath);
-        await JsonSerializer.SerializeAsync(stream, settings, _jsonOptions, ct);
-        await stream.FlushAsync(ct);
-
-        Current = MergeWithDefaults(settings);
+        finally
+        {
+            _semaphore.Release();
+        }
     }
 
     /// <summary>
