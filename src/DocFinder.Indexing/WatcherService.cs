@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Channels;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace DocFinder.Indexing;
 
@@ -8,12 +12,18 @@ public sealed class WatcherService : IWatcherService
 {
     private IEnumerable<string> _roots;
     private readonly IIndexer _indexer;
+    private readonly ILogger<WatcherService> _logger;
     private readonly List<FileSystemWatcher> _watchers = new();
+    private readonly Channel<string> _queue = Channel.CreateUnbounded<string>();
+    private readonly CancellationTokenSource _cts = new();
+    private readonly Task _worker;
 
-    public WatcherService(IEnumerable<string> roots, IIndexer indexer)
+    public WatcherService(IEnumerable<string> roots, IIndexer indexer, ILogger<WatcherService> logger)
     {
         _roots = roots;
         _indexer = indexer;
+        _logger = logger;
+        _worker = Task.Run(ProcessQueueAsync);
     }
 
     public void Start()
@@ -26,8 +36,10 @@ public sealed class WatcherService : IWatcherService
                 IncludeSubdirectories = true,
                 EnableRaisingEvents = true
             };
-            watcher.Created += OnChanged;
-            watcher.Changed += OnChanged;
+            watcher.Created += OnFileEvent;
+            watcher.Changed += OnFileEvent;
+            watcher.Deleted += OnFileEvent;
+            watcher.Renamed += OnRenamed;
             _watchers.Add(watcher);
         }
     }
@@ -40,24 +52,55 @@ public sealed class WatcherService : IWatcherService
 
     private void Restart()
     {
-        Dispose();
+        Stop();
         Start();
     }
 
-    private void OnChanged(object sender, FileSystemEventArgs e)
+    private void OnFileEvent(object sender, FileSystemEventArgs e) => _queue.Writer.TryWrite(e.FullPath);
+
+    private void OnRenamed(object sender, RenamedEventArgs e) => _queue.Writer.TryWrite(e.FullPath);
+
+    public void Stop()
     {
-        if (File.Exists(e.FullPath))
+        foreach (var watcher in _watchers)
         {
-            _ = _indexer.IndexFileAsync(e.FullPath);
+            watcher.EnableRaisingEvents = false;
+            watcher.Dispose();
+        }
+        _watchers.Clear();
+    }
+
+    private async Task ProcessQueueAsync()
+    {
+        try
+        {
+            await foreach (var path in _queue.Reader.ReadAllAsync(_cts.Token))
+            {
+                try
+                {
+                    await _indexer.IndexFileAsync(path, _cts.Token);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to index {Path}", path);
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
         }
     }
 
     public void Dispose()
     {
-        foreach (var watcher in _watchers)
+        Stop();
+        _queue.Writer.TryComplete();
+        _cts.Cancel();
+        try
         {
-            watcher.Dispose();
+            _worker.Wait();
         }
-        _watchers.Clear();
+        catch (AggregateException) { }
+        _cts.Dispose();
     }
 }
