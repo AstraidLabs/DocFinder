@@ -22,5 +22,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DocFinder.Domain\DocFinder.Domain.csproj" />
+    <ProjectReference Include="..\DocFinder.Application\DocFinder.Application.csproj" />
   </ItemGroup>
 </Project>

@@ -105,10 +105,3 @@ public class AuditEntry
     [Required, StringLength(100)]
     public string UserName { get; private set; } = string.Empty;
 }
-
-public interface ILuceneIndexService
-{
-    void IndexDocument(Document doc);
-    void DeleteDocument(int docId);
-    IEnumerable<Document> Search(string query);
-}
