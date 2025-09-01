@@ -117,7 +117,7 @@ public partial class SearchOverlay : FluentWindow
 
     private void Menu_Exit_Click(object sender, RoutedEventArgs e)
     {
-        Application.Current.Shutdown();
+        System.Windows.Application.Current.Shutdown();
     }
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
