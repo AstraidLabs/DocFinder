@@ -120,7 +120,7 @@ public partial class DocumentWindow : FluentWindow
 
     private void FileLink_Click(object sender, MouseButtonEventArgs e)
     {
-        if (sender is TextBlock tb && tb.DataContext is Document doc)
+        if (sender is System.Windows.Controls.TextBlock tb && tb.DataContext is Document doc)
         {
             if (File.Exists(doc.FileLink))
             {
@@ -128,7 +128,7 @@ public partial class DocumentWindow : FluentWindow
             }
             else
             {
-                MessageBox.Show("Soubor neexistuje.");
+                System.Windows.MessageBox.Show("Soubor neexistuje.");
             }
         }
     }
