@@ -133,9 +133,21 @@ public sealed class DocumentIndexer : IIndexer
 
     private static string ComputeSha256(string path)
     {
-        using var stream = File.OpenRead(path);
-        var hash = SHA256.HashData(stream);
-        return Convert.ToHexString(hash);
+        try
+        {
+            using var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var hash = SHA256.HashData(stream);
+            return Convert.ToHexString(hash);
+        }
+        catch (IOException ex)
+        {
+            Console.Error.WriteLine($"Failed to compute SHA256 for {path}: {ex.Message}");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            Console.Error.WriteLine($"Failed to compute SHA256 for {path}: {ex.Message}");
+        }
+        return string.Empty;
     }
 
     private static Guid ComputeFileId(string path, string sha)
