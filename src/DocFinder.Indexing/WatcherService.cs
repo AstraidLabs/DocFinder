@@ -15,6 +15,7 @@ public sealed class WatcherService : IWatcherService
     private readonly ILogger<WatcherService> _logger;
     private readonly List<FileSystemWatcher> _watchers = new();
     private readonly Channel<string> _queue = Channel.CreateUnbounded<string>();
+    private readonly HashSet<string> _pending = new(StringComparer.OrdinalIgnoreCase);
     private readonly CancellationTokenSource _cts = new();
     private readonly Task _worker;
 
@@ -34,6 +35,7 @@ public sealed class WatcherService : IWatcherService
             var watcher = new FileSystemWatcher(root)
             {
                 IncludeSubdirectories = true,
+                NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite | NotifyFilters.CreationTime,
                 EnableRaisingEvents = true
             };
             watcher.Created += OnFileEvent;
@@ -56,9 +58,17 @@ public sealed class WatcherService : IWatcherService
         Start();
     }
 
-    private void OnFileEvent(object sender, FileSystemEventArgs e) => _queue.Writer.TryWrite(e.FullPath);
+    private void OnFileEvent(object sender, FileSystemEventArgs e)
+    {
+        if (_pending.Add(e.FullPath))
+            _queue.Writer.TryWrite(e.FullPath);
+    }
 
-    private void OnRenamed(object sender, RenamedEventArgs e) => _queue.Writer.TryWrite(e.FullPath);
+    private void OnRenamed(object sender, RenamedEventArgs e)
+    {
+        if (_pending.Add(e.FullPath))
+            _queue.Writer.TryWrite(e.FullPath);
+    }
 
     public void Stop()
     {
@@ -83,6 +93,10 @@ public sealed class WatcherService : IWatcherService
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Failed to index {Path}", path);
+                }
+                finally
+                {
+                    _pending.Remove(path);
                 }
             }
         }
