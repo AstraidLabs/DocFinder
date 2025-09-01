@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using DocFinder.Domain;
 using DocFinder.Domain.Settings;
 using DocFinder.Services;
@@ -31,6 +32,14 @@ public partial class App
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<ISearchService, LuceneSearchService>();
             services.AddSingleton<ILuceneIndexService, LuceneIndexService>();
+            services.AddScoped<DocumentSaveChangesInterceptor>();
+            services.AddDbContextFactory<DocumentDbContext>(o =>
+                o.UseSqlite("Data Source=documents.db"));
+            services.AddDbContext<DocumentDbContext>((sp, o) =>
+            {
+                o.UseSqlite("Data Source=documents.db");
+                o.AddInterceptors(sp.GetRequiredService<DocumentSaveChangesInterceptor>());
+            });
             services.AddSingleton<IDocumentIndexService, DocumentIndexService>();
             services.AddSingleton<CatalogRepository>();
             services.AddSingleton<IContentExtractor, PdfContentExtractor>();
