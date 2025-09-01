@@ -77,7 +77,7 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
         return Task.CompletedTask;
     }
 
-    public Task<SearchResult> QueryAsync(UserQuery query, CancellationToken ct = default)
+    public ValueTask<SearchResult> QueryAsync(UserQuery query, CancellationToken ct = default)
     {
         var boolean = new BooleanQuery();
         if (!string.IsNullOrWhiteSpace(query.FreeText))
@@ -97,29 +97,27 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
             boolean.Add(parsed, Occur.MUST);
         }
 
-        if (query.Filters != null)
+        foreach (var kv in query.Filters)
         {
-            foreach (var kv in query.Filters)
+            ct.ThrowIfCancellationRequested();
+            if (string.Equals(kv.Key, "type", StringComparison.OrdinalIgnoreCase))
             {
-                if (string.Equals(kv.Key, "type", StringComparison.OrdinalIgnoreCase))
-                {
-                    boolean.Add(new TermQuery(new Term("ext", kv.Value)), Occur.MUST);
-                }
-                else if (kv.Key is "caseNumber" or "parcelId" or "address" or "tags")
-                {
-                    boolean.Add(new TermQuery(new Term(kv.Key, kv.Value)), Occur.MUST);
-                }
-                else
-                {
-                    boolean.Add(new TermQuery(new Term($"meta_{kv.Key}", kv.Value)), Occur.MUST);
-                }
+                boolean.Add(new TermQuery(new Term("ext", kv.Value)), Occur.MUST);
+            }
+            else if (kv.Key is "caseNumber" or "parcelId" or "address" or "tags")
+            {
+                boolean.Add(new TermQuery(new Term(kv.Key, kv.Value)), Occur.MUST);
+            }
+            else
+            {
+                boolean.Add(new TermQuery(new Term($"meta_{kv.Key}", kv.Value)), Occur.MUST);
             }
         }
 
         if (query.FromUtc.HasValue || query.ToUtc.HasValue)
         {
-            var from = query.FromUtc?.Ticks;
-            var to = query.ToUtc?.Ticks;
+            var from = query.FromUtc?.UtcDateTime.Ticks;
+            var to = query.ToUtc?.UtcDateTime.Ticks;
             var range = NumericRangeQuery.NewInt64Range("modifiedTicks", from, to, true, true);
             boolean.Add(range, Occur.MUST);
         }
@@ -136,11 +134,13 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
 
             foreach (var scoreDoc in top.ScoreDocs)
             {
+                ct.ThrowIfCancellationRequested();
                 var doc = searcher.Doc(scoreDoc.Doc);
                 var content = doc.Get("content") ?? string.Empty;
                 var tokenStream = _analyzer.GetTokenStream("content", content);
                 var snippet = highlighter.GetBestFragment(tokenStream, content) ?? content.Substring(0, Math.Min(200, content.Length));
-                var meta = doc.Fields.Where(f => f.Name.StartsWith("meta_")).ToDictionary(f => f.Name.Substring(5), f => f.GetStringValue());
+                var meta = doc.Fields.Where(f => f.Name.StartsWith("meta_"))
+                    .ToDictionary(f => f.Name.Substring(5), f => f.GetStringValue());
                 hits.Add(new SearchHit(
                     Guid.Parse(doc.Get("fileId")),
                     doc.Get("filename"),
@@ -158,7 +158,7 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
             }
 
             var result = new SearchResult(top.TotalHits, hits, new Dictionary<string, int>());
-            return Task.FromResult(result);
+            return new ValueTask<SearchResult>(result);
         }
         finally
         {

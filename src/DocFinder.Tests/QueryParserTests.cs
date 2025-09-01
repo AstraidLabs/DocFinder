@@ -11,9 +11,9 @@ public class QueryParserTests
     {
         var query = UserQueryParser.Parse("test type:pdf from:2023-01-01 author:\"John Doe\"");
         Assert.Equal("test", query.FreeText);
-        Assert.Equal("pdf", query.Filters?["type"]);
-        Assert.Equal("John Doe", query.Filters?["author"]);
-        Assert.Equal(new DateTime(2023,1,1), query.FromUtc);
+        Assert.Equal("pdf", query.Filters["type"]);
+        Assert.Equal("John Doe", query.Filters["author"]);
+        Assert.Equal(new DateTimeOffset(2023,1,1,0,0,0,TimeSpan.Zero), query.FromUtc);
         Assert.Null(query.ToUtc);
     }
 }

@@ -2,11 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows.Data;
+using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DocFinder.Domain;
+using DocFinder.Domain.Settings;
 using DocFinder.Search;
 
 namespace DocFinder.UI.ViewModels;
@@ -14,6 +19,8 @@ namespace DocFinder.UI.ViewModels;
 public partial class SearchOverlayViewModel : ObservableObject
 {
     private readonly ISearchService _searchService;
+    private readonly ISettingsService _settings;
+    private CancellationTokenSource _cts = new();
 
     [ObservableProperty]
     private string _query = string.Empty;
@@ -46,23 +53,35 @@ public partial class SearchOverlayViewModel : ObservableObject
     [ObservableProperty]
     private bool _sortAscending = true;
 
-    public SearchOverlayViewModel(ISearchService searchService)
+    public SearchOverlayViewModel(ISearchService searchService, ISettingsService settings)
     {
         _searchService = searchService;
+        _settings = settings;
         ResultsView.Source = Results;
         ResultsView.Filter += ApplyFilter; // https://learn.microsoft.com/dotnet/desktop/wpf/data/how-to-filter-data-in-a-view
         UpdateSort(); // https://learn.microsoft.com/dotnet/desktop/wpf/data/how-to-sort-data-in-a-view
     }
 
-    partial void OnQueryChanged(string value) => _ = RunQueryAsync(value);
+    partial void OnQueryChanged(string value)
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+        _cts = new CancellationTokenSource();
+        _ = RunQueryAsync(value, _cts.Token);
+    }
 
     partial void OnFileTypeFilterChanged(string value)
     {
         if (!string.IsNullOrEmpty(Query))
-            _ = RunQueryAsync(Query);
+        {
+            _cts.Cancel();
+            _cts.Dispose();
+            _cts = new CancellationTokenSource();
+            _ = RunQueryAsync(Query, _cts.Token);
+        }
     }
 
-    private async Task RunQueryAsync(string value)
+    private async Task RunQueryAsync(string value, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -71,29 +90,44 @@ public partial class SearchOverlayViewModel : ObservableObject
             return;
         }
 
-        Dictionary<string,string>? filters = null;
-        if (!string.Equals(FileTypeFilter, "all", System.StringComparison.OrdinalIgnoreCase))
-        {
+        Dictionary<string, string>? filters = null;
+        if (!string.Equals(FileTypeFilter, "all", StringComparison.OrdinalIgnoreCase))
             filters = new Dictionary<string, string> { { "type", FileTypeFilter.ToLowerInvariant() } };
-        }
-        var result = await _searchService.QueryAsync(new UserQuery(value, false, filters, null, null));
-        Results.Clear();
-        foreach (var hit in result.Hits)
-            Results.Add(hit);
-        ResultsView.View.Refresh();
+
+        var query = new UserQuery(value) { Filters = filters ?? new Dictionary<string, string>() };
+        var result = await _searchService.QueryAsync(query, ct);
+
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            Results.Clear();
+            foreach (var hit in result.Hits)
+                Results.Add(hit);
+            ResultsView.View.Refresh();
+        });
     }
 
     [RelayCommand]
-    private Task Search() => RunQueryAsync(Query);
+    private Task Search()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+        _cts = new CancellationTokenSource();
+        return RunQueryAsync(Query, _cts.Token);
+    }
 
     [RelayCommand]
     private void OpenDocument()
     {
-        if (SelectedDocument != null)
-        {
-            var psi = new System.Diagnostics.ProcessStartInfo(SelectedDocument.Path) { UseShellExecute = true };
-            System.Diagnostics.Process.Start(psi);
-        }
+        if (SelectedDocument == null)
+            return;
+
+        var path = SelectedDocument.Path;
+        if (!File.Exists(path))
+            return;
+        if (!_settings.Current.WatchedRoots.Any(r => path.StartsWith(r, StringComparison.OrdinalIgnoreCase)))
+            return;
+        var psi = new System.Diagnostics.ProcessStartInfo(path) { UseShellExecute = true };
+        System.Diagnostics.Process.Start(psi);
     }
 
     private void ApplyFilter(object? sender, FilterEventArgs e)
