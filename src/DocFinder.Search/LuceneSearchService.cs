@@ -15,6 +15,9 @@ using LuceneDirectory = Lucene.Net.Store.Directory;
 using Lucene.Net.Util;
 using Lucene.Net.Search.Highlight;
 using Lucene.Net.Analysis;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
 
 namespace DocFinder.Search;
 
@@ -24,23 +27,26 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
     private readonly LuceneDirectory _directory;
     private readonly IndexWriter _writer;
     private readonly SearcherManager _manager;
+    private readonly int? _contentLimit;
     private int _pending;
     private const int CommitThreshold = 1000;
+    private const int CompressionThreshold = 4096;
 
-    public LuceneSearchService(LuceneDirectory? directory = null)
+    public LuceneSearchService(LuceneDirectory? directory = null, int? contentLimit = null)
     {
         _directory = directory ?? new RAMDirectory();
         _analyzer = new CzechFoldingAnalyzer(LuceneVersion.LUCENE_48);
         var config = new IndexWriterConfig(LuceneVersion.LUCENE_48, _analyzer);
         _writer = new IndexWriter(_directory, config);
         _manager = new SearcherManager(_writer, true, null);
+        _contentLimit = contentLimit;
     }
 
     public Task IndexAsync(IndexDocument doc, CancellationToken ct = default)
     {
         var content = doc.Content ?? string.Empty;
-        if (content.Length > 1000)
-            content = content.Substring(0, 1000);
+        if (_contentLimit.HasValue && content.Length > _contentLimit.Value)
+            content = content.Substring(0, _contentLimit.Value);
         var document = new LuceneDocument
         {
             new StringField("fileId", doc.FileId.ToString(), Field.Store.YES),
@@ -51,8 +57,26 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
             new Int64Field("createdTicks", doc.CreatedUtc.Ticks, Field.Store.YES),
             new Int64Field("modifiedTicks", doc.ModifiedUtc.Ticks, Field.Store.YES),
             new StringField("sha256", doc.Sha256, Field.Store.YES),
-            new TextField("content", content, Field.Store.YES)
+            new TextField("content", content, Field.Store.NO)
         };
+        if (!string.IsNullOrEmpty(content))
+        {
+            if (content.Length > CompressionThreshold)
+            {
+                var bytes = Encoding.UTF8.GetBytes(content);
+                using var ms = new MemoryStream();
+                using (var gzip = new GZipStream(ms, CompressionMode.Compress, leaveOpen: true))
+                {
+                    gzip.Write(bytes, 0, bytes.Length);
+                }
+                document.Add(new StoredField("contentStored", ms.ToArray()));
+                document.Add(new StringField("contentCompressed", "1", Field.Store.YES));
+            }
+            else
+            {
+                document.Add(new StoredField("contentStored", content));
+            }
+        }
         if (!string.IsNullOrEmpty(doc.Author))
             document.Add(new StringField("author", doc.Author, Field.Store.YES));
         if (!string.IsNullOrEmpty(doc.Version))
@@ -143,10 +167,21 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
             {
                 ct.ThrowIfCancellationRequested();
                 var doc = searcher.Doc(scoreDoc.Doc);
-                var content = doc.Get("content") ?? string.Empty;
+                string content;
+                if (doc.Get("contentCompressed") == "1")
+                {
+                    var bin = doc.GetBinaryValue("contentStored");
+                    using var ms = new MemoryStream(bin.Bytes, bin.Offset, bin.Length);
+                    using var gzip = new GZipStream(ms, CompressionMode.Decompress);
+                    using var reader = new StreamReader(gzip, Encoding.UTF8);
+                    content = reader.ReadToEnd();
+                }
+                else
+                {
+                    content = doc.Get("contentStored") ?? string.Empty;
+                }
                 using var tokenStream = _analyzer.GetTokenStream("content", content);
                 var snippet = highlighter.GetBestFragment(tokenStream, content);
-                tokenStream.Dispose();
                 snippet ??= content.Substring(0, Math.Min(200, content.Length));
                 var meta = doc.Fields.Where(f => f.Name.StartsWith("meta_"))
                     .ToDictionary(f => f.Name.Substring(5), f => f.GetStringValue());
