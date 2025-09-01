@@ -38,6 +38,30 @@ public sealed class CatalogRepository
         );";
         cmd.ExecuteNonQuery();
 
+        // Ensure SizeBytes column exists for databases created before it was introduced
+        using (var colCmd = connection.CreateCommand())
+        {
+            colCmd.CommandText = "PRAGMA table_info(Files);";
+            using var reader = colCmd.ExecuteReader();
+            var hasSize = false;
+            while (reader.Read())
+            {
+                var name = reader.GetString(1);
+                if (string.Equals(name, "SizeBytes", StringComparison.OrdinalIgnoreCase))
+                {
+                    hasSize = true;
+                    break;
+                }
+            }
+
+            if (!hasSize)
+            {
+                using var alter = connection.CreateCommand();
+                alter.CommandText = "ALTER TABLE Files ADD COLUMN SizeBytes INTEGER NOT NULL DEFAULT 0;";
+                alter.ExecuteNonQuery();
+            }
+        }
+
         using var meta = connection.CreateCommand();
         meta.CommandText = @"CREATE TABLE IF NOT EXISTS Metadata(
             FileId TEXT NOT NULL,
