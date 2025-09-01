@@ -144,8 +144,10 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
                 ct.ThrowIfCancellationRequested();
                 var doc = searcher.Doc(scoreDoc.Doc);
                 var content = doc.Get("content") ?? string.Empty;
-                var tokenStream = _analyzer.GetTokenStream("content", content);
-                var snippet = highlighter.GetBestFragment(tokenStream, content) ?? content.Substring(0, Math.Min(200, content.Length));
+                using var tokenStream = _analyzer.GetTokenStream("content", content);
+                var snippet = highlighter.GetBestFragment(tokenStream, content);
+                tokenStream.Dispose();
+                snippet ??= content.Substring(0, Math.Min(200, content.Length));
                 var meta = doc.Fields.Where(f => f.Name.StartsWith("meta_"))
                     .ToDictionary(f => f.Name.Substring(5), f => f.GetStringValue());
                 hits.Add(new SearchHit(
