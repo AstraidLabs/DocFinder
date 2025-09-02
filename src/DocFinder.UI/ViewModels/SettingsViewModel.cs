@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Wpf.Ui.Appearance;
 using System;
+using System.Linq;
 
 namespace DocFinder.UI.ViewModels;
 
@@ -22,6 +23,10 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private AppSettings _settings = new();
 
+    /// <summary>Editable list of watched directories represented as newline separated text.</summary>
+    [ObservableProperty]
+    private string _watchedRootsText = string.Empty;
+
     /// <summary>List of files indexed from the selected source root.</summary>
     public ObservableCollection<string> IndexedFiles { get; } = new();
 
@@ -31,11 +36,18 @@ public partial class SettingsViewModel : ObservableObject
         _watcherService = watcherService;
         _indexer = indexer;
         _settings = settingsService.Current;
+        _watchedRootsText = string.Join(Environment.NewLine, _settings.WatchedRoots);
     }
 
     [RelayCommand]
     private async Task SaveAsync(CancellationToken ct = default)
     {
+        Settings.WatchedRoots = _watchedRootsText
+            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(r => r.Trim())
+            .Where(r => !string.IsNullOrWhiteSpace(r))
+            .ToList();
+
         await _settingsService.SaveAsync(Settings, ct);
 
         // Restart file watchers to reflect the updated roots

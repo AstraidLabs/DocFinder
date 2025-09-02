@@ -18,6 +18,14 @@
         <StackPanel Grid.Row="1" Margin="20">
             <TextBlock Text="Source Folder"/>
             <TextBox Text="{Binding Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Margin="0,12,0,0" Text="Watched Folders (one per line)"/>
+            <TextBox Text="{Binding WatchedRootsText, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="80"/>
+            <TextBlock Margin="0,12,0,0" Text="Index Path"/>
+            <TextBox Text="{Binding Settings.IndexPath, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Margin="0,12,0,0" Text="Thumbnails Path"/>
+            <TextBox Text="{Binding Settings.ThumbsPath, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Margin="0,12,0,0" Text="Polling Interval (minutes)"/>
+            <TextBox Text="{Binding Settings.PollingMinutes, UpdateSourceTrigger=PropertyChanged}"/>
             <CheckBox Content="Enable OCR" IsChecked="{Binding Settings.EnableOcr}"/>
             <TextBlock Margin="0,12,0,0" Text="Theme"/>
             <ComboBox SelectedValue="{Binding Settings.Theme}" SelectedValuePath="Content">
