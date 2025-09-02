@@ -28,6 +28,7 @@ public partial class App
         .ConfigureServices((context, services) =>
         {
             services.AddHostedService<ApplicationHostService>();
+            services.AddHostedService<AutomaticIndexingService>();
             services.AddSingleton<ITrayService, TrayService>();
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<ISearchService, LuceneSearchService>();

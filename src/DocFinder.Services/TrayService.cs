@@ -1,6 +1,7 @@
 #if WINDOWS
 using System;
 using System.Windows.Forms;
+using CommunityToolkit.WinUI.Notifications;
 
 namespace DocFinder.Services;
 
@@ -36,7 +37,17 @@ public sealed class TrayService : ITrayService
 
     public void ShowNotification(string title, string message)
     {
-        _icon?.ShowBalloonTip(3000, title, message, ToolTipIcon.Info);
+        if (OperatingSystem.IsWindowsVersionAtLeast(10))
+        {
+            new ToastContentBuilder()
+                .AddText(title)
+                .AddText(message)
+                .Show();
+        }
+        else
+        {
+            _icon?.ShowBalloonTip(3000, title, message, ToolTipIcon.Info);
+        }
     }
 
     public void Dispose()
