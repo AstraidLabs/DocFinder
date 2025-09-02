@@ -140,7 +140,7 @@ public sealed class DocumentIndexer : IIndexer
     {
         try
         {
-            using var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             var hash = SHA256.HashData(stream);
             return Convert.ToHexString(hash);
         }
