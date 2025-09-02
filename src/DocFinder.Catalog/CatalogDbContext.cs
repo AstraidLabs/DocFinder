@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using FileEntity = DocFinder.Domain.File;
-using MetadataEntity = DocFinder.Domain.Metadata;
+using DataEntity = DocFinder.Domain.Data;
 
 namespace DocFinder.Catalog;
 
@@ -12,20 +12,20 @@ public class CatalogDbContext : DbContext
     }
 
     public DbSet<FileEntity> Files => Set<FileEntity>();
-    public DbSet<MetadataEntity> Metadata => Set<MetadataEntity>();
+    public DbSet<DataEntity> Data => Set<DataEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FileEntity>()
             .HasKey(f => f.FileId);
 
-        modelBuilder.Entity<MetadataEntity>()
-            .HasKey(m => m.FileId);
+        modelBuilder.Entity<DataEntity>()
+            .HasKey(d => d.IdData);
 
         modelBuilder.Entity<FileEntity>()
-            .HasOne(f => f.Metadata)
-            .WithOne(m => m.File)
-            .HasForeignKey<MetadataEntity>(m => m.FileId)
+            .HasOne(f => f.Data)
+            .WithOne(d => d.File)
+            .HasForeignKey<DataEntity>(d => d.FileId)
             .IsRequired();
     }
 }

@@ -29,7 +29,7 @@ public class DocumentIndexerTests
     }
 
     [Fact]
-    public async Task IndexFileStoresMetadata()
+    public async Task IndexFileStoresData()
     {
         var temp = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         System.IO.Directory.CreateDirectory(temp);

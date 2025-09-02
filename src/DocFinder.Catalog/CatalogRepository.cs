@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using FileEntity = DocFinder.Domain.File;
-using MetadataEntity = DocFinder.Domain.Metadata;
+using DataEntity = DocFinder.Domain.Data;
 using DocFinder.Domain;
 
 namespace DocFinder.Catalog;
@@ -29,16 +29,16 @@ public sealed class CatalogRepository
     public async Task UpsertFileAsync(IndexDocument doc, CancellationToken ct = default)
     {
         await using var db = new CatalogDbContext(_options);
-        var entity = await db.Files.Include(f => f.Metadata)
+        var entity = await db.Files.Include(f => f.Data)
             .FirstOrDefaultAsync(f => f.FileId == doc.FileId, ct);
         if (entity is null)
         {
-            entity = new FileEntity { FileId = doc.FileId, Metadata = new MetadataEntity { FileId = doc.FileId } };
+            entity = new FileEntity { FileId = doc.FileId, Data = new DataEntity { FileId = doc.FileId } };
             db.Files.Add(entity);
         }
-        else if (entity.Metadata is null)
+        else if (entity.Data is null)
         {
-            entity.Metadata = new MetadataEntity { FileId = doc.FileId };
+            entity.Data = new DataEntity { FileId = doc.FileId };
         }
 
         entity.FilePath = doc.Path;
@@ -50,11 +50,8 @@ public sealed class CatalogRepository
         entity.Sha256 = doc.Sha256;
         entity.Author = doc.Author ?? string.Empty;
 
-        entity.Metadata.Version = doc.Version;
-        entity.Metadata.CaseNumber = doc.CaseNumber;
-        entity.Metadata.ParcelId = doc.ParcelId;
-        entity.Metadata.Address = doc.Address;
-        entity.Metadata.Tags = doc.Tags;
+        entity.Data.DataVersion = doc.Version;
+        entity.Data.DataBase64 = Convert.ToBase64String(System.IO.File.ReadAllBytes(doc.Path));
 
         await db.SaveChangesAsync(ct);
     }

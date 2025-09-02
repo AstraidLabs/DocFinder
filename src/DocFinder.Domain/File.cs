@@ -14,5 +14,5 @@ public class File
     public string Sha256 { get; set; } = string.Empty;
     public string FilePath { get; set; } = string.Empty;
 
-    public Metadata Metadata { get; set; } = null!;
+    public Data Data { get; set; } = null!;
 }
