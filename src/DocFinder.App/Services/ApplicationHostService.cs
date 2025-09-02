@@ -34,8 +34,6 @@ public class ApplicationHostService : IHostedService
     {
         _watcher.Start();
         _tray.Initialize(ToggleOverlay, () => System.Windows.Application.Current.Shutdown(), ShowSettings);
-        _overlay.Show();
-        _overlay.Activate();
         if (_settingsService.Current.AutoIndexOnStartup)
         {
             await _indexer.ReindexAllAsync(cancellationToken);
