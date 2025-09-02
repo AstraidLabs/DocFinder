@@ -32,30 +32,49 @@ public sealed class CatalogRepository
         await using var db = new CatalogDbContext(_options);
         var entity = await db.Files.Include(f => f.Data)
             .FirstOrDefaultAsync(f => f.FileId == doc.FileId, ct);
+        var bytes = System.IO.File.ReadAllBytes(doc.Path);
+        var md5 = Convert.ToHexString(MD5.HashData(bytes));
+
         if (entity is null)
         {
-            entity = new FileEntity { FileId = doc.FileId, Data = new DataEntity { FileId = doc.FileId } };
+            var data = new DataEntity(doc.FileId, doc.Version, doc.Ext, bytes, md5);
+            entity = new FileEntity(
+                doc.FileId,
+                doc.Path,
+                doc.FileName,
+                doc.Ext,
+                doc.SizeBytes,
+                doc.CreatedUtc,
+                doc.ModifiedUtc,
+                doc.Sha256,
+                doc.Author ?? string.Empty,
+                data);
             db.Files.Add(entity);
         }
-        else if (entity.Data is null)
+        else
         {
-            entity.Data = new DataEntity { FileId = doc.FileId };
+            entity.UpdatePath(doc.Path);
+            entity.UpdateName(doc.FileName);
+            entity.SetExt(doc.Ext);
+            entity.UpdateSize(doc.SizeBytes);
+            entity.UpdateCreated(doc.CreatedUtc);
+            entity.UpdateModified(doc.ModifiedUtc);
+            entity.UpdateSha256(doc.Sha256);
+            entity.SetAuthor(doc.Author ?? string.Empty);
+
+            if (entity.Data is null)
+            {
+                var data = new DataEntity(doc.FileId, doc.Version, doc.Ext, bytes, md5);
+                entity.SetData(data);
+            }
+            else
+            {
+                entity.Data.SetDataVersion(doc.Version);
+                entity.Data.SetFileType(doc.Ext);
+                entity.Data.UpdateBytes(bytes);
+                entity.Data.SetMd5(md5);
+            }
         }
-
-        entity.FilePath = doc.Path;
-        entity.Name = doc.FileName;
-        entity.Ext = doc.Ext;
-        entity.SizeBytes = doc.SizeBytes;
-        entity.CreatedUtc = doc.CreatedUtc;
-        entity.ModifiedUtc = doc.ModifiedUtc;
-        entity.Sha256 = doc.Sha256;
-        entity.Author = doc.Author ?? string.Empty;
-
-        entity.Data.DataVersion = doc.Version;
-        entity.Data.FileType = doc.Ext;
-        var bytes = System.IO.File.ReadAllBytes(doc.Path);
-        entity.Data.DataBytes = bytes;
-        entity.Data.Md5 = Convert.ToHexString(MD5.HashData(bytes));
 
         await db.SaveChangesAsync(ct);
     }
