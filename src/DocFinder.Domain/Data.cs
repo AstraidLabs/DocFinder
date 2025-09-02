@@ -3,44 +3,47 @@ using System;
 namespace DocFinder.Domain;
 
 /// <summary>
-/// Binary data associated with a <see cref="File"/>. Encapsulates validation and
-/// provides methods to mutate content in a safe way.
+/// Binary data associated with a <see cref="File"/>.
+/// Holds raw bytes together with simple metadata.
 /// </summary>
-public class Data
+public sealed class Data
 {
+    // For EF Core
     private Data() { }
 
-    public Data(Guid fileId, string? dataVersion, string fileType, byte[] dataBytes, string md5)
+    public Data(Guid fileId, string? dataVersion, string fileType, byte[] dataBytes)
     {
         FileId = fileId;
-        SetDataVersion(dataVersion);
-        SetFileType(fileType);
-        UpdateBytes(dataBytes);
-        SetMd5(md5);
+        Replace(dataBytes, fileType, dataVersion);
     }
 
-    public int Id { get; private set; }
+    /// <summary>Primary key and foreign key to <see cref="File"/>.</summary>
     public Guid FileId { get; private set; }
     public File File { get; private set; } = null!;
-    public string DataVersion { get; private set; } = string.Empty;
-    public string FileType { get; private set; } = string.Empty;
-    public byte[] DataBytes { get; private set; } = Array.Empty<byte>();
-    public string Md5 { get; private set; } = string.Empty;
 
-    public void SetDataVersion(string? version) => DataVersion = version ?? string.Empty;
-    public void SetFileType(string fileType) => FileType = ValidateRequired(fileType, nameof(fileType));
-    public void UpdateBytes(byte[] dataBytes) => DataBytes = dataBytes ?? Array.Empty<byte>();
-    public void SetMd5(string md5) => Md5 = ValidateRequired(md5, nameof(md5));
+    /// <summary>Optional version of the content (e.g. format or semver).</summary>
+    public string DataVersion { get; private set; } = string.Empty;
+    /// <summary>MIME type of the content (e.g. application/pdf).</summary>
+    public string FileType { get; private set; } = string.Empty;
+    /// <summary>Binary representation of the file.</summary>
+    public byte[] DataBytes { get; private set; } = Array.Empty<byte>();
+
+    /// <summary>
+    /// Replaces binary content and optionally updates metadata.
+    /// </summary>
+    public void Replace(byte[] dataBytes, string? fileType = null, string? dataVersion = null)
+    {
+        DataBytes = dataBytes ?? throw new ArgumentNullException(nameof(dataBytes));
+        if (!string.IsNullOrWhiteSpace(fileType))
+            FileType = fileType.Trim();
+        if (dataVersion is not null)
+            DataVersion = dataVersion.Trim();
+    }
+
+    /// <summary>Associates this instance with a <see cref="File"/>.</summary>
     public void AttachFile(File file)
     {
         File = file ?? throw new ArgumentNullException(nameof(file));
         FileId = file.FileId;
-    }
-
-    private static string ValidateRequired(string value, string param)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            throw new ArgumentException($"{param} required", param);
-        return value;
     }
 }

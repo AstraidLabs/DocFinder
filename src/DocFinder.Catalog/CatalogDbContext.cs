@@ -16,20 +16,6 @@ public class CatalogDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<FileEntity>()
-            .HasKey(f => f.FileId);
-
-        modelBuilder.Entity<DataEntity>()
-            .HasKey(d => d.Id);
-
-        modelBuilder.Entity<DataEntity>()
-            .Property(d => d.DataBytes)
-            .HasColumnType("BLOB");
-
-        modelBuilder.Entity<FileEntity>()
-            .HasOne(f => f.Data)
-            .WithOne(d => d.File)
-            .HasForeignKey<DataEntity>(d => d.FileId)
-            .IsRequired();
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(CatalogDbContext).Assembly);
     }
 }
