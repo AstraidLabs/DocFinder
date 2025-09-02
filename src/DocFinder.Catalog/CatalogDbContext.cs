@@ -22,6 +22,10 @@ public class CatalogDbContext : DbContext
         modelBuilder.Entity<DataEntity>()
             .HasKey(d => d.Id);
 
+        modelBuilder.Entity<DataEntity>()
+            .Property(d => d.DataBytes)
+            .HasColumnType("BLOB");
+
         modelBuilder.Entity<FileEntity>()
             .HasOne(f => f.Data)
             .WithOne(d => d.File)
