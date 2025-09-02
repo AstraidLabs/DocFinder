@@ -9,4 +9,5 @@ public class Data
     public File File { get; set; } = null!;
     public string? DataVersion { get; set; }
     public string DataBase64 { get; set; } = string.Empty;
+    public string Md5 { get; set; } = string.Empty;
 }

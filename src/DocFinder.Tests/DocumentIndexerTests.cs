@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -55,12 +56,20 @@ public class DocumentIndexerTests
         await using var connection = new SqliteConnection($"Data Source={Path.Combine(temp, "catalog.db")}");
         await connection.OpenAsync();
         var cmd = connection.CreateCommand();
-        cmd.CommandText = "SELECT SizeBytes,Sha256 FROM Files WHERE FilePath=$p";
+        cmd.CommandText = "SELECT SizeBytes,Sha256 FROM Files WHERE FilePath=$p"; 
         cmd.Parameters.AddWithValue("$p", file);
         await using var reader = await cmd.ExecuteReaderAsync();
         Assert.True(await reader.ReadAsync());
         Assert.True(reader.GetInt64(0) > 0);
         Assert.False(string.IsNullOrEmpty(reader.GetString(1)));
+
+        var expectedMd5 = Convert.ToHexString(MD5.HashData(System.IO.File.ReadAllBytes(file)));
+        var md5Cmd = connection.CreateCommand();
+        md5Cmd.CommandText = "SELECT d.Md5 FROM Data d JOIN Files f ON f.FileId = d.FileId WHERE f.FilePath=$p";
+        md5Cmd.Parameters.AddWithValue("$p", file);
+        var actualMd5Obj = await md5Cmd.ExecuteScalarAsync();
+        var actualMd5 = actualMd5Obj as string;
+        Assert.Equal(expectedMd5, actualMd5);
     }
 
     [Fact]
