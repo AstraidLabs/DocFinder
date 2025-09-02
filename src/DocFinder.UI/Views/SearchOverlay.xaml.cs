@@ -7,7 +7,6 @@ using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 using DocFinder.UI.ViewModels;
 using DocFinder.Indexing;
-using DocFinder.Services;
 using DocFinder.UI.Services;
 
 namespace DocFinder.UI.Views;
@@ -16,18 +15,18 @@ public partial class SearchOverlay : FluentWindow
 {
     private readonly SearchOverlayViewModel _viewModel;
     private readonly IIndexer _indexer;
-    private readonly ITrayService _tray;
     private readonly SettingsWindow _settings;
     private readonly IDocumentViewService _documentViewService;
+    private readonly IMessageDialogService _dialogs;
     private ResourceDictionary? _themeDictionary;
 
-    public SearchOverlay(SearchOverlayViewModel viewModel, IIndexer indexer, ITrayService tray, SettingsWindow settings, IDocumentViewService documentViewService)
+    public SearchOverlay(SearchOverlayViewModel viewModel, IIndexer indexer, SettingsWindow settings, IDocumentViewService documentViewService, IMessageDialogService dialogs)
     {
         _viewModel = viewModel;
         _indexer = indexer;
-        _tray = tray;
         _settings = settings;
         _documentViewService = documentViewService;
+        _dialogs = dialogs;
 
         InitializeComponent();
         ApplyTheme(ApplicationThemeManager.GetAppTheme());
@@ -88,14 +87,17 @@ public partial class SearchOverlay : FluentWindow
 
     private async void Menu_Reindex_Click(object sender, RoutedEventArgs e)
     {
+        if (!_dialogs.ShowConfirmation("Přeindexovat všechny dokumenty?", "DocFinder"))
+            return;
+
         try
         {
             await _indexer.ReindexAllAsync();
-            _tray.ShowNotification("DocFinder", "Přeindexování dokončeno");
+            _dialogs.ShowInformation("Přeindexování dokončeno", "DocFinder");
         }
         catch (Exception ex)
         {
-            _tray.ShowNotification("DocFinder", $"Přeindexování selhalo: {ex.Message}");
+            _dialogs.ShowError($"Přeindexování selhalo: {ex.Message}", "DocFinder");
         }
     }
 
