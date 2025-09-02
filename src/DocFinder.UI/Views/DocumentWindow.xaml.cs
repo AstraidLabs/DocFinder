@@ -32,7 +32,29 @@ public partial class DocumentWindow : FluentWindow
         _context = dbOptions != null
             ? new DocumentDbContext(dbOptions)
             : new DocumentDbContext();
-        _context.Database.EnsureCreated();
+        var dbPath = _context.Database.GetDbConnection().DataSource;
+        if (!Path.IsPathRooted(dbPath))
+            dbPath = Path.GetFullPath(dbPath);
+        if (!File.Exists(dbPath))
+        {
+            var result = MessageBox.Show(
+                "Databáze nebyla nalezena. Vytvořit novou?",
+                "Chybějící databáze",
+                MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                _context.Database.EnsureCreated();
+            }
+            else
+            {
+                Close();
+                return;
+            }
+        }
+        else
+        {
+            _context.Database.EnsureCreated();
+        }
         _documents = new ObservableCollection<Document>(_context.Documents.ToList());
         documentsGrid.ItemsSource = _documents;
         _view = CollectionViewSource.GetDefaultView(_documents);
