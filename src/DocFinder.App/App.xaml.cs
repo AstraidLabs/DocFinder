@@ -73,6 +73,9 @@ public partial class App
         await settings.LoadAsync();
 
         await _host.StartAsync();
+
+        var overlay = Services.GetRequiredService<SearchOverlay>();
+        overlay.Show();
     }
 
     private async void OnExit(object sender, ExitEventArgs e)
