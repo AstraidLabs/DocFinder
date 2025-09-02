@@ -54,7 +54,7 @@ public sealed class CatalogRepository
         entity.Data.DataVersion = doc.Version;
         entity.Data.FileType = doc.Ext;
         var bytes = System.IO.File.ReadAllBytes(doc.Path);
-        entity.Data.DataBase64 = Convert.ToBase64String(bytes);
+        entity.Data.DataBytes = bytes;
         entity.Data.Md5 = Convert.ToHexString(MD5.HashData(bytes));
 
         await db.SaveChangesAsync(ct);
