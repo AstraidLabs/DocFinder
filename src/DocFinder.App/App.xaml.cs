@@ -55,6 +55,7 @@ public partial class App
                     sp.GetRequiredService<IIndexer>(),
                     sp.GetRequiredService<ILogger<WatcherService>>()));
             services.AddSingleton<IDocumentViewService, DocumentViewService>();
+            services.AddSingleton<IMessageDialogService, MessageDialogService>();
             services.AddSingleton<SearchOverlayViewModel>();
             services.AddSingleton<SearchOverlay>();
             services.AddSingleton<SettingsViewModel>();
