@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using FileEntity = DocFinder.Domain.File;
 using DataEntity = DocFinder.Domain.Data;
@@ -33,47 +32,30 @@ public sealed class CatalogRepository
         var entity = await db.Files.Include(f => f.Data)
             .FirstOrDefaultAsync(f => f.FileId == doc.FileId, ct);
         var bytes = System.IO.File.ReadAllBytes(doc.Path);
-        var md5 = Convert.ToHexString(MD5.HashData(bytes));
 
         if (entity is null)
         {
-            var data = new DataEntity(doc.FileId, doc.Version, doc.Ext, bytes, md5);
+            var data = new DataEntity(doc.FileId, doc.Version, doc.Ext, bytes);
             entity = new FileEntity(
                 doc.FileId,
                 doc.Path,
                 doc.FileName,
                 doc.Ext,
-                doc.SizeBytes,
                 doc.CreatedUtc,
-                doc.ModifiedUtc,
-                doc.Sha256,
                 doc.Author ?? string.Empty,
                 data);
+            entity.Touch(doc.ModifiedUtc);
             db.Files.Add(entity);
         }
         else
         {
-            entity.UpdatePath(doc.Path);
-            entity.UpdateName(doc.FileName);
+            entity.Move(doc.Path);
+            entity.Rename(doc.FileName);
             entity.SetExt(doc.Ext);
-            entity.UpdateSize(doc.SizeBytes);
-            entity.UpdateCreated(doc.CreatedUtc);
-            entity.UpdateModified(doc.ModifiedUtc);
-            entity.UpdateSha256(doc.Sha256);
             entity.SetAuthor(doc.Author ?? string.Empty);
-
-            if (entity.Data is null)
-            {
-                var data = new DataEntity(doc.FileId, doc.Version, doc.Ext, bytes, md5);
-                entity.SetData(data);
-            }
-            else
-            {
-                entity.Data.SetDataVersion(doc.Version);
-                entity.Data.SetFileType(doc.Ext);
-                entity.Data.UpdateBytes(bytes);
-                entity.Data.SetMd5(md5);
-            }
+            entity.SetCreated(doc.CreatedUtc);
+            entity.ReplaceContent(bytes, doc.Ext, doc.Version);
+            entity.Touch(doc.ModifiedUtc);
         }
 
         await db.SaveChangesAsync(ct);
