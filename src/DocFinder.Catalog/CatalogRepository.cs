@@ -63,4 +63,16 @@ public sealed class CatalogRepository
             .FirstOrDefaultAsync(f => f.Path == path, ct);
         return file?.ModifiedUtc;
     }
+
+    public async Task<Guid?> DeleteFileAsync(string path, CancellationToken ct = default)
+    {
+        await using var db = new CatalogDbContext(_options);
+        var entity = await db.Files.FirstOrDefaultAsync(f => f.Path == path, ct);
+        if (entity is null)
+            return null;
+        var fileId = entity.FileId;
+        db.Files.Remove(entity);
+        await db.SaveChangesAsync(ct);
+        return fileId;
+    }
 }

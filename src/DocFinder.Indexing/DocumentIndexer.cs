@@ -40,7 +40,12 @@ public sealed class DocumentIndexer : IIndexer
 
         var fileInfo = new FileInfo(path);
         if (!fileInfo.Exists)
+        {
+            var id = await _catalog.DeleteFileAsync(path, ct);
+            if (id.HasValue)
+                await _search.DeleteByFileIdAsync(id.Value, ct);
             return;
+        }
 
         var ext = fileInfo.Extension.Trim('.').ToLowerInvariant();
 
