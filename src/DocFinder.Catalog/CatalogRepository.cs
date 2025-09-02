@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using FileEntity = DocFinder.Domain.File;
 using DataEntity = DocFinder.Domain.Data;
@@ -51,7 +52,9 @@ public sealed class CatalogRepository
         entity.Author = doc.Author ?? string.Empty;
 
         entity.Data.DataVersion = doc.Version;
-        entity.Data.DataBase64 = Convert.ToBase64String(System.IO.File.ReadAllBytes(doc.Path));
+        var bytes = System.IO.File.ReadAllBytes(doc.Path);
+        entity.Data.DataBase64 = Convert.ToBase64String(bytes);
+        entity.Data.Md5 = Convert.ToHexString(MD5.HashData(bytes));
 
         await db.SaveChangesAsync(ct);
     }
