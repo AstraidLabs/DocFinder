@@ -20,7 +20,7 @@ public class CatalogDbContext : DbContext
             .HasKey(f => f.FileId);
 
         modelBuilder.Entity<DataEntity>()
-            .HasKey(d => d.IdData);
+            .HasKey(d => d.Id);
 
         modelBuilder.Entity<FileEntity>()
             .HasOne(f => f.Data)

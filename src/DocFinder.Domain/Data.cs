@@ -4,7 +4,7 @@ namespace DocFinder.Domain;
 
 public class Data
 {
-    public int IdData { get; set; }
+    public int Id { get; set; }
     public Guid FileId { get; set; }
     public File File { get; set; } = null!;
     public string? DataVersion { get; set; }
