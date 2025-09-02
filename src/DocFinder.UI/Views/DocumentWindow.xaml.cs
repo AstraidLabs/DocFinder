@@ -13,6 +13,8 @@ using DocFinder.Services;
 using DocFinder.Search;
 using Microsoft.EntityFrameworkCore;
 using Wpf.Ui.Controls;
+using MessageBox = Wpf.Ui.Controls.MessageBox;
+using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
 namespace DocFinder.UI.Views;
 
@@ -37,11 +39,16 @@ public partial class DocumentWindow : FluentWindow
             dbPath = Path.GetFullPath(dbPath);
         if (!File.Exists(dbPath))
         {
-            var result = MessageBox.Show(
-                "Databáze nebyla nalezena. Vytvořit novou?",
-                "Chybějící databáze",
-                MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.Yes)
+            var messageBox = new MessageBox
+            {
+                Title = "Chybějící databáze",
+                Content = "Databáze nebyla nalezena. Vytvořit novou?",
+                PrimaryButtonText = "Yes",
+                SecondaryButtonText = "No"
+            };
+
+            var result = messageBox.ShowDialogAsync().GetAwaiter().GetResult();
+            if (result == MessageBoxResult.Primary)
             {
                 _context.Database.EnsureCreated();
             }
@@ -150,7 +157,13 @@ public partial class DocumentWindow : FluentWindow
             }
             else
             {
-                System.Windows.MessageBox.Show("Soubor neexistuje.");
+                var messageBox = new MessageBox
+                {
+                    Title = "DocFinder",
+                    Content = "Soubor neexistuje.",
+                    CloseButtonText = "OK"
+                };
+                messageBox.ShowDialogAsync().GetAwaiter().GetResult();
             }
         }
     }

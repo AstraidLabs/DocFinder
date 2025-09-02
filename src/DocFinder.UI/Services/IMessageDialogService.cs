@@ -1,5 +1,3 @@
-using System.Windows;
-
 namespace DocFinder.UI.Services;
 
 public interface IMessageDialogService

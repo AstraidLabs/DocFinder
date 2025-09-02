@@ -1,18 +1,56 @@
-using System.Windows;
+using Wpf.Ui.Controls;
 
 namespace DocFinder.UI.Services;
 
 public sealed class MessageDialogService : IMessageDialogService
 {
     public void ShowInformation(string message, string title = "DocFinder")
-        => MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
+    {
+        var messageBox = new MessageBox
+        {
+            Title = title,
+            Content = message,
+            CloseButtonText = "OK"
+        };
+
+        messageBox.ShowDialogAsync().GetAwaiter().GetResult();
+    }
 
     public void ShowWarning(string message, string title = "DocFinder")
-        => MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Warning);
+    {
+        var messageBox = new MessageBox
+        {
+            Title = title,
+            Content = message,
+            CloseButtonText = "OK"
+        };
+
+        messageBox.ShowDialogAsync().GetAwaiter().GetResult();
+    }
 
     public void ShowError(string message, string title = "DocFinder")
-        => MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+    {
+        var messageBox = new MessageBox
+        {
+            Title = title,
+            Content = message,
+            CloseButtonText = "OK"
+        };
+
+        messageBox.ShowDialogAsync().GetAwaiter().GetResult();
+    }
 
     public bool ShowConfirmation(string message, string title = "DocFinder")
-        => MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+    {
+        var messageBox = new MessageBox
+        {
+            Title = title,
+            Content = message,
+            PrimaryButtonText = "Yes",
+            SecondaryButtonText = "No"
+        };
+
+        var result = messageBox.ShowDialogAsync().GetAwaiter().GetResult();
+        return result == MessageBoxResult.Primary;
+    }
 }
