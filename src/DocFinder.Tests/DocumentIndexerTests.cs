@@ -63,4 +63,39 @@ public class DocumentIndexerTests
         Assert.True(reader.GetInt64(0) > 0);
         Assert.False(string.IsNullOrEmpty(reader.GetString(1)));
     }
+
+    [Fact]
+    public async Task MissingFileRemovesRecord()
+    {
+        var temp = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        System.IO.Directory.CreateDirectory(temp);
+        var file = Path.Combine(temp, "test.docx");
+        using (var doc = WordprocessingDocument.Create(file, WordprocessingDocumentType.Document))
+        {
+            var main = doc.AddMainDocumentPart();
+            main.Document = new WordDoc(new Body(new Paragraph(new Run(new Text("hello")))));
+            main.Document.Save();
+        }
+
+        var settings = new FakeSettingsService(temp);
+        var catalog = new CatalogRepository(Path.Combine(temp, "catalog.db"));
+        using var search = new LuceneSearchService(new RAMDirectory());
+        var extractors = new IContentExtractor[]
+        {
+            new DocxContentExtractor(),
+            new PdfContentExtractor()
+        };
+        var indexer = new DocumentIndexer(search, catalog, settings, extractors);
+        await indexer.IndexFileAsync(file);
+        File.Delete(file);
+        await indexer.IndexFileAsync(file);
+
+        await using var connection = new SqliteConnection($"Data Source={Path.Combine(temp, "catalog.db")}");
+        await connection.OpenAsync();
+        var cmd = connection.CreateCommand();
+        cmd.CommandText = "SELECT COUNT(*) FROM Files";
+        var countObj = await cmd.ExecuteScalarAsync();
+        var count = Convert.ToInt64(countObj);
+        Assert.Equal(0, count);
+    }
 }
