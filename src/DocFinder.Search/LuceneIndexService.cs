@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using DocFinder.Domain;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using LuceneDocument = Lucene.Net.Documents.Document;

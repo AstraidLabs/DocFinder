@@ -3,6 +3,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using FileEntity = DocFinder.Domain.File;
+using MetadataEntity = DocFinder.Domain.Metadata;
 using DocFinder.Domain;
 
 namespace DocFinder.Catalog;
@@ -31,27 +33,28 @@ public sealed class CatalogRepository
             .FirstOrDefaultAsync(f => f.FileId == doc.FileId, ct);
         if (entity is null)
         {
-            entity = new CatalogFile { FileId = doc.FileId };
+            entity = new FileEntity { FileId = doc.FileId, Metadata = new MetadataEntity { FileId = doc.FileId } };
             db.Files.Add(entity);
         }
-        else
+        else if (entity.Metadata is null)
         {
-            db.Metadata.RemoveRange(entity.Metadata);
-            entity.Metadata.Clear();
+            entity.Metadata = new MetadataEntity { FileId = doc.FileId };
         }
 
-        entity.Path = doc.Path;
-        entity.FileName = doc.FileName;
+        entity.FilePath = doc.Path;
+        entity.Name = doc.FileName;
         entity.Ext = doc.Ext;
         entity.SizeBytes = doc.SizeBytes;
         entity.CreatedUtc = doc.CreatedUtc;
         entity.ModifiedUtc = doc.ModifiedUtc;
         entity.Sha256 = doc.Sha256;
+        entity.Author = doc.Author ?? string.Empty;
 
-        foreach (var kv in doc.Metadata)
-        {
-            entity.Metadata.Add(new FileMetadata { FileId = doc.FileId, Key = kv.Key, Value = kv.Value });
-        }
+        entity.Metadata.Version = doc.Version;
+        entity.Metadata.CaseNumber = doc.CaseNumber;
+        entity.Metadata.ParcelId = doc.ParcelId;
+        entity.Metadata.Address = doc.Address;
+        entity.Metadata.Tags = doc.Tags;
 
         await db.SaveChangesAsync(ct);
     }
@@ -60,14 +63,14 @@ public sealed class CatalogRepository
     {
         await using var db = new CatalogDbContext(_options);
         var file = await db.Files.AsNoTracking()
-            .FirstOrDefaultAsync(f => f.Path == path, ct);
+            .FirstOrDefaultAsync(f => f.FilePath == path, ct);
         return file?.ModifiedUtc;
     }
 
     public async Task<Guid?> DeleteFileAsync(string path, CancellationToken ct = default)
     {
         await using var db = new CatalogDbContext(_options);
-        var entity = await db.Files.FirstOrDefaultAsync(f => f.Path == path, ct);
+        var entity = await db.Files.FirstOrDefaultAsync(f => f.FilePath == path, ct);
         if (entity is null)
             return null;
         var fileId = entity.FileId;

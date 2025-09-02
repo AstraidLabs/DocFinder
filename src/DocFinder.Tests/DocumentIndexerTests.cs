@@ -6,7 +6,6 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using WordDoc = DocumentFormat.OpenXml.Wordprocessing.Document;
 using DocFinder.Catalog;
-using DocFinder.Domain;
 using DocFinder.Domain.Settings;
 using DocFinder.Indexing;
 using DocFinder.Search;
@@ -56,7 +55,7 @@ public class DocumentIndexerTests
         await using var connection = new SqliteConnection($"Data Source={Path.Combine(temp, "catalog.db")}");
         await connection.OpenAsync();
         var cmd = connection.CreateCommand();
-        cmd.CommandText = "SELECT SizeBytes,Sha256 FROM Files WHERE Path=$p";
+        cmd.CommandText = "SELECT SizeBytes,Sha256 FROM Files WHERE FilePath=$p";
         cmd.Parameters.AddWithValue("$p", file);
         await using var reader = await cmd.ExecuteReaderAsync();
         Assert.True(await reader.ReadAsync());
