@@ -32,30 +32,48 @@ public sealed class CatalogRepository
         await using var db = new CatalogDbContext(_options);
         var entity = await db.Files.Include(f => f.Data)
             .FirstOrDefaultAsync(f => f.FileId == doc.FileId, ct);
+
+        var bytes = System.IO.File.ReadAllBytes(doc.Path);
+        var base64 = Convert.ToBase64String(bytes);
+        var md5 = Convert.ToHexString(MD5.HashData(bytes));
+
         if (entity is null)
         {
-            entity = new FileEntity { FileId = doc.FileId, Data = new DataEntity { FileId = doc.FileId } };
+            entity = new FileEntity(
+                doc.FileId,
+                doc.FileName,
+                doc.Ext,
+                doc.SizeBytes,
+                doc.CreatedUtc,
+                doc.ModifiedUtc,
+                doc.Sha256,
+                doc.Path,
+                doc.Author ?? string.Empty);
+
+            entity.SetData(new DataEntity(doc.Ext, base64, md5, doc.Version));
             db.Files.Add(entity);
         }
-        else if (entity.Data is null)
+        else
         {
-            entity.Data = new DataEntity { FileId = doc.FileId };
+            entity.Update(
+                doc.FileName,
+                doc.Ext,
+                doc.SizeBytes,
+                doc.CreatedUtc,
+                doc.ModifiedUtc,
+                doc.Sha256,
+                doc.Path,
+                doc.Author ?? string.Empty);
+
+            if (entity.Data is null)
+            {
+                entity.SetData(new DataEntity(doc.Ext, base64, md5, doc.Version));
+            }
+            else
+            {
+                entity.Data.Update(doc.Ext, base64, md5, doc.Version);
+            }
         }
-
-        entity.FilePath = doc.Path;
-        entity.Name = doc.FileName;
-        entity.Ext = doc.Ext;
-        entity.SizeBytes = doc.SizeBytes;
-        entity.CreatedUtc = doc.CreatedUtc;
-        entity.ModifiedUtc = doc.ModifiedUtc;
-        entity.Sha256 = doc.Sha256;
-        entity.Author = doc.Author ?? string.Empty;
-
-        entity.Data.DataVersion = doc.Version;
-        entity.Data.FileType = doc.Ext;
-        var bytes = System.IO.File.ReadAllBytes(doc.Path);
-        entity.Data.DataBase64 = Convert.ToBase64String(bytes);
-        entity.Data.Md5 = Convert.ToHexString(MD5.HashData(bytes));
 
         await db.SaveChangesAsync(ct);
     }
@@ -80,3 +98,4 @@ public sealed class CatalogRepository
         return fileId;
     }
 }
+
