@@ -101,6 +101,11 @@
                                     <ui:SymbolIcon Symbol="Document24" />
                                 </MenuItem.Icon>
                             </MenuItem>
+                            <MenuItem Header="Správa protokolů" Click="Menu_Protocols_Click">
+                                <MenuItem.Icon>
+                                    <ui:SymbolIcon Symbol="ClipboardText24" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="Nastavení…" Click="Menu_Settings_Click">
                                 <MenuItem.Icon>
                                     <ui:SymbolIcon Symbol="Settings28" />

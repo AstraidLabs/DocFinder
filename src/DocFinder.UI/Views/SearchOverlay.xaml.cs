@@ -91,6 +91,12 @@ public partial class SearchOverlay : FluentWindow
         window.Show();
     }
 
+    private void Menu_Protocols_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new ProtocolWindow();
+        window.Show();
+    }
+
     private async void Menu_Reindex_Click(object sender, RoutedEventArgs e)
     {
         if (!_dialogs.ShowConfirmation("Přeindexovat všechny dokumenty?", "DocFinder"))

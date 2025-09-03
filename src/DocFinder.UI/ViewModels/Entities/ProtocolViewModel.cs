@@ -35,6 +35,7 @@ public partial class ProtocolViewModel : ObservableObject
         Contract = protocol.Contract;
         CreatedUtc = protocol.CreatedUtc;
         ModifiedUtc = protocol.ModifiedUtc;
+        FilePath = protocol.File.FilePath;
     }
 
     [ObservableProperty] private Guid _id;
@@ -62,5 +63,7 @@ public partial class ProtocolViewModel : ObservableObject
     [ObservableProperty] private bool _contract;
     [ObservableProperty] private DateTime _createdUtc;
     [ObservableProperty] private DateTime _modifiedUtc;
+
+    public string FilePath { get; }
 }
 
