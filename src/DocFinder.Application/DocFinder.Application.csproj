@@ -8,5 +8,6 @@
     <ProjectReference Include="../DocFinder.Domain/DocFinder.Domain.csproj" />
     <ProjectReference Include="../DocFinder.Search/DocFinder.Search.csproj" />
     <ProjectReference Include="../DocFinder.Indexing/DocFinder.Indexing.csproj" />
+    <ProjectReference Include="../DocFinder.Services/DocFinder.Services.csproj" />
   </ItemGroup>
 </Project>
