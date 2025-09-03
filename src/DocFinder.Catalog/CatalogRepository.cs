@@ -31,7 +31,7 @@ public sealed class CatalogRepository
         await using var db = new DocumentDbContext(_options);
         var entity = await db.Files.Include(f => f.Data)
             .FirstOrDefaultAsync(f => f.FileId == doc.FileId, ct);
-        var bytes = System.IO.File.ReadAllBytes(doc.Path);
+        var bytes = await System.IO.File.ReadAllBytesAsync(doc.Path, ct);
 
         if (entity is null)
         {
