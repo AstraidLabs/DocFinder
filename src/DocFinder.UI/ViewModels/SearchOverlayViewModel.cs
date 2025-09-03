@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -10,15 +9,16 @@ using System.Windows;
 using System.Windows.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DocFinder.Application;
+using DocFinder.Application.Commands;
 using DocFinder.Domain;
 using DocFinder.Domain.Settings;
-using DocFinder.Search;
 
 namespace DocFinder.UI.ViewModels;
 
 public partial class SearchOverlayViewModel : ObservableObject
 {
-    private readonly ISearchService _searchService;
+    private readonly CommandDispatcher _dispatcher;
     private readonly ISettingsService _settings;
     private CancellationTokenSource _cts = new();
     private Task? _currentQuery;
@@ -54,9 +54,9 @@ public partial class SearchOverlayViewModel : ObservableObject
     [ObservableProperty]
     private bool _sortAscending = true;
 
-    public SearchOverlayViewModel(ISearchService searchService, ISettingsService settings)
+    public SearchOverlayViewModel(CommandDispatcher dispatcher, ISettingsService settings)
     {
-        _searchService = searchService;
+        _dispatcher = dispatcher;
         _settings = settings;
         ResultsView.Source = Results;
         UpdateSort(); // https://learn.microsoft.com/dotnet/desktop/wpf/data/how-to-sort-data-in-a-view
@@ -92,22 +92,16 @@ public partial class SearchOverlayViewModel : ObservableObject
                 return;
             }
 
-            var filters = new Dictionary<string, string>();
-            if (!string.Equals(FileTypeFilter, "all", StringComparison.OrdinalIgnoreCase))
-                filters["type"] = FileTypeFilter.ToLowerInvariant();
-            if (!string.IsNullOrWhiteSpace(AuthorFilter))
-                filters["author"] = AuthorFilter;
-            if (!string.IsNullOrWhiteSpace(VersionFilter))
-                filters["version"] = VersionFilter;
+            var filter = new SearchFilter(
+                FileTypeFilter,
+                string.IsNullOrWhiteSpace(AuthorFilter) ? null : AuthorFilter,
+                string.IsNullOrWhiteSpace(VersionFilter) ? null : VersionFilter,
+                FromDate,
+                ToDate);
 
-            var query = new UserQuery(value)
-            {
-                Filters = filters,
-                FromUtc = FromDate.HasValue ? new DateTimeOffset(FromDate.Value.ToUniversalTime()) : null,
-                ToUtc = ToDate.HasValue ? new DateTimeOffset(ToDate.Value.ToUniversalTime()) : null
-            };
+            var command = new SearchDocumentsCommand(value, filter);
 
-            var result = await _searchService.QueryAsync(query, ct);
+            var result = await _dispatcher.SendAsync<SearchDocumentsCommand, SearchResult>(command, ct);
 
             await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
             {
