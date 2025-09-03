@@ -59,6 +59,7 @@ public partial class SearchOverlayViewModel : ObservableObject
         _settings = settings;
         ResultsView.Source = Results;
         UpdateSort(); // https://learn.microsoft.com/dotnet/desktop/wpf/data/how-to-sort-data-in-a-view
+        _currentQuery = RunQueryAsync(string.Empty, _cts.Token);
     }
 
     partial void OnQueryChanged(string value)
@@ -71,26 +72,16 @@ public partial class SearchOverlayViewModel : ObservableObject
 
     partial void OnFileTypeFilterChanged(string value)
     {
-        if (!string.IsNullOrEmpty(Query))
-        {
-            _cts.Cancel();
-            _cts.Dispose();
-            _cts = new CancellationTokenSource();
-            _currentQuery = RunQueryAsync(Query, _cts.Token);
-        }
+        _cts.Cancel();
+        _cts.Dispose();
+        _cts = new CancellationTokenSource();
+        _currentQuery = RunQueryAsync(Query, _cts.Token);
     }
 
     private async Task RunQueryAsync(string value, CancellationToken ct)
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                Results.Clear();
-                ResultsView.View.Refresh();
-                return;
-            }
-
             var filter = new SearchFilter(
                 FileTypeFilter,
                 string.IsNullOrWhiteSpace(AuthorFilter) ? null : AuthorFilter,
@@ -147,46 +138,34 @@ public partial class SearchOverlayViewModel : ObservableObject
 
     partial void OnFromDateChanged(DateTime? value)
     {
-        if (!string.IsNullOrEmpty(Query))
-        {
-            _cts.Cancel();
-            _cts.Dispose();
-            _cts = new CancellationTokenSource();
-            _currentQuery = RunQueryAsync(Query, _cts.Token);
-        }
+        _cts.Cancel();
+        _cts.Dispose();
+        _cts = new CancellationTokenSource();
+        _currentQuery = RunQueryAsync(Query, _cts.Token);
     }
 
     partial void OnToDateChanged(DateTime? value)
     {
-        if (!string.IsNullOrEmpty(Query))
-        {
-            _cts.Cancel();
-            _cts.Dispose();
-            _cts = new CancellationTokenSource();
-            _currentQuery = RunQueryAsync(Query, _cts.Token);
-        }
+        _cts.Cancel();
+        _cts.Dispose();
+        _cts = new CancellationTokenSource();
+        _currentQuery = RunQueryAsync(Query, _cts.Token);
     }
 
     partial void OnAuthorFilterChanged(string value)
     {
-        if (!string.IsNullOrEmpty(Query))
-        {
-            _cts.Cancel();
-            _cts.Dispose();
-            _cts = new CancellationTokenSource();
-            _currentQuery = RunQueryAsync(Query, _cts.Token);
-        }
+        _cts.Cancel();
+        _cts.Dispose();
+        _cts = new CancellationTokenSource();
+        _currentQuery = RunQueryAsync(Query, _cts.Token);
     }
 
     partial void OnVersionFilterChanged(string value)
     {
-        if (!string.IsNullOrEmpty(Query))
-        {
-            _cts.Cancel();
-            _cts.Dispose();
-            _cts = new CancellationTokenSource();
-            _currentQuery = RunQueryAsync(Query, _cts.Token);
-        }
+        _cts.Cancel();
+        _cts.Dispose();
+        _cts = new CancellationTokenSource();
+        _currentQuery = RunQueryAsync(Query, _cts.Token);
     }
     partial void OnSortFieldChanged(string value) => UpdateSort();
     partial void OnSortAscendingChanged(bool value) => UpdateSort();
