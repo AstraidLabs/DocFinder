@@ -23,7 +23,7 @@ public sealed class CatalogRepository
             .UseSqlite(connectionString)
             .Options;
         using var db = new DocumentDbContext(_options);
-        db.Database.EnsureCreated();
+        db.Database.Migrate();
     }
 
     public async Task UpsertFileAsync(IndexDocument doc, CancellationToken ct = default)

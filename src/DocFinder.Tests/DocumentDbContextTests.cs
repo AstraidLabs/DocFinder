@@ -43,7 +43,7 @@ public class DocumentDbContextTests
         var provider = services.BuildServiceProvider();
         using var scope = provider.CreateScope();
         using var ctx = scope.ServiceProvider.GetRequiredService<DocumentDbContext>();
-        ctx.Database.EnsureCreated();
+        ctx.Database.Migrate();
 
         var fileId = Guid.NewGuid();
         var data = new Data(fileId, "v1", "text/plain", new byte[] { 1 });
