@@ -1,4 +1,4 @@
-using DocFinder.UI.ViewModels.Entities;
+using DocFinder.App.ViewModels.Entities;
 
 namespace DocFinder.App.Services;
 

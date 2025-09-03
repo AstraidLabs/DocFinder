@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:DocFinder.App.Views.Pages"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    xmlns:entities="clr-namespace:DocFinder.UI.ViewModels.Entities;assembly=DocFinder.UI"
+    xmlns:entities="clr-namespace:DocFinder.App.ViewModels.Entities"
     Title="ProtocolDetailPage"
     d:DataContext="{d:DesignInstance entities:ProtocolViewModel, IsDesignTimeCreatable=False}"
     d:DesignHeight="450"

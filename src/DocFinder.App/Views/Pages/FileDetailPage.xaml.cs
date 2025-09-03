@@ -1,5 +1,5 @@
 using DocFinder.App.Services;
-using DocFinder.UI.ViewModels.Entities;
+using DocFinder.App.ViewModels.Entities;
 using Wpf.Ui.Abstractions.Controls;
 
 namespace DocFinder.App.Views.Pages;
