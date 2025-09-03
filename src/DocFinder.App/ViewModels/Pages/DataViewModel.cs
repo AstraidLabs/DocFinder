@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Media;
-using DocFinder.Models;
+using DocFinder.App.Models;
 using Wpf.Ui.Abstractions.Controls;
 
 namespace DocFinder.App.ViewModels.Pages;
