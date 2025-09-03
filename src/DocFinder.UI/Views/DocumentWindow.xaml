@@ -58,6 +58,11 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </ui:DataGrid.Columns>
+                <ui:DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Otevřít protokoly" Click="OpenProtocols_Click"/>
+                    </ContextMenu>
+                </ui:DataGrid.ContextMenu>
             </ui:DataGrid>
         </DockPanel>
     </Grid>

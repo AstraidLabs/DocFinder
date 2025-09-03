@@ -167,4 +167,13 @@ public partial class DocumentWindow : FluentWindow
             }
         }
     }
+
+    private void OpenProtocols_Click(object sender, RoutedEventArgs e)
+    {
+        if (documentsGrid.SelectedItem is Document doc)
+        {
+            var window = new ProtocolWindow(doc.FileLink);
+            window.Show();
+        }
+    }
 }
