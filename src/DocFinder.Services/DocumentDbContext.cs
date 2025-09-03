@@ -26,4 +26,12 @@ public class DocumentDbContext : DbContext
 
     public DbSet<Protocol> Protocols => Set<Protocol>();
     public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
+    public DbSet<ProtocolList> ProtocolLists => Set<ProtocolList>();
+    public DbSet<ProtocolListItem> ProtocolListItems => Set<ProtocolListItem>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(DocumentDbContext).Assembly);
+        base.OnModelCreating(modelBuilder);
+    }
 }
