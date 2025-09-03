@@ -6,7 +6,7 @@ public class AuditEntry
 {
     private AuditEntry() { }
 
-    public AuditEntry(int documentId, string action, DateTime timestamp, string userName)
+    public AuditEntry(Guid documentId, string action, DateTime timestamp, string userName)
     {
         DocumentId = documentId;
         Action = ValidateRequired(action, nameof(action));
@@ -16,7 +16,7 @@ public class AuditEntry
 
     public int Id { get; private set; }
 
-    public int DocumentId { get; private set; }
+    public Guid DocumentId { get; private set; }
 
     public string Action { get; private set; } = string.Empty;
 

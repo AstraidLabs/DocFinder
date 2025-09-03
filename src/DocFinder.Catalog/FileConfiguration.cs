@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using FileEntity = DocFinder.Domain.File;
 using DataEntity = DocFinder.Domain.Data;
+using System;
 
 namespace DocFinder.Catalog;
 
@@ -11,7 +12,9 @@ public sealed class FileConfiguration : IEntityTypeConfiguration<FileEntity>
     public void Configure(EntityTypeBuilder<FileEntity> builder)
     {
         builder.HasKey(f => f.FileId);
-        builder.Property(f => f.RowVersion).IsRowVersion();
+        builder.Property(f => f.RowVersion)
+               .IsRowVersion()
+               .HasDefaultValue(Array.Empty<byte>());
 
         builder.HasOne(f => f.Data)
                .WithOne(d => d.File)
