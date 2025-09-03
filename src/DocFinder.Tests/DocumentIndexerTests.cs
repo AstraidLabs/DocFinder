@@ -7,6 +7,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using WordDoc = DocumentFormat.OpenXml.Wordprocessing.Document;
 using DocFinder.Catalog;
+using DocFinder.Services;
 using DocFinder.Domain.Settings;
 using DocFinder.Indexing;
 using DocFinder.Search;
@@ -43,7 +44,7 @@ public class DocumentIndexerTests
         }
 
         var settings = new FakeSettingsService(temp);
-        var catalog = new CatalogRepository(Path.Combine(temp, "catalog.db"));
+        var catalog = new DocumentCatalog(NullMessageDialogService.Instance, Path.Combine(temp, "catalog.db"));
         using var search = new LuceneSearchService(new RAMDirectory());
         var extractors = new IContentExtractor[]
         {
@@ -79,7 +80,7 @@ public class DocumentIndexerTests
         }
 
         var settings = new FakeSettingsService(temp);
-        var catalog = new CatalogRepository(Path.Combine(temp, "catalog.db"));
+        var catalog = new DocumentCatalog(NullMessageDialogService.Instance, Path.Combine(temp, "catalog.db"));
         using var search = new LuceneSearchService(new RAMDirectory());
         var extractors = new IContentExtractor[]
         {

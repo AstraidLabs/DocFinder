@@ -1,4 +1,4 @@
-namespace DocFinder.App.Services;
+namespace DocFinder.Services;
 
 public interface IMessageDialogService
 {

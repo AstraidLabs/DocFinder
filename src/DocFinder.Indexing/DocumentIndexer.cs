@@ -16,14 +16,14 @@ namespace DocFinder.Indexing;
 public sealed class DocumentIndexer : IIndexer
 {
     private readonly ISearchService _search;
-    private readonly CatalogRepository _catalog;
+    private readonly IDocumentCatalog _catalog;
     private readonly ISettingsService _settings;
     private readonly IEnumerable<IContentExtractor> _extractors;
     private IndexingState _state = IndexingState.Indexing;
 
     public DocumentIndexer(
         ISearchService search,
-        CatalogRepository catalog,
+        IDocumentCatalog catalog,
         ISettingsService settings,
         IEnumerable<IContentExtractor> extractors)
     {

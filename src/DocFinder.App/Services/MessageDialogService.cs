@@ -3,6 +3,8 @@ using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
 namespace DocFinder.App.Services;
 
+using DocFinder.Services;
+
 public sealed class MessageDialogService : IMessageDialogService
 {
     public void ShowInformation(string message, string title = "DocFinder")

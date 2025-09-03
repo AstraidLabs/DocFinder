@@ -42,7 +42,8 @@ public partial class App
                 o.AddInterceptors(sp.GetRequiredService<DocumentSaveChangesInterceptor>());
             });
             services.AddSingleton<IDocumentIndexService, DocumentIndexService>();
-            services.AddSingleton<CatalogRepository>();
+            services.AddSingleton<IDocumentCatalog>(sp =>
+                new DocumentCatalog(sp.GetRequiredService<IMessageDialogService>()));
             services.AddSingleton<IContentExtractor, PdfContentExtractor>();
             services.AddSingleton<IContentExtractor, DocxContentExtractor>();
             services.AddSingleton<IIndexer, DocumentIndexer>();
