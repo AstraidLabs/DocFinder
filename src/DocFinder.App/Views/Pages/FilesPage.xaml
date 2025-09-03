@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:DocFinder.Views.Pages"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    xmlns:vm="clr-namespace:DocFinder.ViewModels.Pages"
+    xmlns:vm="clr-namespace:DocFinder.ViewModels.Pages;assembly=DocFinder.App"
     Title="FilesPage"
     d:DataContext="{d:DesignInstance vm:FilesViewModel, IsDesignTimeCreatable=False}"
     d:DesignHeight="450"

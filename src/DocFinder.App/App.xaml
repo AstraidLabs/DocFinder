@@ -9,6 +9,8 @@
     ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
         <ResourceDictionary>
+            <SolidColorBrush x:Key="TextFillColorPrimaryBrush" Color="Black" />
+            <SolidColorBrush x:Key="ControlStrokeColorDefaultBrush" Color="#FFABADB3" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
