@@ -72,7 +72,7 @@ public sealed class DocumentIndexer : IIndexer
         if (meta.Modified.HasValue) modified = meta.Modified.Value.UtcDateTime;
 
         var sha = ComputeSha256(path);
-        var fileId = ComputeFileId(path, sha);
+        var fileId = ComputeFileId(sha);
         var metaDict = new Dictionary<string,string>();
         if (!string.IsNullOrEmpty(author)) metaDict["author"] = author;
         if (!string.IsNullOrEmpty(version)) metaDict["version"] = version;
@@ -142,7 +142,7 @@ public sealed class DocumentIndexer : IIndexer
         {
             using var stream = System.IO.File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             var hash = SHA256.HashData(stream);
-            return Convert.ToHexString(hash);
+            return Convert.ToHexString(hash).ToLowerInvariant();
         }
         catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
         {
@@ -151,9 +151,9 @@ public sealed class DocumentIndexer : IIndexer
         return string.Empty;
     }
 
-    private static Guid ComputeFileId(string path, string sha)
+    private static Guid ComputeFileId(string sha)
     {
-        var bytes = Encoding.UTF8.GetBytes(path + sha);
+        var bytes = Encoding.UTF8.GetBytes(sha);
         var hash = SHA256.HashData(bytes);
         Span<byte> guidBytes = stackalloc byte[16];
         hash.AsSpan(0, 16).CopyTo(guidBytes);
