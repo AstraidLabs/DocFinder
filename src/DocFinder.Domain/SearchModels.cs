@@ -16,6 +16,12 @@ public sealed record UserQuery
     public DateTimeOffset? ToUtc { get; init; }
     public int Page { get; init; } = 1;
     public int PageSize { get; init; } = 20;
+    /// <summary>
+    /// Optional sort order. Supported values:
+    /// "name", "name_desc", "modified", "modified_asc",
+    /// "created", "created_asc", "size" and "size_asc".
+    /// Any other value falls back to relevance-based ordering.
+    /// </summary>
     public string? Sort { get; init; }
 
     public UserQuery(string freeText) => FreeText = freeText;
