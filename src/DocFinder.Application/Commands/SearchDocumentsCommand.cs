@@ -2,4 +2,4 @@ using DocFinder.Domain;
 
 namespace DocFinder.Application.Commands;
 
-public sealed record SearchDocumentsCommand(UserQuery Query) : ICommand<SearchResult>;
+public sealed record SearchDocumentsCommand(string Query, SearchFilter Filter) : ICommand<SearchResult>;
