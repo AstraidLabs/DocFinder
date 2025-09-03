@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:DocFinder.Models"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    xmlns:vm="clr-namespace:DocFinder.ViewModels.Pages;assembly=DocFinder.App"
+    xmlns:vm="clr-namespace:DocFinder.ViewModels.Pages"
     Title="DataPage"
     d:DataContext="{d:DesignInstance vm:DataViewModel, IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
