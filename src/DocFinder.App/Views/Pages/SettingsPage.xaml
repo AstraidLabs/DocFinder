@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:DocFinder.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    xmlns:vm="clr-namespace:DocFinder.ViewModels.Pages;assembly=DocFinder.App"
+    xmlns:vm="clr-namespace:DocFinder.ViewModels.Pages"
     Title="SettingsPage"
     d:DataContext="{d:DesignInstance vm:SettingsViewModel, IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
