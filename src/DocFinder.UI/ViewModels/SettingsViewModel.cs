@@ -54,7 +54,8 @@ public partial class SettingsViewModel : ObservableObject
         _watcherService.UpdateRoots(Settings.WatchedRoots);
 
         // Apply the selected theme immediately
-        var theme = Settings.Theme.Equals("Dark", StringComparison.OrdinalIgnoreCase)
+        var themeName = string.IsNullOrWhiteSpace(Settings.Theme) ? "Light" : Settings.Theme;
+        var theme = themeName.Equals("Dark", StringComparison.OrdinalIgnoreCase)
             ? ApplicationTheme.Dark
             : ApplicationTheme.Light;
         ApplicationThemeManager.Apply(theme);

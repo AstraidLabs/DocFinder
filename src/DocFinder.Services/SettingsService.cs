@@ -87,7 +87,7 @@ public sealed class SettingsService : ISettingsService
         return new AppSettings
         {
             SourceRoot = loaded.SourceRoot ?? d.SourceRoot,
-            WatchedRoots = loaded.WatchedRoots != null ? new List<string>(loaded.WatchedRoots) : new List<string>(d.WatchedRoots),
+            WatchedRoots = loaded.WatchedRoots?.ToList() ?? new(d.WatchedRoots),
             EnableOcr = loaded.EnableOcr,
             Theme = loaded.Theme ?? d.Theme,
             AutoIndexOnStartup = loaded.AutoIndexOnStartup,
