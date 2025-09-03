@@ -135,7 +135,7 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
             {
                 boolean.Add(new TermQuery(new Term("ext", kv.Value)), Occur.MUST);
             }
-            else if (kv.Key is "caseNumber" or "parcelId" or "address" or "tags")
+            else if (kv.Key is "caseNumber" or "parcelId" or "address" or "tags" or "author" or "version")
             {
                 boolean.Add(new TermQuery(new Term(kv.Key, kv.Value)), Occur.MUST);
             }
@@ -199,6 +199,22 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
                     scoreDoc.Score,
                     snippet,
                     meta));
+            }
+
+            if (!string.IsNullOrEmpty(query.Sort))
+            {
+                hits = query.Sort.ToLowerInvariant() switch
+                {
+                    "name" or "filename"       => hits.OrderBy(h => h.SortKey).ToList(),
+                    "name_desc" or "filename_desc" => hits.OrderByDescending(h => h.SortKey).ToList(),
+                    "modified" or "modified_desc" => hits.OrderByDescending(h => h.ModifiedUtc).ToList(),
+                    "modified_asc"               => hits.OrderBy(h => h.ModifiedUtc).ToList(),
+                    "created" or "created_desc" => hits.OrderByDescending(h => h.CreatedUtc).ToList(),
+                    "created_asc"                => hits.OrderBy(h => h.CreatedUtc).ToList(),
+                    "size" or "size_desc"       => hits.OrderByDescending(h => h.SizeBytes).ToList(),
+                    "size_asc"                   => hits.OrderBy(h => h.SizeBytes).ToList(),
+                    _                             => hits
+                };
             }
 
             var result = new SearchResult(top.TotalHits, hits, new Dictionary<string, int>());
