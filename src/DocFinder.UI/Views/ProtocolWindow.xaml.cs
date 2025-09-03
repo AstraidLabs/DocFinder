@@ -11,6 +11,7 @@ using DocFinder.Domain;
 using Microsoft.EntityFrameworkCore;
 using Wpf.Ui.Controls;
 using DocFinder.UI.ViewModels.Entities;
+using MessageBox = Wpf.Ui.Controls.MessageBox;
 
 namespace DocFinder.UI.Views;
 
