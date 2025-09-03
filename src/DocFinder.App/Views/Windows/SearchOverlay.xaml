@@ -179,7 +179,13 @@
                               CanUserSortColumns="True"
                               IsReadOnly="True"
                               RowStyle="{StaticResource SearchRowStyle}"
-                              Loaded="ResultsGrid_Loaded">
+                              Loaded="ResultsGrid_Loaded"
+                              PreviewMouseRightButtonDown="ResultsGrid_PreviewMouseRightButtonDown">
+                    <ui:DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Otevřít protokol" Click="OpenProtocol_Click" />
+                        </ContextMenu>
+                    </ui:DataGrid.ContextMenu>
                     <ui:DataGrid.Columns>
                         <DataGridTextColumn Header="Název" Binding="{Binding FileName}" SortMemberPath="SortKey" Width="*"/>
                         <DataGridTextColumn Header="Autor" Binding="{Binding Author}" Width="120"/>

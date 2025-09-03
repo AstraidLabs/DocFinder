@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Wpf.Ui.Appearance;
@@ -126,6 +128,23 @@ public partial class SearchOverlay : FluentWindow
     private void Menu_Exit_Click(object sender, RoutedEventArgs e)
     {
         System.Windows.Application.Current.Shutdown();
+    }
+
+    private void ResultsGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        var depObj = e.OriginalSource as DependencyObject;
+        while (depObj != null && depObj is not DataGridRow)
+            depObj = VisualTreeHelper.GetParent(depObj);
+        if (depObj is DataGridRow row)
+            row.IsSelected = true;
+    }
+
+    private void OpenProtocol_Click(object sender, RoutedEventArgs e)
+    {
+        if (_viewModel.SelectedDocument == null)
+            return;
+        var window = new ProtocolWindow(_viewModel.SelectedDocument.Path);
+        window.Show();
     }
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
