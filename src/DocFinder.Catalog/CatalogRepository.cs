@@ -31,6 +31,15 @@ public sealed class CatalogRepository
         await using var db = new DocumentDbContext(_options);
         var entity = await db.Files.Include(f => f.Data)
             .FirstOrDefaultAsync(f => f.FileId == doc.FileId, ct);
+        if (entity is null)
+        {
+            // Handle databases populated before FileId became deterministic.
+            // Sha256 is unique so we can safely look up by checksum to avoid
+            // violating the unique constraint on Sha256 when re-indexing.
+            entity = await db.Files.Include(f => f.Data)
+                .FirstOrDefaultAsync(f => f.Sha256 == doc.Sha256, ct);
+        }
+
         var bytes = await System.IO.File.ReadAllBytesAsync(doc.Path, ct);
 
         if (entity is null)
