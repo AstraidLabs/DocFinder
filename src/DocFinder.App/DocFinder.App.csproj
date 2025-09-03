@@ -4,6 +4,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>wpfui-icon.ico</ApplicationIcon>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -26,7 +27,7 @@
     <Resource Include="Assets\wpfui-icon-1024.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DocFinder.UI\DocFinder.UI.csproj" />
+    <ProjectReference Include="..\DocFinder.Domain\DocFinder.Domain.csproj" />
     <ProjectReference Include="..\DocFinder.Indexing\DocFinder.Indexing.csproj" />
     <ProjectReference Include="..\DocFinder.Catalog\DocFinder.Catalog.csproj" />
     <ProjectReference Include="..\DocFinder.Search\DocFinder.Search.csproj" />

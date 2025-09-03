@@ -1,7 +1,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using DocFinder.App.Services;
-using DocFinder.UI.ViewModels.Entities;
+using DocFinder.App.ViewModels.Entities;
 using DocFinder.App.ViewModels.Pages;
 using Wpf.Ui.Abstractions.Controls;
 using Wpf.Ui;

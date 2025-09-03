@@ -1,7 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using DocFinder.Domain;
-using DocFinder.UI.ViewModels.Entities;
+using DocFinder.App.ViewModels.Entities;
 using Wpf.Ui.Abstractions.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 

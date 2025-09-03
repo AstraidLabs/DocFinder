@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Hosting;
 using DocFinder.Services;
-using DocFinder.UI.Views;
+using DocFinder.App.Views.Windows;
 using DocFinder.Indexing;
 using DocFinder.Domain.Settings;
 
