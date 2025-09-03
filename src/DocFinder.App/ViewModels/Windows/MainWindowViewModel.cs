@@ -22,6 +22,18 @@ namespace DocFinder.ViewModels.Windows
                 Content = "Data",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.DataHistogram24 },
                 TargetPageType = typeof(Views.Pages.DataPage)
+            },
+            new NavigationViewItem()
+            {
+                Content = "Protocols",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.DocumentBulletList24 },
+                TargetPageType = typeof(Views.Pages.ProtocolsPage)
+            },
+            new NavigationViewItem()
+            {
+                Content = "Files",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.Document24 },
+                TargetPageType = typeof(Views.Pages.FilesPage)
             }
         };
 
