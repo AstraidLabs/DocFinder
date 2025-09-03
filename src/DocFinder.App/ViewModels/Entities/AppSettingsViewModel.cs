@@ -14,6 +14,7 @@ public partial class AppSettingsViewModel : ObservableObject
         Theme = settings.Theme;
         AutoIndexOnStartup = settings.AutoIndexOnStartup;
         UseFuzzySearch = settings.UseFuzzySearch;
+        PageSize = settings.PageSize;
         PollingMinutes = settings.PollingMinutes;
         IndexPath = settings.IndexPath;
         ThumbsPath = settings.ThumbsPath;
@@ -25,6 +26,7 @@ public partial class AppSettingsViewModel : ObservableObject
     [ObservableProperty] private string _theme = "Light";
     [ObservableProperty] private bool _autoIndexOnStartup = true;
     [ObservableProperty] private bool _useFuzzySearch;
+    [ObservableProperty] private int _pageSize = 20;
     [ObservableProperty] private int _pollingMinutes = 5;
     [ObservableProperty] private string? _indexPath;
     [ObservableProperty] private string? _thumbsPath;

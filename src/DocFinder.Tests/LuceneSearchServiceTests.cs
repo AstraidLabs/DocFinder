@@ -41,4 +41,19 @@ public class LuceneSearchServiceTests
         var result = await service.QueryAsync(new UserQuery("prilis zlutoucky kun"));
         Assert.Equal(1, result.Total);
     }
+
+    [Fact]
+    public async Task QueryHonorsPageSize()
+    {
+        using var service = new LuceneSearchService(new RAMDirectory());
+        for (var i = 0; i < 5; i++)
+        {
+            await service.IndexAsync(new IndexDocument(Guid.NewGuid(), $"/{i}.txt", $"{i}.txt", "txt", 1, DateTime.UtcNow, DateTime.UtcNow, "hash", null, null, "hello", new Dictionary<string, string>()));
+        }
+
+        var result = await service.QueryAsync(new UserQuery("hello") { PageSize = 2 });
+
+        Assert.Equal(5, result.Total);
+        Assert.Equal(2, result.Hits.Count);
+    }
 }

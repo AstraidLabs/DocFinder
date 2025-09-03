@@ -28,6 +28,9 @@ public sealed class AppSettings
     /// <summary>Use fuzzy search when querying the index.</summary>
     public bool UseFuzzySearch { get; set; } = false;
 
+    /// <summary>Number of search results returned per page.</summary>
+    public int PageSize { get; set; } = 20;
+
     /// <summary>Frequency in minutes the file system is polled for changes.</summary>
     public int PollingMinutes { get; set; } = 5;
 
