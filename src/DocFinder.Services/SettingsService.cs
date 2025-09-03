@@ -92,6 +92,7 @@ public sealed class SettingsService : ISettingsService
             Theme = loaded.Theme ?? d.Theme,
             AutoIndexOnStartup = loaded.AutoIndexOnStartup,
             UseFuzzySearch = loaded.UseFuzzySearch,
+            PageSize = loaded.PageSize == 0 ? d.PageSize : loaded.PageSize,
             PollingMinutes = loaded.PollingMinutes == 0 ? d.PollingMinutes : loaded.PollingMinutes,
             IndexPath = loaded.IndexPath ?? d.IndexPath,
             ThumbsPath = loaded.ThumbsPath ?? d.ThumbsPath
