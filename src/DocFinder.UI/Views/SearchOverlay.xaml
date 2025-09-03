@@ -96,11 +96,6 @@
                                     <ui:SymbolIcon Symbol="Search28" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Správa dokumentů" Click="Menu_Documents_Click">
-                                <MenuItem.Icon>
-                                    <ui:SymbolIcon Symbol="Document24" />
-                                </MenuItem.Icon>
-                            </MenuItem>
                             <MenuItem Header="Správa protokolů" Click="Menu_Protocols_Click">
                                 <MenuItem.Icon>
                                     <ui:SymbolIcon Symbol="ClipboardText24" />

@@ -2,7 +2,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -74,7 +73,7 @@ public partial class ProtocolWindow : FluentWindow
     {
         if (protocolsGrid.SelectedItem is ProtocolViewModel vm && !string.IsNullOrEmpty(vm.FilePath))
         {
-            if (File.Exists(vm.FilePath))
+            if (System.IO.File.Exists(vm.FilePath))
             {
                 Process.Start(new ProcessStartInfo(vm.FilePath) { UseShellExecute = true });
             }

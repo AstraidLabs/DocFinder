@@ -19,7 +19,7 @@
     <Grid>
         <ListView ItemsSource="{Binding ViewModel.Protocols}">
             <ListView.ItemTemplate>
-                <DataTemplate DataType="{x:Type entities:ProtocolViewModel}">
+                <DataTemplate>
                     <Border Margin="4" Padding="8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
                         <StackPanel>
                             <TextBlock Text="{Binding Title}" FontWeight="Bold" />

@@ -85,12 +85,6 @@ public partial class SearchOverlay : FluentWindow
         _settings.Show();
     }
 
-    private void Menu_Documents_Click(object sender, RoutedEventArgs e)
-    {
-        var window = new DocumentWindow();
-        window.Show();
-    }
-
     private void Menu_Protocols_Click(object sender, RoutedEventArgs e)
     {
         var window = new ProtocolWindow();
