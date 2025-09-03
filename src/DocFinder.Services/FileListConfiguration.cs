@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using DocFinder.Domain;
+using FileEntity = DocFinder.Domain.File;
 
-namespace DocFinder.Catalog;
+namespace DocFinder.Services;
 
 /// <summary>EF Core configuration for <see cref="FileList"/>.</summary>
 public sealed class FileListConfiguration : IEntityTypeConfiguration<FileList>
@@ -34,7 +35,7 @@ public sealed class FileListItemConfiguration : IEntityTypeConfiguration<FileLis
         itemBuilder.Property(i => i.Label).HasMaxLength(256);
         itemBuilder.Property(i => i.Note).HasMaxLength(2000);
 
-        itemBuilder.HasOne(i => i.File)
+        itemBuilder.HasOne<FileEntity>()
                    .WithMany()
                    .HasForeignKey(i => i.FileId)
                    .OnDelete(DeleteBehavior.Restrict);

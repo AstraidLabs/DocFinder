@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using FileEntity = DocFinder.Domain.File;
 using DataEntity = DocFinder.Domain.Data;
-using System;
 
-namespace DocFinder.Catalog;
+namespace DocFinder.Services;
 
 /// <summary>EF Core configuration for <see cref="FileEntity"/>.</summary>
 public sealed class FileConfiguration : IEntityTypeConfiguration<FileEntity>

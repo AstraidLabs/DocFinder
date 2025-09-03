@@ -5,9 +5,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.8" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DocFinder.Domain\DocFinder.Domain.csproj" />
+    <ProjectReference Include="..\\DocFinder.Domain\\DocFinder.Domain.csproj" />
+    <ProjectReference Include="..\\DocFinder.Services\\DocFinder.Services.csproj" />
   </ItemGroup>
 </Project>
