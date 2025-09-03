@@ -1,7 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -138,7 +137,7 @@ public partial class SearchOverlayViewModel : ObservableObject
             return;
 
         var path = SelectedDocument.Path;
-        if (!File.Exists(path))
+        if (!System.IO.File.Exists(path))
             return;
         if (!_settings.Current.WatchedRoots.Any(r => path.StartsWith(r, StringComparison.OrdinalIgnoreCase)))
             return;

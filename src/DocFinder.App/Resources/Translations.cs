@@ -1,4 +1,4 @@
-namespace DocFinder.Resources
+namespace DocFinder.App.Resources
 {
     public partial class Translations
     {
