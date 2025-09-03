@@ -164,7 +164,7 @@ public partial class SearchOverlay : FluentWindow
 
     private void ResultsGrid_Loaded(object sender, RoutedEventArgs e)
     {
-        if (sender is DataGrid dg)
+        if (sender is Wpf.Ui.Controls.DataGrid dg)
         {
             var animation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(200));
             dg.BeginAnimation(UIElement.OpacityProperty, animation);
