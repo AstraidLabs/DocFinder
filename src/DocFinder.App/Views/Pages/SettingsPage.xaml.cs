@@ -1,7 +1,7 @@
-﻿using DocFinder.ViewModels.Pages;
+﻿using DocFinder.App.ViewModels.Pages;
 using Wpf.Ui.Abstractions.Controls;
 
-namespace DocFinder.Views.Pages
+namespace DocFinder.App.Views.Pages
 {
     public partial class SettingsPage : INavigableView<SettingsViewModel>
     {

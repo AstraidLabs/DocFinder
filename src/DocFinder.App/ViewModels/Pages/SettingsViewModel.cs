@@ -1,7 +1,7 @@
 ﻿using Wpf.Ui.Abstractions.Controls;
 using Wpf.Ui.Appearance;
 
-namespace DocFinder.ViewModels.Pages
+namespace DocFinder.App.ViewModels.Pages
 {
     public partial class SettingsViewModel : ObservableObject, INavigationAware
     {

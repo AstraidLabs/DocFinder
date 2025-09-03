@@ -1,7 +1,8 @@
+using DocFinder.Services;
 using Microsoft.Extensions.Hosting;
 using DocFinder.Indexing;
 
-namespace DocFinder.Services;
+namespace DocFinder.App.Services;
 
 public class AutomaticIndexingService : BackgroundService
 {

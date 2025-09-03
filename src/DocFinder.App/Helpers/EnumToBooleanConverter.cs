@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using Wpf.Ui.Appearance;
 
-namespace DocFinder.Helpers
+namespace DocFinder.App.Helpers
 {
     internal class EnumToBooleanConverter : IValueConverter
     {

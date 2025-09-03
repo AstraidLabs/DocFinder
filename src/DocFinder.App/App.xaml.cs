@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DocFinder.Domain;
 using DocFinder.Domain.Settings;
 using DocFinder.Services;
+using DocFinder.App.Services;
 using DocFinder.UI.Views;
 using DocFinder.UI.ViewModels;
 using DocFinder.UI.Services;
@@ -18,7 +19,7 @@ using DocFinder.Application;
 using DocFinder.Application.Commands;
 using DocFinder.Application.Handlers;
 
-namespace DocFinder;
+namespace DocFinder.App;
 
 public partial class App
 {

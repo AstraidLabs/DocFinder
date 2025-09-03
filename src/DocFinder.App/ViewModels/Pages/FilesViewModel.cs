@@ -5,7 +5,7 @@ using DocFinder.UI.ViewModels.Entities;
 using Wpf.Ui.Abstractions.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace DocFinder.ViewModels.Pages;
+namespace DocFinder.App.ViewModels.Pages;
 
 public partial class FilesViewModel : ObservableObject, INavigationAware
 {

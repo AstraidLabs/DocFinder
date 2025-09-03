@@ -1,8 +1,8 @@
-using DocFinder.Services;
+using DocFinder.App.Services;
 using DocFinder.UI.ViewModels.Entities;
 using Wpf.Ui.Abstractions.Controls;
 
-namespace DocFinder.Views.Pages;
+namespace DocFinder.App.Views.Pages;
 
 public partial class ProtocolDetailPage : INavigableView<ProtocolViewModel>
 {

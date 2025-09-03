@@ -4,7 +4,7 @@ using System.Windows.Media;
 using DocFinder.Models;
 using Wpf.Ui.Abstractions.Controls;
 
-namespace DocFinder.ViewModels.Pages;
+namespace DocFinder.App.ViewModels.Pages;
 
 public partial class DataViewModel : ObservableObject, INavigationAware
 {
