@@ -1,4 +1,4 @@
-﻿namespace DocFinder.ViewModels.Pages
+﻿namespace DocFinder.App.ViewModels.Pages
 {
     public partial class DashboardViewModel : ObservableObject
     {

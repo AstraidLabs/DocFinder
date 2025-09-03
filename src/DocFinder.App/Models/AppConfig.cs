@@ -1,4 +1,4 @@
-﻿namespace DocFinder.Models
+﻿namespace DocFinder.App.Models
 {
     public class AppConfig
     {

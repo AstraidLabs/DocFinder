@@ -1,7 +1,8 @@
+using DocFinder.App.Views.Pages;
 ﻿using System.Collections.ObjectModel;
 using Wpf.Ui.Controls;
 
-namespace DocFinder.ViewModels.Windows
+namespace DocFinder.App.ViewModels.Windows
 {
     public partial class MainWindowViewModel : ObservableObject
     {
@@ -15,25 +16,25 @@ namespace DocFinder.ViewModels.Windows
             {
                 Content = "Home",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.Home24 },
-                TargetPageType = typeof(Views.Pages.DashboardPage)
+                TargetPageType = typeof(DashboardPage)
             },
             new NavigationViewItem()
             {
                 Content = "Data",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.DataHistogram24 },
-                TargetPageType = typeof(Views.Pages.DataPage)
+                TargetPageType = typeof(DataPage)
             },
             new NavigationViewItem()
             {
                 Content = "Protocols",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.DocumentBulletList24 },
-                TargetPageType = typeof(Views.Pages.ProtocolsPage)
+                TargetPageType = typeof(ProtocolsPage)
             },
             new NavigationViewItem()
             {
                 Content = "Files",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.Document24 },
-                TargetPageType = typeof(Views.Pages.FilesPage)
+                TargetPageType = typeof(FilesPage)
             }
         };
 
@@ -44,7 +45,7 @@ namespace DocFinder.ViewModels.Windows
             {
                 Content = "Settings",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.Settings24 },
-                TargetPageType = typeof(Views.Pages.SettingsPage)
+                TargetPageType = typeof(SettingsPage)
             }
         };
 

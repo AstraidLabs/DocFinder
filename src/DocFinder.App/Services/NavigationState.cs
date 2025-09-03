@@ -1,6 +1,6 @@
 using DocFinder.UI.ViewModels.Entities;
 
-namespace DocFinder.Services;
+namespace DocFinder.App.Services;
 
 /// <summary>
 /// Simple shared state for passing selected items between pages.

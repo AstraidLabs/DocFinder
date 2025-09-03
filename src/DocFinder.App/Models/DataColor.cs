@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace DocFinder.Models
+namespace DocFinder.App.Models
 {
     public struct DataColor
     {

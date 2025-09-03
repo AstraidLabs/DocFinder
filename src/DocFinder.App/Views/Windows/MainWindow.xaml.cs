@@ -1,10 +1,10 @@
-﻿using DocFinder.ViewModels.Windows;
+﻿using DocFinder.App.ViewModels.Windows;
 using Wpf.Ui;
 using Wpf.Ui.Abstractions;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 
-namespace DocFinder.Views.Windows
+namespace DocFinder.App.Views.Windows
 {
     public partial class MainWindow : INavigationWindow
     {

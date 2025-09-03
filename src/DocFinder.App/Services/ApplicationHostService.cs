@@ -4,7 +4,7 @@ using DocFinder.UI.Views;
 using DocFinder.Indexing;
 using DocFinder.Domain.Settings;
 
-namespace DocFinder.Services;
+namespace DocFinder.App.Services;
 
 public class ApplicationHostService : IHostedService
 {
