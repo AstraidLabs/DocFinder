@@ -24,6 +24,6 @@ public class DocumentDbContext : DbContext
         }
     }
 
-    public DbSet<Document> Documents => Set<Document>();
+    public DbSet<Protocol> Protocols => Set<Protocol>();
     public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
 }

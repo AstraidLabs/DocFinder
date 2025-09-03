@@ -14,7 +14,7 @@ public sealed class DocumentSaveChangesInterceptor : SaveChangesInterceptor
 {
     private readonly ILuceneIndexService? _index;
     private readonly IDbContextFactory<DocumentDbContext> _factory;
-    private List<(Document doc, string action)> _changes = new();
+    private List<(Protocol doc, string action)> _changes = new();
 
     public DocumentSaveChangesInterceptor(IDbContextFactory<DocumentDbContext> factory, ILuceneIndexService? index)
     {
@@ -22,10 +22,10 @@ public sealed class DocumentSaveChangesInterceptor : SaveChangesInterceptor
         _index = index;
     }
 
-    private static List<(Document doc, string action)> GetDocumentChanges(DbContext context)
+    private static List<(Protocol doc, string action)> GetDocumentChanges(DbContext context)
     {
-        var list = new List<(Document, string)>();
-        foreach (var entry in context.ChangeTracker.Entries<Document>())
+        var list = new List<(Protocol, string)>();
+        foreach (var entry in context.ChangeTracker.Entries<Protocol>())
         {
             switch (entry.State)
             {

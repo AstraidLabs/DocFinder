@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DocFinder.Domain;
 using DocFinder.Search;
@@ -13,9 +14,9 @@ public sealed class DocumentIndexService : IDocumentIndexService
         _inner = inner;
     }
 
-    public void IndexDocument(Document doc) => _inner.IndexDocument(doc);
+    public void IndexDocument(Protocol doc) => _inner.IndexDocument(doc);
 
-    public void DeleteDocument(int docId) => _inner.DeleteDocument(docId);
+    public void DeleteDocument(Guid docId) => _inner.DeleteDocument(docId);
 
-    public IEnumerable<Document> Search(string query) => _inner.Search(query);
+    public IEnumerable<Protocol> Search(string query) => _inner.Search(query);
 }
