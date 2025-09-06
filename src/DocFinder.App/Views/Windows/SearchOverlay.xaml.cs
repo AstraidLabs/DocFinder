@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -139,11 +138,11 @@ public partial class SearchOverlay : FluentWindow
     private void ResultsGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
         var depObj = e.OriginalSource as DependencyObject;
-        while (depObj != null && depObj is not DataGridRow)
+        while (depObj != null && depObj is not System.Windows.Controls.DataGridRow)
             depObj = VisualTreeHelper.GetParent(depObj);
-        if (depObj is DataGridRow row)
+        if (depObj is System.Windows.Controls.DataGridRow row)
             row.IsSelected = true;
-        else if (sender is DataGrid grid)
+        else if (sender is System.Windows.Controls.DataGrid grid)
             grid.UnselectAll();
     }
 
@@ -157,10 +156,10 @@ public partial class SearchOverlay : FluentWindow
 
     private void ResultsGrid_ContextMenu_Opened(object sender, RoutedEventArgs e)
     {
-        if (sender is not ContextMenu menu)
+        if (sender is not System.Windows.Controls.ContextMenu menu)
             return;
 
-        var items = menu.Items.OfType<MenuItem>().ToList();
+        var items = menu.Items.OfType<System.Windows.Controls.MenuItem>().ToList();
         var openProtocol = items.FirstOrDefault(i => i.Header?.ToString() == "Otevřít protokol");
         var openDetail = items.FirstOrDefault(i => i.Header?.ToString() == "Otevřít detail souboru");
 
