@@ -33,6 +33,9 @@ public partial class SearchOverlay : FluentWindow
         _dialogs = dialogs;
 
         InitializeComponent();
+        // Capture the initial theme dictionary merged in XAML so it can be replaced later
+        _themeDictionary = Resources.MergedDictionaries
+            .FirstOrDefault(rd => rd.Source?.OriginalString.Contains("Theme.Light.xaml") == true);
         ApplyTheme(ApplicationThemeManager.GetAppTheme());
         ApplicationThemeManager.Changed += OnThemeChanged;
         SystemThemeWatcher.Watch(this);
@@ -151,7 +154,7 @@ public partial class SearchOverlay : FluentWindow
         window.Show();
     }
 
-    private void ResultsGrid_ContextMenu_Opening(object sender, ContextMenuEventArgs e)
+    private void ResultsGrid_ContextMenu_Opened(object sender, RoutedEventArgs e)
     {
         if (sender is not ContextMenu menu)
             return;
