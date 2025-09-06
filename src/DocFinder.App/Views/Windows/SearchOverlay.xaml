@@ -182,8 +182,9 @@
                               Loaded="ResultsGrid_Loaded"
                               PreviewMouseRightButtonDown="ResultsGrid_PreviewMouseRightButtonDown">
                     <ui:DataGrid.ContextMenu>
-                        <ContextMenu>
+                        <ContextMenu Opening="ResultsGrid_ContextMenu_Opening">
                             <MenuItem Header="Otevřít protokol" Click="OpenProtocol_Click" />
+                            <MenuItem Header="Otevřít detail souboru" Click="OpenFileDetail_Click" />
                         </ContextMenu>
                     </ui:DataGrid.ContextMenu>
                     <ui:DataGrid.Columns>

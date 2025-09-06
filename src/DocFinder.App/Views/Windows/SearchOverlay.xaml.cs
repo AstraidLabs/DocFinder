@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -137,6 +139,8 @@ public partial class SearchOverlay : FluentWindow
             depObj = VisualTreeHelper.GetParent(depObj);
         if (depObj is DataGridRow row)
             row.IsSelected = true;
+        else if (sender is DataGrid grid)
+            grid.UnselectAll();
     }
 
     private void OpenProtocol_Click(object sender, RoutedEventArgs e)
@@ -145,6 +149,44 @@ public partial class SearchOverlay : FluentWindow
             return;
         var window = new ProtocolWindow(_viewModel.SelectedDocument.Path);
         window.Show();
+    }
+
+    private void ResultsGrid_ContextMenu_Opening(object sender, ContextMenuEventArgs e)
+    {
+        if (sender is not ContextMenu menu)
+            return;
+
+        var items = menu.Items.OfType<MenuItem>().ToList();
+        var openProtocol = items.FirstOrDefault(i => i.Header?.ToString() == "Otevřít protokol");
+        var openDetail = items.FirstOrDefault(i => i.Header?.ToString() == "Otevřít detail souboru");
+
+        var doc = _viewModel.SelectedDocument;
+        var hasDoc = doc != null;
+
+        if (openDetail != null)
+            openDetail.IsEnabled = hasDoc;
+
+        if (openProtocol != null)
+        {
+            if (!hasDoc)
+                openProtocol.IsEnabled = false;
+            else
+            {
+                var ext = doc.Ext?.ToLowerInvariant();
+                openProtocol.IsEnabled = ext == ".pdf" || ext == ".docx";
+            }
+        }
+    }
+
+    private void OpenFileDetail_Click(object sender, RoutedEventArgs e)
+    {
+        var doc = _viewModel.SelectedDocument;
+        if (doc == null)
+            return;
+
+        var info = new FileInfo(doc.Path);
+        var detail = $"Název: {info.Name}\nTyp: {info.Extension}\nVelikost: {info.Length} B\nZměněno: {info.LastWriteTime}";
+        _dialogs.ShowInformation(detail, "Detail souboru");
     }
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
