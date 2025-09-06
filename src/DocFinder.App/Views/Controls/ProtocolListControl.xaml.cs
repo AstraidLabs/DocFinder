@@ -10,7 +10,6 @@ using DocFinder.Services;
 using DocFinder.Domain;
 using Microsoft.EntityFrameworkCore;
 using DocFinder.App.ViewModels.Entities;
-using Wpf.Ui.Controls;
 
 namespace DocFinder.App.Views.Controls;
 
@@ -87,7 +86,7 @@ public partial class ProtocolListControl : UserControl
             }
             else
             {
-                var messageBox = new MessageBox
+                var messageBox = new Wpf.Ui.Controls.MessageBox
                 {
                     Title = "DocFinder",
                     Content = "Soubor neexistuje.",
