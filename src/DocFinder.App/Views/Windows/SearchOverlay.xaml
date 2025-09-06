@@ -16,6 +16,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DocFinder.App;component/Resources/DesignTokens.xaml" />
+                <!-- Include a default theme dictionary so design-time resources are available -->
+                <ResourceDictionary Source="/DocFinder.App;component/Resources/Theme.Light.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:FileSizeConverter x:Key="FileSizeConverter" />
             <converters:UtcToLocalConverter x:Key="UtcToLocalConverter" />
@@ -182,7 +184,7 @@
                               Loaded="ResultsGrid_Loaded"
                               PreviewMouseRightButtonDown="ResultsGrid_PreviewMouseRightButtonDown">
                     <ui:DataGrid.ContextMenu>
-                        <ContextMenu Opening="ResultsGrid_ContextMenu_Opening">
+                        <ContextMenu Opened="ResultsGrid_ContextMenu_Opened">
                             <MenuItem Header="Otevřít protokol" Click="OpenProtocol_Click" />
                             <MenuItem Header="Otevřít detail souboru" Click="OpenFileDetail_Click" />
                         </ContextMenu>
