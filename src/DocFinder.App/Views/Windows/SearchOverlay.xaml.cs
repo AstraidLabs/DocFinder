@@ -12,6 +12,7 @@ using Wpf.Ui.Controls;
 using DocFinder.App.ViewModels;
 using DocFinder.Indexing;
 using DocFinder.App.Services;
+using DocFinder.App.Views.Controls;
 
 namespace DocFinder.App.Views.Windows;
 
@@ -94,8 +95,8 @@ public partial class SearchOverlay : FluentWindow
 
     private void Menu_Protocols_Click(object sender, RoutedEventArgs e)
     {
-        var window = new ProtocolWindow();
-        window.Show();
+        MainTabControl.SelectedIndex = 1;
+        ProtocolsTab.FilterByPath(null);
     }
 
     private async void Menu_Reindex_Click(object sender, RoutedEventArgs e)
@@ -150,8 +151,8 @@ public partial class SearchOverlay : FluentWindow
     {
         if (_viewModel.SelectedDocument == null)
             return;
-        var window = new ProtocolWindow(_viewModel.SelectedDocument.Path);
-        window.Show();
+        MainTabControl.SelectedIndex = 1;
+        ProtocolsTab.FilterByPath(_viewModel.SelectedDocument.Path);
     }
 
     private void ResultsGrid_ContextMenu_Opened(object sender, RoutedEventArgs e)
