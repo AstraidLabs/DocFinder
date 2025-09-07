@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:converters="clr-namespace:DocFinder.App.Converters"
-    xmlns:controls="clr-namespace:DocFinder.App.Views.Controls;assembly=DocFinder.App"
     Title="DocFinder" Width="900" Height="520"
     FontSize="{DynamicResource BodyFontSize}"
     WindowStartupLocation="CenterScreen"
@@ -101,11 +100,6 @@
                                             <ui:SymbolIcon Symbol="Search28" />
                                         </MenuItem.Icon>
                                     </MenuItem>
-                                    <MenuItem Header="Správa protokolů" Click="Menu_Protocols_Click">
-                                        <MenuItem.Icon>
-                                            <ui:SymbolIcon Symbol="ClipboardTextLtr24" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
                                     <MenuItem Header="Nastavení…" Click="Menu_Settings_Click">
                                         <MenuItem.Icon>
                                             <ui:SymbolIcon Symbol="Settings28" />
@@ -188,7 +182,6 @@
                                       PreviewMouseRightButtonDown="ResultsGrid_PreviewMouseRightButtonDown">
                             <ui:DataGrid.ContextMenu>
                                 <ContextMenu Opened="ResultsGrid_ContextMenu_Opened">
-                                    <MenuItem Header="Otevřít protokol" Click="OpenProtocol_Click" />
                                     <MenuItem Header="Otevřít detail souboru" Click="OpenFileDetail_Click" />
                                 </ContextMenu>
                             </ui:DataGrid.ContextMenu>
@@ -214,9 +207,6 @@
                         </Grid>
                     </Grid>
                 </Grid>
-            </TabItem>
-            <TabItem Header="Protokoly">
-                <controls:ProtocolListControl x:Name="ProtocolsTab" />
             </TabItem>
         </TabControl>
     </Grid>
