@@ -25,7 +25,21 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <ui:TitleBar
+            x:Name="TitleBar"
+            Title="{Binding ViewModel.ApplicationTitle}"
+            Grid.Row="0"
+            CloseWindowByDoubleClickOnIcon="True">
+            <ui:TitleBar.Icon>
+                <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
+            </ui:TitleBar.Icon>
+        </ui:TitleBar>
+
+        <!-- Body & Navigation -->
         <ui:NavigationView
             x:Name="RootNavigation"
             Grid.Row="1"
@@ -47,19 +61,19 @@
             </ui:NavigationView.ContentOverlay>
         </ui:NavigationView>
 
+        <!-- Footer -->
+        <Border
+            Grid.Row="2"
+            Background="{DynamicResource ApplicationBackgroundBrush}">
+            <ui:TextBlock
+                Margin="12,8"
+                HorizontalAlignment="Center"
+                Text="© 2024 DocFinder" />
+        </Border>
+
         <ContentPresenter
             x:Name="RootContentDialog"
             Grid.Row="0"
-            Grid.RowSpan="2" />
-
-        <ui:TitleBar
-            x:Name="TitleBar"
-            Title="{Binding ViewModel.ApplicationTitle}"
-            Grid.Row="0"
-            CloseWindowByDoubleClickOnIcon="True">
-            <ui:TitleBar.Icon>
-                <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
-            </ui:TitleBar.Icon>
-        </ui:TitleBar>
+            Grid.RowSpan="3" />
     </Grid>
 </ui:FluentWindow>
