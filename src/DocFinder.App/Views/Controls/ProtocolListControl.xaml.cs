@@ -24,6 +24,7 @@ public partial class ProtocolListControl : UserControl
     {
         InitializeComponent();
         _context = new DocumentDbContext();
+        _context.Database.Migrate();
         protocolsGrid.ItemsSource = _protocols;
         _view = CollectionViewSource.GetDefaultView(_protocols);
         _view.Filter = Filter;
