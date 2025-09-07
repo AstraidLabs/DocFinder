@@ -67,12 +67,17 @@ public partial class App
 
     private async void OnStartup(object sender, StartupEventArgs e)
     {
+        var loadingWindow = new LoadingWindow();
+        loadingWindow.Show();
+
         // Load user settings before any services are started so that other
         // services (like the file watcher) receive the correct configuration.
         var settings = Services.GetRequiredService<ISettingsService>();
         await settings.LoadAsync();
 
         await _host.StartAsync();
+
+        loadingWindow.Close();
 
         var overlay = Services.GetRequiredService<SearchOverlay>();
         overlay.Show();
