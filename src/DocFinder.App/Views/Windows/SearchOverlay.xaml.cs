@@ -1,7 +1,8 @@
 using System;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -10,6 +11,7 @@ using Wpf.Ui.Controls;
 using DocFinder.App.ViewModels;
 using DocFinder.Indexing;
 using DocFinder.App.Services;
+using DocFinder.App.Views.Controls;
 
 namespace DocFinder.App.Views.Windows;
 
@@ -31,6 +33,9 @@ public partial class SearchOverlay : FluentWindow
         _dialogs = dialogs;
 
         InitializeComponent();
+        // Capture the initial theme dictionary merged in XAML so it can be replaced later
+        _themeDictionary = Resources.MergedDictionaries
+            .FirstOrDefault(rd => rd.Source?.OriginalString.Contains("Theme.Light.xaml") == true);
         ApplyTheme(ApplicationThemeManager.GetAppTheme());
         ApplicationThemeManager.Changed += OnThemeChanged;
         SystemThemeWatcher.Watch(this);
@@ -89,8 +94,8 @@ public partial class SearchOverlay : FluentWindow
 
     private void Menu_Protocols_Click(object sender, RoutedEventArgs e)
     {
-        var window = new ProtocolWindow();
-        window.Show();
+        MainTabControl.SelectedIndex = 1;
+        ProtocolsTab.FilterByPath(null);
     }
 
     private async void Menu_Reindex_Click(object sender, RoutedEventArgs e)
@@ -133,18 +138,58 @@ public partial class SearchOverlay : FluentWindow
     private void ResultsGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
         var depObj = e.OriginalSource as DependencyObject;
-        while (depObj != null && depObj is not DataGridRow)
+        while (depObj != null && depObj is not System.Windows.Controls.DataGridRow)
             depObj = VisualTreeHelper.GetParent(depObj);
-        if (depObj is DataGridRow row)
+        if (depObj is System.Windows.Controls.DataGridRow row)
             row.IsSelected = true;
+        else if (sender is System.Windows.Controls.DataGrid grid)
+            grid.UnselectAll();
     }
 
     private void OpenProtocol_Click(object sender, RoutedEventArgs e)
     {
         if (_viewModel.SelectedDocument == null)
             return;
-        var window = new ProtocolWindow(_viewModel.SelectedDocument.Path);
-        window.Show();
+        MainTabControl.SelectedIndex = 1;
+        ProtocolsTab.FilterByPath(_viewModel.SelectedDocument.Path);
+    }
+
+    private void ResultsGrid_ContextMenu_Opened(object sender, RoutedEventArgs e)
+    {
+        if (sender is not System.Windows.Controls.ContextMenu menu)
+            return;
+
+        var items = menu.Items.OfType<System.Windows.Controls.MenuItem>().ToList();
+        var openProtocol = items.FirstOrDefault(i => i.Header?.ToString() == "Otevřít protokol");
+        var openDetail = items.FirstOrDefault(i => i.Header?.ToString() == "Otevřít detail souboru");
+
+        var doc = _viewModel.SelectedDocument;
+        var hasDoc = doc != null;
+
+        if (openDetail != null)
+            openDetail.IsEnabled = hasDoc;
+
+        if (openProtocol != null)
+        {
+            if (!hasDoc)
+                openProtocol.IsEnabled = false;
+            else
+            {
+                var ext = doc.Ext?.ToLowerInvariant();
+                openProtocol.IsEnabled = ext == ".pdf" || ext == ".docx";
+            }
+        }
+    }
+
+    private void OpenFileDetail_Click(object sender, RoutedEventArgs e)
+    {
+        var doc = _viewModel.SelectedDocument;
+        if (doc == null)
+            return;
+
+        var info = new FileInfo(doc.Path);
+        var detail = $"Název: {info.Name}\nTyp: {info.Extension}\nVelikost: {info.Length} B\nZměněno: {info.LastWriteTime}";
+        _dialogs.ShowInformation(detail, "Detail souboru");
     }
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
