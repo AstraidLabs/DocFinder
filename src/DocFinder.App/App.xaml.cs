@@ -17,6 +17,7 @@ using DocFinder.Indexing;
 using DocFinder.Application;
 using DocFinder.Application.Commands;
 using DocFinder.Application.Handlers;
+using Wpf.Ui.Appearance;
 
 namespace DocFinder.App;
 
@@ -67,13 +68,20 @@ public partial class App
 
     private async void OnStartup(object sender, StartupEventArgs e)
     {
-        var loadingWindow = new LoadingWindow();
-        loadingWindow.Show();
-
         // Load user settings before any services are started so that other
         // services (like the file watcher) receive the correct configuration.
         var settings = Services.GetRequiredService<ISettingsService>();
         await settings.LoadAsync();
+
+        // Apply the configured theme so that the loading window uses it immediately
+        var themeName = settings.Current.Theme;
+        var theme = themeName.Equals("Dark", StringComparison.OrdinalIgnoreCase)
+            ? ApplicationTheme.Dark
+            : ApplicationTheme.Light;
+        ApplicationThemeManager.Apply(theme);
+
+        var loadingWindow = new LoadingWindow();
+        loadingWindow.Show();
 
         await _host.StartAsync();
 
