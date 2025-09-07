@@ -45,6 +45,16 @@ public partial class SearchOverlay : FluentWindow
         ApplyResponsiveLayout(ActualWidth);
     }
 
+    /// <summary>
+    /// Ensures that closing this window also shuts down the application.
+    /// </summary>
+    /// <param name="e">Event data for the window closed event.</param>
+    protected override void OnClosed(EventArgs e)
+    {
+        base.OnClosed(e);
+        System.Windows.Application.Current.Shutdown();
+    }
+
     private void OnThemeChanged(ApplicationTheme newTheme, Color accentColor)
         => ApplyTheme(newTheme);
 
