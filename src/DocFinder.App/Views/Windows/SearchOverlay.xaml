@@ -71,141 +71,139 @@
 
         <ui:TitleBar Grid.Row="0" Title="DocFinder" Foreground="{DynamicResource TextPrimaryBrush}" />
 
-        <ui:Page Grid.Row="1" x:Name="SearchPage" Margin="{StaticResource Space24}" Title="Hledání">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+        <Grid Grid.Row="1" x:Name="SearchPage" Margin="{StaticResource Space24}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-                    <!-- Search bar -->
-                    <Grid Grid.Row="0" Margin="{StaticResource MarginBottomSpace16}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+            <!-- Search bar -->
+            <Grid Grid.Row="0" Margin="{StaticResource MarginBottomSpace16}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                        <ui:Button x:Name="MenuButton" Grid.Column="0" Style="{StaticResource IconButtonStyle}" ToolTip="Menu" Click="MenuButton_Click">
-                            <ui:Button.Icon>
-                                <ui:SymbolIcon Symbol="Navigation16" FontSize="{StaticResource IconSize}" />
-                            </ui:Button.Icon>
-                            <ui:Button.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Nové hledání" Click="Menu_NewSearch_Click">
-                                        <MenuItem.Icon>
-                                            <ui:SymbolIcon Symbol="Search28" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <MenuItem Header="Nastavení…" Click="Menu_Settings_Click">
-                                        <MenuItem.Icon>
-                                            <ui:SymbolIcon Symbol="Settings28" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <MenuItem Header="Přeindexovat" Click="Menu_Reindex_Click">
-                                        <MenuItem.Icon>
-                                            <ui:SymbolIcon Symbol="ArrowClockwise28" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <MenuItem x:Name="PauseResumeMenuItem" Header="Pozastavit indexaci" Click="Menu_PauseResume_Click">
-                                        <MenuItem.Icon>
-                                            <ui:SymbolIcon x:Name="PauseResumeIcon" Symbol="PauseCircle24" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                    <MenuItem Header="Ukončit" Click="Menu_Exit_Click">
-                                        <MenuItem.Icon>
-                                            <ui:SymbolIcon Symbol="Dismiss28" />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                </ContextMenu>
-                            </ui:Button.ContextMenu>
-                        </ui:Button>
+                <ui:Button x:Name="MenuButton" Grid.Column="0" Style="{StaticResource IconButtonStyle}" ToolTip="Menu" Click="MenuButton_Click">
+                    <ui:Button.Icon>
+                        <ui:SymbolIcon Symbol="Navigation16" FontSize="{StaticResource IconSize}" />
+                    </ui:Button.Icon>
+                    <ui:Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Nové hledání" Click="Menu_NewSearch_Click">
+                                <MenuItem.Icon>
+                                    <ui:SymbolIcon Symbol="Search28" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Nastavení…" Click="Menu_Settings_Click">
+                                <MenuItem.Icon>
+                                    <ui:SymbolIcon Symbol="Settings28" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Přeindexovat" Click="Menu_Reindex_Click">
+                                <MenuItem.Icon>
+                                    <ui:SymbolIcon Symbol="ArrowClockwise28" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem x:Name="PauseResumeMenuItem" Header="Pozastavit indexaci" Click="Menu_PauseResume_Click">
+                                <MenuItem.Icon>
+                                    <ui:SymbolIcon x:Name="PauseResumeIcon" Symbol="PauseCircle24" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Ukončit" Click="Menu_Exit_Click">
+                                <MenuItem.Icon>
+                                    <ui:SymbolIcon Symbol="Dismiss28" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </ui:Button.ContextMenu>
+                </ui:Button>
 
-                        <ui:TextBox x:Name="QueryTextBox" Grid.Column="1" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}"
-                                    Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}" Padding="{StaticResource Space12}"
-                                    PlaceholderEnabled="True" PlaceholderText="Hledat…"/>
+                <ui:TextBox x:Name="QueryTextBox" Grid.Column="1" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}"
+                            Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}" Padding="{StaticResource Space12}"
+                            PlaceholderEnabled="True" PlaceholderText="Hledat…"/>
 
-                        <ComboBox Grid.Column="2" SelectedValuePath="Tag" SelectedValue="{Binding FileTypeFilter}"
-                                  Width="100" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}">
-                            <ComboBoxItem Content="Vše" Tag="all" />
-                            <ComboBoxItem Content="PDF" Tag="pdf" />
-                            <ComboBoxItem Content="DOCX" Tag="docx" />
-                        </ComboBox>
+                <ComboBox Grid.Column="2" SelectedValuePath="Tag" SelectedValue="{Binding FileTypeFilter}"
+                          Width="100" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}">
+                    <ComboBoxItem Content="Vše" Tag="all" />
+                    <ComboBoxItem Content="PDF" Tag="pdf" />
+                    <ComboBoxItem Content="DOCX" Tag="docx" />
+                </ComboBox>
 
-                        <ui:Button Grid.Column="3" Style="{StaticResource IconButtonStyle}" ToolTip="Hledat" Command="{Binding SearchCommand}">
-                            <ui:Button.Icon>
-                                <ui:SymbolIcon Symbol="Search28" FontSize="{StaticResource IconSize}" />
-                            </ui:Button.Icon>
-                        </ui:Button>
-                    </Grid>
+                <ui:Button Grid.Column="3" Style="{StaticResource IconButtonStyle}" ToolTip="Hledat" Command="{Binding SearchCommand}">
+                    <ui:Button.Icon>
+                        <ui:SymbolIcon Symbol="Search28" FontSize="{StaticResource IconSize}" />
+                    </ui:Button.Icon>
+                </ui:Button>
+            </Grid>
 
-                    <!-- Filter panel -->
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="{StaticResource MarginBottomSpace16}">
-                        <DatePicker SelectedDate="{Binding FromDate}" Width="150" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" ToolTip="Od"/>
-                        <DatePicker SelectedDate="{Binding ToDate}" Width="150" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" ToolTip="Do"/>
-                        <ui:TextBox Text="{Binding AuthorFilter, UpdateSourceTrigger=PropertyChanged}" Width="120" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" PlaceholderEnabled="True" PlaceholderText="Autor"/>
-                        <ui:TextBox Text="{Binding VersionFilter, UpdateSourceTrigger=PropertyChanged}" Width="100" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" PlaceholderEnabled="True" PlaceholderText="Verze"/>
-                        <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding SortField}" Width="140" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}">
-                            <ComboBoxItem Content="Název" Tag="FileName"/>
-                            <ComboBoxItem Content="Změněno" Tag="ModifiedUtc"/>
-                            <ComboBoxItem Content="Autor" Tag="Author"/>
-                            <ComboBoxItem Content="Verze" Tag="Version"/>
-                        </ComboBox>
-                        <ui:ToggleSwitch IsChecked="{Binding SortAscending}" Margin="{StaticResource Space8}">
-                            <ui:ToggleSwitch.OnContent>
-                                <ui:SymbolIcon Symbol="ArrowSortUpLines20" FontSize="{StaticResource IconSize}"/>
-                            </ui:ToggleSwitch.OnContent>
-                            <ui:ToggleSwitch.OffContent>
-                                <ui:SymbolIcon Symbol="ArrowSortDownLines20" FontSize="{StaticResource IconSize}"/>
-                            </ui:ToggleSwitch.OffContent>
-                        </ui:ToggleSwitch>
-                    </StackPanel>
+            <!-- Filter panel -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="{StaticResource MarginBottomSpace16}">
+                <DatePicker SelectedDate="{Binding FromDate}" Width="150" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" ToolTip="Od"/>
+                <DatePicker SelectedDate="{Binding ToDate}" Width="150" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" ToolTip="Do"/>
+                <ui:TextBox Text="{Binding AuthorFilter, UpdateSourceTrigger=PropertyChanged}" Width="120" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" PlaceholderEnabled="True" PlaceholderText="Autor"/>
+                <ui:TextBox Text="{Binding VersionFilter, UpdateSourceTrigger=PropertyChanged}" Width="100" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" PlaceholderEnabled="True" PlaceholderText="Verze"/>
+                <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding SortField}" Width="140" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}">
+                    <ComboBoxItem Content="Název" Tag="FileName"/>
+                    <ComboBoxItem Content="Změněno" Tag="ModifiedUtc"/>
+                    <ComboBoxItem Content="Autor" Tag="Author"/>
+                    <ComboBoxItem Content="Verze" Tag="Version"/>
+                </ComboBox>
+                <ui:ToggleSwitch IsChecked="{Binding SortAscending}" Margin="{StaticResource Space8}">
+                    <ui:ToggleSwitch.OnContent>
+                        <ui:SymbolIcon Symbol="ArrowSortUpLines20" FontSize="{StaticResource IconSize}"/>
+                    </ui:ToggleSwitch.OnContent>
+                    <ui:ToggleSwitch.OffContent>
+                        <ui:SymbolIcon Symbol="ArrowSortDownLines20" FontSize="{StaticResource IconSize}"/>
+                    </ui:ToggleSwitch.OffContent>
+                </ui:ToggleSwitch>
+            </StackPanel>
 
-                    <!-- Results and detail -->
-                <Grid Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" x:Name="ResultsColumn"/>
-                        <ColumnDefinition Width="320" x:Name="DetailColumn"/>
-                    </Grid.ColumnDefinitions>
+            <!-- Results and detail -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" x:Name="ResultsColumn"/>
+                    <ColumnDefinition Width="320" x:Name="DetailColumn"/>
+                </Grid.ColumnDefinitions>
 
-                        <ui:DataGrid x:Name="ResultsGrid" Grid.Column="0" Margin="{StaticResource MarginRightSpace16}"
-                                      ItemsSource="{Binding ResultsView.View}"
-                                      SelectedItem="{Binding SelectedDocument}"
-                                      AutoGenerateColumns="False"
-                                      CanUserSortColumns="True"
-                                      IsReadOnly="True"
-                                      RowStyle="{StaticResource SearchRowStyle}"
-                                      Loaded="ResultsGrid_Loaded"
-                                      PreviewMouseRightButtonDown="ResultsGrid_PreviewMouseRightButtonDown">
-                            <ui:DataGrid.ContextMenu>
-                                <ContextMenu Opened="ResultsGrid_ContextMenu_Opened">
-                                    <MenuItem Header="Otevřít detail souboru" Click="OpenFileDetail_Click" />
-                                </ContextMenu>
-                            </ui:DataGrid.ContextMenu>
-                            <ui:DataGrid.Columns>
-                                <DataGridTextColumn Header="Název" Binding="{Binding FileName}" SortMemberPath="SortKey" Width="*"/>
-                                <DataGridTextColumn Header="Autor" Binding="{Binding Author}" Width="120"/>
-                                <DataGridTextColumn Header="Verze" Binding="{Binding Version}" Width="80"/>
-                                <DataGridTextColumn Header="Typ" Binding="{Binding Ext}" Width="80"/>
-                                <DataGridTextColumn Header="Velikost" Binding="{Binding SizeBytes, Converter={StaticResource FileSizeConverter}}" Width="100"/>
-                                <DataGridTextColumn Header="Změněno" Binding="{Binding ModifiedUtc, Converter={StaticResource UtcToLocalConverter}}" Width="140"/>
-                            </ui:DataGrid.Columns>
-                        </ui:DataGrid>
+                <ui:DataGrid x:Name="ResultsGrid" Grid.Column="0" Margin="{StaticResource MarginRightSpace16}"
+                              ItemsSource="{Binding ResultsView.View}"
+                              SelectedItem="{Binding SelectedDocument}"
+                              AutoGenerateColumns="False"
+                              CanUserSortColumns="True"
+                              IsReadOnly="True"
+                              RowStyle="{StaticResource SearchRowStyle}"
+                              Loaded="ResultsGrid_Loaded"
+                              PreviewMouseRightButtonDown="ResultsGrid_PreviewMouseRightButtonDown">
+                    <ui:DataGrid.ContextMenu>
+                        <ContextMenu Opened="ResultsGrid_ContextMenu_Opened">
+                            <MenuItem Header="Otevřít detail souboru" Click="OpenFileDetail_Click" />
+                        </ContextMenu>
+                    </ui:DataGrid.ContextMenu>
+                    <ui:DataGrid.Columns>
+                        <DataGridTextColumn Header="Název" Binding="{Binding FileName}" SortMemberPath="SortKey" Width="*"/>
+                        <DataGridTextColumn Header="Autor" Binding="{Binding Author}" Width="120"/>
+                        <DataGridTextColumn Header="Verze" Binding="{Binding Version}" Width="80"/>
+                        <DataGridTextColumn Header="Typ" Binding="{Binding Ext}" Width="80"/>
+                        <DataGridTextColumn Header="Velikost" Binding="{Binding SizeBytes, Converter={StaticResource FileSizeConverter}}" Width="100"/>
+                        <DataGridTextColumn Header="Změněno" Binding="{Binding ModifiedUtc, Converter={StaticResource UtcToLocalConverter}}" Width="140"/>
+                    </ui:DataGrid.Columns>
+                </ui:DataGrid>
 
-                        <Grid Grid.Column="1">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Border Grid.Row="0" BorderThickness="1" BorderBrush="{DynamicResource StrokeBrush}">
-                                <ContentControl x:Name="PreviewHost" />
-                            </Border>
-                            <ui:Button Grid.Row="1" Content="Otevřít" Command="{Binding OpenDocumentCommand}" Margin="{StaticResource MarginTopSpace16}"/>
-                        </Grid>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" BorderThickness="1" BorderBrush="{DynamicResource StrokeBrush}">
+                        <ContentControl x:Name="PreviewHost" />
+                    </Border>
+                    <ui:Button Grid.Row="1" Content="Otevřít" Command="{Binding OpenDocumentCommand}" Margin="{StaticResource MarginTopSpace16}"/>
                 </Grid>
             </Grid>
-        </ui:Page>
+        </Grid>
     </Grid>
 </ui:FluentWindow>
