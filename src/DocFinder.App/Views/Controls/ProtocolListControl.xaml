@@ -35,9 +35,9 @@
                     <DataGridTextColumn Header="Date" Binding="{Binding IssueDateUtc}" />
                 </ui:DataGrid.Columns>
                 <ui:DataGrid.ContextMenu>
-                    <ui:ContextMenu>
-                        <ui:MenuItem Header="Open File" Click="OpenFile_Click" />
-                    </ui:ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Open File" Click="OpenFile_Click" />
+                    </ContextMenu>
                 </ui:DataGrid.ContextMenu>
             </ui:DataGrid>
         </ui:Card>
