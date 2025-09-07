@@ -68,16 +68,24 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Grid.Row="0" Title="DocFinder" Foreground="{DynamicResource TextPrimaryBrush}" />
+        <!-- Header -->
+        <ui:TitleBar Grid.Row="0" Title="DocFinder" Foreground="{DynamicResource TextPrimaryBrush}">
+            <ui:TitleBar.Icon>
+                <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
+            </ui:TitleBar.Icon>
+        </ui:TitleBar>
 
-        <Grid Grid.Row="1" x:Name="SearchPage" Margin="{StaticResource Space24}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+        <!-- Body & Navigation -->
+        <ui:NavigationView Grid.Row="1" PaneDisplayMode="LeftFluent">
+            <Grid x:Name="SearchPage" Margin="{StaticResource Space24}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
             <!-- Search bar -->
             <Grid Grid.Row="0" Margin="{StaticResource MarginBottomSpace16}">
@@ -205,6 +213,12 @@
                     <ui:Button Grid.Row="1" Content="Otevřít" Command="{Binding OpenDocumentCommand}" Margin="{StaticResource MarginTopSpace16}"/>
                 </Grid>
             </Grid>
-        </Grid>
+            </Grid>
+        </ui:NavigationView>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="{DynamicResource ApplicationBackgroundBrush}">
+            <ui:TextBlock Margin="12,8" HorizontalAlignment="Center" Text="© 2024 DocFinder" />
+        </Border>
     </Grid>
 </local:MainWindow>

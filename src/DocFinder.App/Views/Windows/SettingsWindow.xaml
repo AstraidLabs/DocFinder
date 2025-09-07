@@ -12,38 +12,52 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Grid.Row="0" Title="Settings" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+        <!-- Header -->
+        <ui:TitleBar Grid.Row="0" Title="Settings" Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+            <ui:TitleBar.Icon>
+                <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
+            </ui:TitleBar.Icon>
+        </ui:TitleBar>
 
-        <StackPanel Grid.Row="1" Margin="20">
-            <TextBlock Text="Source Folder"/>
-            <TextBox Text="{Binding Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Margin="0,12,0,0" Text="Watched Folders (one per line)"/>
-            <TextBox Text="{Binding WatchedRootsText, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="80"/>
-            <TextBlock Margin="0,12,0,0" Text="Index Path"/>
-            <TextBox Text="{Binding Settings.IndexPath, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Margin="0,12,0,0" Text="Thumbnails Path"/>
-            <TextBox Text="{Binding Settings.ThumbsPath, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Margin="0,12,0,0" Text="Polling Interval (minutes)"/>
-            <TextBox Text="{Binding Settings.PollingMinutes, UpdateSourceTrigger=PropertyChanged}"/>
-            <CheckBox Content="Enable OCR" IsChecked="{Binding Settings.EnableOcr}"/>
-            <TextBlock Margin="0,12,0,0" Text="Theme"/>
-            <ComboBox SelectedValue="{Binding Settings.Theme}" SelectedValuePath="Content">
-                <ComboBoxItem Content="Light"/>
-                <ComboBoxItem Content="Dark"/>
-            </ComboBox>
-            <CheckBox Content="Auto index on startup" IsChecked="{Binding Settings.AutoIndexOnStartup}"/>
-            <CheckBox Content="Use fuzzy search" IsChecked="{Binding Settings.UseFuzzySearch}"/>
-            <TextBlock Margin="0,12,0,0" Text="Page Size"/>
-            <TextBox Text="{Binding Settings.PageSize, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button Content="Save" Command="{Binding SaveCommand}" Margin="0,20,0,0"/>
+        <!-- Body & Navigation -->
+        <ui:NavigationView Grid.Row="1" PaneDisplayMode="LeftFluent">
+            <StackPanel Margin="20">
+                <TextBlock Text="Source Folder"/>
+                <TextBox Text="{Binding Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Margin="0,12,0,0" Text="Watched Folders (one per line)"/>
+                <TextBox Text="{Binding WatchedRootsText, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="80"/>
+                <TextBlock Margin="0,12,0,0" Text="Index Path"/>
+                <TextBox Text="{Binding Settings.IndexPath, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Margin="0,12,0,0" Text="Thumbnails Path"/>
+                <TextBox Text="{Binding Settings.ThumbsPath, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Margin="0,12,0,0" Text="Polling Interval (minutes)"/>
+                <TextBox Text="{Binding Settings.PollingMinutes, UpdateSourceTrigger=PropertyChanged}"/>
+                <CheckBox Content="Enable OCR" IsChecked="{Binding Settings.EnableOcr}"/>
+                <TextBlock Margin="0,12,0,0" Text="Theme"/>
+                <ComboBox SelectedValue="{Binding Settings.Theme}" SelectedValuePath="Content">
+                    <ComboBoxItem Content="Light"/>
+                    <ComboBoxItem Content="Dark"/>
+                </ComboBox>
+                <CheckBox Content="Auto index on startup" IsChecked="{Binding Settings.AutoIndexOnStartup}"/>
+                <CheckBox Content="Use fuzzy search" IsChecked="{Binding Settings.UseFuzzySearch}"/>
+                <TextBlock Margin="0,12,0,0" Text="Page Size"/>
+                <TextBox Text="{Binding Settings.PageSize, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Content="Save" Command="{Binding SaveCommand}" Margin="0,20,0,0"/>
 
-            <DataGrid ItemsSource="{Binding IndexedFiles}" Margin="0,20,0,0" Height="150" AutoGenerateColumns="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Soubor" Binding="{Binding}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
+                <DataGrid ItemsSource="{Binding IndexedFiles}" Margin="0,20,0,0" Height="150" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Soubor" Binding="{Binding}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </ui:NavigationView>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="{DynamicResource ApplicationBackgroundBrush}">
+            <ui:TextBlock Margin="12,8" HorizontalAlignment="Center" Text="© 2024 DocFinder" />
+        </Border>
     </Grid>
 </local:MainWindow>
