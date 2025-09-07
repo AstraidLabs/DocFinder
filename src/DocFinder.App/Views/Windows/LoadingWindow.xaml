@@ -12,11 +12,32 @@
     ResizeMode="NoResize"
     ShowInTaskbar="False">
     <Grid Background="{DynamicResource SurfaceBackgroundBrush}">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock Text="Načítání…" FontSize="16" Margin="0,0,0,12" HorizontalAlignment="Center"
-                       Foreground="{DynamicResource TextPrimaryBrush}"/>
-            <ProgressBar IsIndeterminate="True" Width="200" Height="20"
-                         Foreground="{DynamicResource AccentBrush}"/>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <ui:TitleBar Grid.Row="0" Title="DocFinder" Foreground="{DynamicResource TextPrimaryBrush}">
+            <ui:TitleBar.Icon>
+                <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
+            </ui:TitleBar.Icon>
+        </ui:TitleBar>
+
+        <!-- Body & Navigation -->
+        <ui:NavigationView Grid.Row="1" PaneDisplayMode="LeftFluent">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Načítání…" FontSize="16" Margin="0,0,0,12" HorizontalAlignment="Center"
+                           Foreground="{DynamicResource TextPrimaryBrush}"/>
+                <ProgressBar IsIndeterminate="True" Width="200" Height="20"
+                             Foreground="{DynamicResource AccentBrush}"/>
+            </StackPanel>
+        </ui:NavigationView>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="{DynamicResource ApplicationBackgroundBrush}">
+            <ui:TextBlock Margin="12,8" HorizontalAlignment="Center" Text="© 2024 DocFinder" />
+        </Border>
     </Grid>
 </local:MainWindow>
