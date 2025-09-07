@@ -56,4 +56,23 @@ public class LuceneSearchServiceTests
         Assert.Equal(5, result.Total);
         Assert.Equal(2, result.Hits.Count);
     }
+
+    [Fact]
+    public async Task QueryWithMultipleTypesFiltersResults()
+    {
+        using var service = new LuceneSearchService(new RAMDirectory());
+        await service.IndexAsync(new IndexDocument(Guid.NewGuid(), "/a.pdf", "a.pdf", "pdf", 1, DateTime.UtcNow, DateTime.UtcNow, "hash", null, null, "hello", new Dictionary<string, string>()));
+        await service.IndexAsync(new IndexDocument(Guid.NewGuid(), "/b.docx", "b.docx", "docx", 1, DateTime.UtcNow, DateTime.UtcNow, "hash", null, null, "hello", new Dictionary<string, string>()));
+        await service.IndexAsync(new IndexDocument(Guid.NewGuid(), "/c.txt", "c.txt", "txt", 1, DateTime.UtcNow, DateTime.UtcNow, "hash", null, null, "hello", new Dictionary<string, string>()));
+
+        var query = new UserQuery("hello")
+        {
+            Filters = new Dictionary<string, string> { ["type"] = "pdf,docx" }
+        };
+
+        var result = await service.QueryAsync(query);
+
+        Assert.Equal(2, result.Total);
+        Assert.All(result.Hits, h => Assert.True(h.Ext == "pdf" || h.Ext == "docx"));
+    }
 }

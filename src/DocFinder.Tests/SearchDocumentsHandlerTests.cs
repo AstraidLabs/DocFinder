@@ -51,5 +51,18 @@ public class SearchDocumentsHandlerTests
 
         Assert.Equal(7, search.ReceivedQuery?.PageSize);
     }
+
+    [Fact]
+    public async Task HandlerFiltersPdfAndDocxWhenAllRequested()
+    {
+        var search = new FakeSearchService();
+        var settings = new FakeSettingsService(5);
+        var handler = new SearchDocumentsHandler(search, settings);
+
+        await handler.HandleAsync(new SearchDocumentsCommand("q", new SearchFilter("all")), CancellationToken.None);
+
+        Assert.True(search.ReceivedQuery?.Filters.ContainsKey("type"));
+        Assert.Equal("pdf,docx", search.ReceivedQuery?.Filters["type"]);
+    }
 }
 
