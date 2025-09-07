@@ -6,20 +6,23 @@ using Wpf.Ui.Controls;
 
 namespace DocFinder.App.Views.Windows
 {
-    public partial class MainWindow : INavigationWindow
+    public partial class MainWindow : FluentWindow, INavigationWindow
     {
-        public MainWindowViewModel ViewModel { get; }
+        public MainWindowViewModel? ViewModel { get; }
+
+        public MainWindow()
+        {
+            SystemThemeWatcher.Watch(this);
+        }
 
         public MainWindow(
             MainWindowViewModel viewModel,
             INavigationViewPageProvider navigationViewPageProvider,
             INavigationService navigationService
-        )
+        ) : this()
         {
             ViewModel = viewModel;
             DataContext = this;
-
-            SystemThemeWatcher.Watch(this);
 
             InitializeComponent();
             SetPageService(navigationViewPageProvider);
@@ -50,11 +53,6 @@ namespace DocFinder.App.Views.Windows
 
             // Make sure that closing this window will begin the process of closing the application.
             System.Windows.Application.Current.Shutdown();
-        }
-
-        INavigationView INavigationWindow.GetNavigation()
-        {
-            throw new NotImplementedException();
         }
 
         public void SetServiceProvider(IServiceProvider serviceProvider)
