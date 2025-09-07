@@ -11,7 +11,6 @@ using Wpf.Ui.Controls;
 using DocFinder.App.ViewModels;
 using DocFinder.Indexing;
 using DocFinder.App.Services;
-using DocFinder.App.Views.Controls;
 
 namespace DocFinder.App.Views.Windows;
 
@@ -92,12 +91,6 @@ public partial class SearchOverlay : FluentWindow
         _settings.Show();
     }
 
-    private void Menu_Protocols_Click(object sender, RoutedEventArgs e)
-    {
-        MainTabControl.SelectedIndex = 1;
-        ProtocolsTab.FilterByPath(null);
-    }
-
     private async void Menu_Reindex_Click(object sender, RoutedEventArgs e)
     {
         if (!_dialogs.ShowConfirmation("Přeindexovat všechny dokumenty?", "DocFinder"))
@@ -146,21 +139,12 @@ public partial class SearchOverlay : FluentWindow
             grid.UnselectAll();
     }
 
-    private void OpenProtocol_Click(object sender, RoutedEventArgs e)
-    {
-        if (_viewModel.SelectedDocument == null)
-            return;
-        MainTabControl.SelectedIndex = 1;
-        ProtocolsTab.FilterByPath(_viewModel.SelectedDocument.Path);
-    }
-
     private void ResultsGrid_ContextMenu_Opened(object sender, RoutedEventArgs e)
     {
         if (sender is not System.Windows.Controls.ContextMenu menu)
             return;
 
         var items = menu.Items.OfType<System.Windows.Controls.MenuItem>().ToList();
-        var openProtocol = items.FirstOrDefault(i => i.Header?.ToString() == "Otevřít protokol");
         var openDetail = items.FirstOrDefault(i => i.Header?.ToString() == "Otevřít detail souboru");
 
         var doc = _viewModel.SelectedDocument;
@@ -168,17 +152,6 @@ public partial class SearchOverlay : FluentWindow
 
         if (openDetail != null)
             openDetail.IsEnabled = hasDoc;
-
-        if (openProtocol != null)
-        {
-            if (!hasDoc)
-                openProtocol.IsEnabled = false;
-            else
-            {
-                var ext = doc.Ext?.ToLowerInvariant();
-                openProtocol.IsEnabled = ext == ".pdf" || ext == ".docx";
-            }
-        }
     }
 
     private void OpenFileDetail_Click(object sender, RoutedEventArgs e)
