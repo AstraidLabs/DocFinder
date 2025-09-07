@@ -10,10 +10,12 @@
     WindowStyle="None"
     ResizeMode="NoResize"
     ShowInTaskbar="False">
-    <Grid>
+    <Grid Background="{DynamicResource SurfaceBackgroundBrush}">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock Text="Načítání…" FontSize="16" Margin="0,0,0,12" HorizontalAlignment="Center"/>
-            <ProgressBar IsIndeterminate="True" Width="200" Height="20"/>
+            <TextBlock Text="Načítání…" FontSize="16" Margin="0,0,0,12" HorizontalAlignment="Center"
+                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+            <ProgressBar IsIndeterminate="True" Width="200" Height="20"
+                         Foreground="{DynamicResource AccentBrush}"/>
         </StackPanel>
     </Grid>
 </ui:FluentWindow>
