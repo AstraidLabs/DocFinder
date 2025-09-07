@@ -1,7 +1,8 @@
-<ui:FluentWindow x:Class="DocFinder.App.Views.Windows.SettingsWindow"
+<local:MainWindow x:Class="DocFinder.App.Views.Windows.SettingsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:local="clr-namespace:DocFinder.App.Views.Windows"
     Title="Settings" Width="500" Height="400"
     WindowStartupLocation="CenterOwner"
     ExtendsContentIntoTitleBar="True"
@@ -45,4 +46,4 @@
             </DataGrid>
         </StackPanel>
     </Grid>
-</ui:FluentWindow>
+</local:MainWindow>
