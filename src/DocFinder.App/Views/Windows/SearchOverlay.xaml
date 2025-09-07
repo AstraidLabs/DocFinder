@@ -71,8 +71,8 @@
 
         <ui:TitleBar Grid.Row="0" Title="DocFinder" Foreground="{DynamicResource TextPrimaryBrush}" />
 
-        <TabControl Grid.Row="1" x:Name="MainTabControl" Margin="{StaticResource Space24}">
-            <TabItem Header="Hledání">
+        <ui:TabControl Grid.Row="1" x:Name="MainTabControl" Margin="{StaticResource Space24}">
+            <ui:TabItem Header="Hledání">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -207,7 +207,7 @@
                         </Grid>
                     </Grid>
                 </Grid>
-            </TabItem>
-        </TabControl>
+            </ui:TabItem>
+        </ui:TabControl>
     </Grid>
 </ui:FluentWindow>
