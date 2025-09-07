@@ -133,7 +133,20 @@ public sealed class LuceneSearchService : ISearchService, IDisposable
             ct.ThrowIfCancellationRequested();
             if (string.Equals(kv.Key, "type", StringComparison.OrdinalIgnoreCase))
             {
-                boolean.Add(new TermQuery(new Term("ext", kv.Value)), Occur.MUST);
+                var values = kv.Value.Equals("all", StringComparison.OrdinalIgnoreCase)
+                    ? new[] { "pdf", "docx" }
+                    : kv.Value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                if (values.Length == 1)
+                {
+                    boolean.Add(new TermQuery(new Term("ext", values[0])), Occur.MUST);
+                }
+                else if (values.Length > 1)
+                {
+                    var typeQuery = new BooleanQuery();
+                    foreach (var v in values)
+                        typeQuery.Add(new TermQuery(new Term("ext", v)), Occur.SHOULD);
+                    boolean.Add(typeQuery, Occur.MUST);
+                }
             }
             else if (kv.Key is "caseNumber" or "parcelId" or "address" or "tags" or "author" or "version")
             {

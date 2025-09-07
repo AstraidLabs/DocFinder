@@ -21,8 +21,11 @@ public sealed class SearchDocumentsHandler : ICommandHandler<SearchDocumentsComm
     public async Task<SearchResult> HandleAsync(SearchDocumentsCommand command, CancellationToken ct)
     {
         var filters = new Dictionary<string, string>();
-        if (!string.IsNullOrWhiteSpace(command.Filter.FileType) && !string.Equals(command.Filter.FileType, "all", StringComparison.OrdinalIgnoreCase))
-            filters["type"] = command.Filter.FileType.ToLowerInvariant();
+        if (!string.IsNullOrWhiteSpace(command.Filter.FileType))
+        {
+            var ft = command.Filter.FileType.ToLowerInvariant();
+            filters["type"] = ft == "all" ? "pdf,docx" : ft;
+        }
         if (!string.IsNullOrWhiteSpace(command.Filter.Author))
             filters["author"] = command.Filter.Author;
         if (!string.IsNullOrWhiteSpace(command.Filter.Version))
