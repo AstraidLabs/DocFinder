@@ -1,4 +1,5 @@
 using DocFinder.App.ViewModels.Windows;
+using DocFinder.App.Views.Layout;
 using Wpf.Ui;
 using Wpf.Ui.Abstractions;
 using Wpf.Ui.Appearance;
@@ -9,6 +10,8 @@ namespace DocFinder.App.Views.Windows
     public partial class MainWindow : FluentWindow, INavigationWindow
     {
         public MainWindowViewModel? ViewModel { get; }
+
+        public MainLayout MainLayoutControl => MainLayout;
 
         private IServiceProvider? _serviceProvider;
 
