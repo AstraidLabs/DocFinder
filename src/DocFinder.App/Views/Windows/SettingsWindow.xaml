@@ -8,16 +8,16 @@
     ExtendsContentIntoTitleBar="True"
     WindowBackdropType="Mica"
     ResizeMode="CanResize">
-    <layout:HeaderBodyFooterLayout>
-        <layout:HeaderBodyFooterLayout.Header>
+    <layout:MainLayout>
+        <layout:MainLayout.Header>
             <ui:TitleBar Title="Settings" Foreground="{DynamicResource TextFillColorPrimaryBrush}">
                 <ui:TitleBar.Icon>
                     <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
                 </ui:TitleBar.Icon>
             </ui:TitleBar>
-        </layout:HeaderBodyFooterLayout.Header>
+        </layout:MainLayout.Header>
 
-        <layout:HeaderBodyFooterLayout.Body>
+        <layout:MainLayout.Body>
             <StackPanel Margin="20">
                 <TextBlock Text="Source Folder"/>
                 <TextBox Text="{Binding Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}"/>
@@ -47,12 +47,12 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </StackPanel>
-        </layout:HeaderBodyFooterLayout.Body>
+        </layout:MainLayout.Body>
 
-        <layout:HeaderBodyFooterLayout.Footer>
+        <layout:MainLayout.Footer>
             <Border Background="{DynamicResource ApplicationBackgroundBrush}">
                 <ui:TextBlock Margin="12,8" HorizontalAlignment="Center" Text="© 2024 DocFinder" />
             </Border>
-        </layout:HeaderBodyFooterLayout.Footer>
-    </layout:HeaderBodyFooterLayout>
+        </layout:MainLayout.Footer>
+    </layout:MainLayout>
 </ui:FluentWindow>
