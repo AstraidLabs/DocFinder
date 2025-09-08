@@ -25,17 +25,13 @@
             </ui:TitleBar.Icon>
         </ui:TitleBar>
 
-        <!-- Body & Navigation -->
-        <ui:NavigationView Grid.Row="1" PaneDisplayMode="LeftFluent">
-            <ui:NavigationView.Content>
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <!-- Body -->
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="Načítání…" FontSize="16" Margin="0,0,0,12" HorizontalAlignment="Center"
                            Foreground="{DynamicResource TextPrimaryBrush}"/>
                 <ProgressBar IsIndeterminate="True" Width="200" Height="20"
                              Foreground="{DynamicResource AccentBrush}"/>
-            </StackPanel>
-            </ui:NavigationView.Content>
-        </ui:NavigationView>
+        </StackPanel>
 
         <!-- Footer -->
         <Border Grid.Row="2" Background="{DynamicResource ApplicationBackgroundBrush}">
