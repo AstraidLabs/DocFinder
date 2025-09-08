@@ -12,6 +12,7 @@ namespace DocFinder.App.Views.Windows
 
         public MainWindow()
         {
+            InitializeComponent();
             SystemThemeWatcher.Watch(this);
         }
 
@@ -23,8 +24,6 @@ namespace DocFinder.App.Views.Windows
         {
             ViewModel = viewModel;
             DataContext = this;
-
-            InitializeComponent();
             SetPageService(navigationViewPageProvider);
 
             navigationService.SetNavigationControl(BodyView.Navigation);
