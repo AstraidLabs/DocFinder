@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using DocFinder.Domain.Settings;
 using DocFinder.Services;
 using DocFinder.Indexing;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
@@ -12,6 +11,7 @@ using Wpf.Ui.Appearance;
 using System;
 using System.Linq;
 using Wpf.Ui.Abstractions.Controls;
+using System.Windows;
 
 namespace DocFinder.App.ViewModels;
 
@@ -30,6 +30,9 @@ public partial class SettingsViewModel : ObservableObject, INavigationAware
 
     /// <summary>List of files indexed from the selected source root.</summary>
     public ObservableCollection<string> IndexedFiles { get; } = new();
+
+    [ObservableProperty]
+    private bool _isIndexing;
 
     public SettingsViewModel(ISettingsService settingsService, IWatcherService watcherService, IIndexer indexer)
     {
@@ -63,31 +66,36 @@ public partial class SettingsViewModel : ObservableObject, INavigationAware
 
         // Enumerate and index files from the configured source root concurrently
         IndexedFiles.Clear();
+        IsIndexing = true;
+
+        var progress = new Progress<string>(path =>
+        {
+            Application.Current.Dispatcher.InvokeAsync(() => IndexedFiles.Add(path));
+        });
+
         var enumerateTask = Task.Run(() =>
         {
-            var files = new List<string>();
             if (!string.IsNullOrWhiteSpace(Settings.SourceRoot) && Directory.Exists(Settings.SourceRoot))
             {
                 foreach (var file in Directory.EnumerateFiles(Settings.SourceRoot, "*.*", SearchOption.AllDirectories))
                 {
                     ct.ThrowIfCancellationRequested();
-                    files.Add(file);
+                    progress.Report(file);
                 }
             }
-            return files;
         }, ct);
 
         // Start reindexing concurrently without wrapping in an extra Task
         var reindexTask = _indexer.ReindexAllAsync(ct);
 
-        var filesToIndex = await enumerateTask;
-        foreach (var file in filesToIndex)
+        try
         {
-            ct.ThrowIfCancellationRequested();
-            IndexedFiles.Add(file);
+            await Task.WhenAll(enumerateTask, reindexTask);
         }
-
-        await reindexTask;
+        finally
+        {
+            IsIndexing = false;
+        }
     }
 
     public Task OnNavigatedToAsync() => Task.CompletedTask;
