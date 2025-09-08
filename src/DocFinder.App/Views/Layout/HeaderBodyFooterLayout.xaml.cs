@@ -14,6 +14,10 @@ namespace DocFinder.App.Views.Layout
             DependencyProperty.Register(
                 nameof(Header), typeof(object), typeof(HeaderBodyFooterLayout), new PropertyMetadata(null));
 
+        public static readonly DependencyProperty MenuProperty =
+            DependencyProperty.Register(
+                nameof(Menu), typeof(object), typeof(HeaderBodyFooterLayout), new PropertyMetadata(null));
+
         public static readonly DependencyProperty BodyProperty =
             DependencyProperty.Register(
                 nameof(Body), typeof(object), typeof(HeaderBodyFooterLayout), new PropertyMetadata(null));
@@ -26,6 +30,12 @@ namespace DocFinder.App.Views.Layout
         {
             get => GetValue(HeaderProperty);
             set => SetValue(HeaderProperty, value);
+        }
+
+        public object? Menu
+        {
+            get => GetValue(MenuProperty);
+            set => SetValue(MenuProperty, value);
         }
 
         public object? Body

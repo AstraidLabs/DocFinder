@@ -1,0 +1,11 @@
+<UserControl x:Class="DocFinder.App.Views.Layout.FooterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+    <Border Background="{DynamicResource ApplicationBackgroundBrush}">
+        <ui:TextBlock
+            Margin="12,8"
+            HorizontalAlignment="Center"
+            Text="© 2024 DocFinder" />
+    </Border>
+</UserControl>

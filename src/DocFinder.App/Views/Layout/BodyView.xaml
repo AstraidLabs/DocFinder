@@ -1,0 +1,24 @@
+<UserControl x:Class="DocFinder.App.Views.Layout.BodyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+    <ui:NavigationView
+        x:Name="RootNavigation"
+        Padding="42,0,42,0"
+        BreadcrumbBar="{Binding ElementName=BreadcrumbBar}"
+        FooterMenuItemsSource="{Binding ViewModel.FooterMenuItems, Mode=OneWay}"
+        FrameMargin="0"
+        IsBackButtonVisible="Visible"
+        IsPaneToggleVisible="True"
+        MenuItemsSource="{Binding ViewModel.MenuItems, Mode=OneWay}"
+        PaneDisplayMode="LeftFluent">
+        <ui:NavigationView.Header>
+            <ui:BreadcrumbBar x:Name="BreadcrumbBar" Margin="42,32,42,20" />
+        </ui:NavigationView.Header>
+        <ui:NavigationView.ContentOverlay>
+            <Grid>
+                <ui:SnackbarPresenter x:Name="SnackbarPresenter" />
+            </Grid>
+        </ui:NavigationView.ContentOverlay>
+    </ui:NavigationView>
+</UserControl>
