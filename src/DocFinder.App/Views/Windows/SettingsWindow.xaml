@@ -22,10 +22,8 @@
             </ui:TitleBar.Icon>
         </ui:TitleBar>
 
-        <!-- Body & Navigation -->
-        <ui:NavigationView Grid.Row="1" PaneDisplayMode="LeftFluent">
-            <ui:NavigationView.Content>
-            <StackPanel Margin="20">
+        <!-- Body -->
+        <StackPanel Grid.Row="1" Margin="20">
                 <TextBlock Text="Source Folder"/>
                 <TextBox Text="{Binding Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBlock Margin="0,12,0,0" Text="Watched Folders (one per line)"/>
@@ -53,9 +51,7 @@
                         <DataGridTextColumn Header="Soubor" Binding="{Binding}" />
                     </DataGrid.Columns>
                 </DataGrid>
-            </StackPanel>
-            </ui:NavigationView.Content>
-        </ui:NavigationView>
+        </StackPanel>
 
         <!-- Footer -->
         <Border Grid.Row="2" Background="{DynamicResource ApplicationBackgroundBrush}">

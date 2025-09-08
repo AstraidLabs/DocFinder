@@ -78,15 +78,13 @@
             </ui:TitleBar.Icon>
         </ui:TitleBar>
 
-        <!-- Body & Navigation -->
-        <ui:NavigationView Grid.Row="1" PaneDisplayMode="LeftFluent">
-            <ui:NavigationView.Content>
-            <Grid x:Name="SearchPage" Margin="{StaticResource Space24}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+        <!-- Body -->
+        <Grid Grid.Row="1" Margin="{StaticResource Space24}" x:Name="SearchPage">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
             <!-- Search bar -->
             <Grid Grid.Row="0" Margin="{StaticResource MarginBottomSpace16}">
@@ -215,8 +213,7 @@
                 </Grid>
             </Grid>
             </Grid>
-            </ui:NavigationView.Content>
-        </ui:NavigationView>
+        </Grid>
 
         <!-- Footer -->
         <Border Grid.Row="2" Background="{DynamicResource ApplicationBackgroundBrush}">
