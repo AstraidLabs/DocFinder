@@ -25,7 +25,7 @@
         </layout:MainLayout.Menu>
         <layout:MainLayout.Body>
             <Grid>
-                <ui:Card ControlMargin="12" Title="Data overview" />
+                <ui:Card Margin="12" Title="Data overview" />
             </Grid>
         </layout:MainLayout.Body>
         <layout:MainLayout.Footer>
