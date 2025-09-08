@@ -83,10 +83,10 @@ public partial class SearchOverlay : FluentWindow
 
     private void MenuButton_Click(object sender, RoutedEventArgs e)
     {
-        if (MenuButton.ContextMenu != null)
+        if (sender is Button button && button.ContextMenu != null)
         {
-            MenuButton.ContextMenu.PlacementTarget = MenuButton;
-            MenuButton.ContextMenu.IsOpen = true;
+            button.ContextMenu.PlacementTarget = button;
+            button.ContextMenu.IsOpen = true;
         }
     }
 
