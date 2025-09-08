@@ -1,14 +1,14 @@
-<Page
+<ui:Page
     x:Class="DocFinder.App.Views.Pages.ProtocolDetailPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:local="clr-namespace:DocFinder.App.Views.Pages"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    xmlns:entities="clr-namespace:DocFinder.App.ViewModels.Entities"
+    xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Pages"
+    xmlns:layout="clr-namespace:DocFinder.App.Views.Layout"
     Title="ProtocolDetailPage"
-    d:DataContext="{d:DesignInstance entities:ProtocolViewModel, IsDesignTimeCreatable=False}"
+    d:DataContext="{d:DesignInstance vm:ProtocolsViewModel, IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
@@ -16,12 +16,24 @@
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
 
-    <ScrollViewer>
-        <StackPanel Margin="20" DataContext="{Binding ViewModel}">
-            <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="Bold" />
-            <TextBlock Text="{Binding ReferenceNumber}" Margin="0,5,0,0" />
-            <TextBlock Text="{Binding IssuedBy}" Margin="0,5,0,0" />
-            <TextBlock Text="{Binding ResponsiblePerson}" Margin="0,5,0,0" />
-        </StackPanel>
-    </ScrollViewer>
-</Page>
+    <layout:HeaderBodyFooterLayout>
+        <layout:HeaderBodyFooterLayout.Header>
+            <layout:HeaderView />
+        </layout:HeaderBodyFooterLayout.Header>
+        <layout:HeaderBodyFooterLayout.Menu>
+            <layout:MenuView />
+        </layout:HeaderBodyFooterLayout.Menu>
+        <layout:HeaderBodyFooterLayout.Body>
+            <StackPanel Margin="12">
+                <TextBlock FontSize="20" FontWeight="Medium" Text="Protocol details" />
+                <ui:Separator Margin="0,8" />
+                <TextBlock Text="{Binding ViewModel.SelectedProtocol.Name}" />
+                <TextBlock Text="{Binding ViewModel.SelectedProtocol.Description}" />
+            </StackPanel>
+        </layout:HeaderBodyFooterLayout.Body>
+        <layout:HeaderBodyFooterLayout.Footer>
+            <layout:FooterView />
+        </layout:HeaderBodyFooterLayout.Footer>
+    </layout:HeaderBodyFooterLayout>
+</ui:Page>
+
