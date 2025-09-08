@@ -27,15 +27,6 @@
     <Resource Include="Assets\wpfui-icon-1024.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views/Layout/HeaderBodyFooterLayout.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Update="Views/Layout/HeaderBodyFooterLayout.xaml.cs">
-      <DependentUpon>HeaderBodyFooterLayout.xaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\DocFinder.Domain\DocFinder.Domain.csproj" />
     <ProjectReference Include="..\DocFinder.Indexing\DocFinder.Indexing.csproj" />
     <ProjectReference Include="..\DocFinder.Catalog\DocFinder.Catalog.csproj" />
