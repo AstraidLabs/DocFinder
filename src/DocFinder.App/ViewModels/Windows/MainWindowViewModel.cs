@@ -35,6 +35,12 @@ namespace DocFinder.App.ViewModels.Windows
                 Content = "Files",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.Document24 },
                 TargetPageType = typeof(FilesPage)
+            },
+            new NavigationViewItem()
+            {
+                Content = "Search",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.Search24 },
+                TargetPageType = typeof(SearchPage)
             }
         };
 
