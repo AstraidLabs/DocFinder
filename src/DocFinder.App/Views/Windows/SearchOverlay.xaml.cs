@@ -14,7 +14,7 @@ using DocFinder.App.Services;
 
 namespace DocFinder.App.Views.Windows;
 
-public partial class SearchOverlay : MainWindow
+public partial class SearchOverlay : FluentWindow
 {
     private readonly SearchOverlayViewModel _viewModel;
     private readonly IIndexer _indexer;

@@ -3,7 +3,7 @@ using DocFinder.App.ViewModels;
 
 namespace DocFinder.App.Views.Windows;
 
-public partial class SettingsWindow : MainWindow
+public partial class SettingsWindow : FluentWindow
 {
     public SettingsViewModel ViewModel { get; }
 

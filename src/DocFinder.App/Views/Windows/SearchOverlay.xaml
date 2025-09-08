@@ -1,9 +1,8 @@
-<local:MainWindow x:Class="DocFinder.App.Views.Windows.SearchOverlay"
+<ui:FluentWindow x:Class="DocFinder.App.Views.Windows.SearchOverlay"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:converters="clr-namespace:DocFinder.App.Converters"
-    xmlns:local="clr-namespace:DocFinder.App.Views.Windows"
     Title="DocFinder" Width="900" Height="520"
     FontSize="{DynamicResource BodyFontSize}"
     WindowStartupLocation="CenterScreen"
@@ -13,7 +12,7 @@
     WindowBackdropType="Mica"
     ResizeMode="CanResize"
     ShowInTaskbar="True">
-    <local:MainWindow.Resources>
+    <ui:FluentWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DocFinder.App;component/Resources/DesignTokens.xaml" />
@@ -63,7 +62,7 @@
                 </Style.Triggers>
             </Style>
         </ResourceDictionary>
-    </local:MainWindow.Resources>
+    </ui:FluentWindow.Resources>
     <Grid Background="{DynamicResource SurfaceBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -220,4 +219,4 @@
             <ui:TextBlock Margin="12,8" HorizontalAlignment="Center" Text="© 2024 DocFinder" />
         </Border>
     </Grid>
-</local:MainWindow>
+</ui:FluentWindow>
