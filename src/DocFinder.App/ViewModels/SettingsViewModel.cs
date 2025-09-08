@@ -68,9 +68,9 @@ public partial class SettingsViewModel : ObservableObject, INavigationAware
         IndexedFiles.Clear();
         IsIndexing = true;
 
-        var progress = new Progress<string>(path =>
+        IProgress<string> progress = new Progress<string>(path =>
         {
-            Application.Current.Dispatcher.InvokeAsync(() => IndexedFiles.Add(path));
+            System.Windows.Application.Current.Dispatcher.InvokeAsync(() => IndexedFiles.Add(path));
         });
 
         var enumerateTask = Task.Run(() =>
