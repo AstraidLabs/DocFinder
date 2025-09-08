@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Windows"
-    xmlns:layout="clr-namespace:DocFinder.App.Views.Layout"
+    xmlns:layout="clr-namespace:DocFinder.App.Views.Layout;assembly=DocFinder.App"
     Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
     Width="1100"
     Height="650"
@@ -26,7 +26,6 @@
         <layout:HeaderBodyFooterLayout>
             <layout:HeaderBodyFooterLayout.Header>
                 <ui:TitleBar
-                    x:Name="TitleBar"
                     Title="{Binding ViewModel.ApplicationTitle}"
                     CloseWindowByDoubleClickOnIcon="True">
                     <ui:TitleBar.Icon>
