@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using MessageBox = Wpf.Ui.Controls.MessageBox;
 using MessageBoxResult = Wpf.Ui.Controls.MessageBoxResult;
 
@@ -5,7 +6,7 @@ namespace DocFinder.App.Services;
 
 public sealed class MessageDialogService : IMessageDialogService
 {
-    public void ShowInformation(string message, string title = "DocFinder")
+    public async Task ShowInformation(string message, string title = "DocFinder")
     {
         var messageBox = new MessageBox
         {
@@ -14,10 +15,10 @@ public sealed class MessageDialogService : IMessageDialogService
             CloseButtonText = "OK"
         };
 
-        messageBox.ShowDialogAsync().GetAwaiter().GetResult();
+        await messageBox.ShowDialogAsync();
     }
 
-    public void ShowWarning(string message, string title = "DocFinder")
+    public async Task ShowWarning(string message, string title = "DocFinder")
     {
         var messageBox = new MessageBox
         {
@@ -26,10 +27,10 @@ public sealed class MessageDialogService : IMessageDialogService
             CloseButtonText = "OK"
         };
 
-        messageBox.ShowDialogAsync().GetAwaiter().GetResult();
+        await messageBox.ShowDialogAsync();
     }
 
-    public void ShowError(string message, string title = "DocFinder")
+    public async Task ShowError(string message, string title = "DocFinder")
     {
         var messageBox = new MessageBox
         {
@@ -38,10 +39,10 @@ public sealed class MessageDialogService : IMessageDialogService
             CloseButtonText = "OK"
         };
 
-        messageBox.ShowDialogAsync().GetAwaiter().GetResult();
+        await messageBox.ShowDialogAsync();
     }
 
-    public bool ShowConfirmation(string message, string title = "DocFinder")
+    public async Task<bool> ShowConfirmation(string message, string title = "DocFinder")
     {
         var messageBox = new MessageBox
         {
@@ -51,7 +52,7 @@ public sealed class MessageDialogService : IMessageDialogService
             SecondaryButtonText = "No"
         };
 
-        var result = messageBox.ShowDialogAsync().GetAwaiter().GetResult();
+        var result = await messageBox.ShowDialogAsync();
         return result == MessageBoxResult.Primary;
     }
 }

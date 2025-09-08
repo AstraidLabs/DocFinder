@@ -1,9 +1,11 @@
+using System.Threading.Tasks;
+
 namespace DocFinder.App.Services;
 
 public interface IMessageDialogService
 {
-    void ShowInformation(string message, string title = "DocFinder");
-    void ShowWarning(string message, string title = "DocFinder");
-    void ShowError(string message, string title = "DocFinder");
-    bool ShowConfirmation(string message, string title = "DocFinder");
+    Task ShowInformation(string message, string title = "DocFinder");
+    Task ShowWarning(string message, string title = "DocFinder");
+    Task ShowError(string message, string title = "DocFinder");
+    Task<bool> ShowConfirmation(string message, string title = "DocFinder");
 }

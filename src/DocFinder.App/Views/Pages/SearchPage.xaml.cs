@@ -71,17 +71,17 @@ public partial class SearchPage : INavigableView<SearchViewModel>
 
     private async void Menu_Reindex_Click(object sender, RoutedEventArgs e)
     {
-        if (!_dialogs.ShowConfirmation("Přeindexovat všechny dokumenty?", "DocFinder"))
+        if (!await _dialogs.ShowConfirmation("Přeindexovat všechny dokumenty?", "DocFinder"))
             return;
 
         try
         {
             await _indexer.ReindexAllAsync();
-            _dialogs.ShowInformation("Přeindexování dokončeno", "DocFinder");
+            await _dialogs.ShowInformation("Přeindexování dokončeno", "DocFinder");
         }
         catch (Exception ex)
         {
-            _dialogs.ShowError($"Přeindexování selhalo: {ex.Message}", "DocFinder");
+            await _dialogs.ShowError($"Přeindexování selhalo: {ex.Message}", "DocFinder");
         }
     }
 
@@ -137,7 +137,7 @@ public partial class SearchPage : INavigableView<SearchViewModel>
             openDetail.IsEnabled = hasDoc;
     }
 
-    private void OpenFileDetail_Click(object sender, RoutedEventArgs e)
+    private async void OpenFileDetail_Click(object sender, RoutedEventArgs e)
     {
         var doc = _viewModel.SelectedDocument;
         if (doc == null)
@@ -145,7 +145,7 @@ public partial class SearchPage : INavigableView<SearchViewModel>
 
         var info = new FileInfo(doc.Path);
         var detail = $"Název: {info.Name}\nTyp: {info.Extension}\nVelikost: {info.Length} B\nZměněno: {info.LastWriteTime}";
-        _dialogs.ShowInformation(detail, "Detail souboru");
+        await _dialogs.ShowInformation(detail, "Detail souboru");
     }
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
