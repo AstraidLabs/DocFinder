@@ -22,6 +22,7 @@ using DocFinder.Application.Commands;
 using DocFinder.Application.Handlers;
 using Wpf.Ui;
 using Wpf.Ui.Appearance;
+using Wpf.Ui.DependencyInjection;
 
 namespace DocFinder.App;
 
@@ -63,7 +64,7 @@ public partial class App
             services.AddSingleton<IDocumentViewService, DocumentViewService>();
             services.AddSingleton<IMessageDialogService, MessageDialogService>();
             services.AddSingleton<INavigationService, NavigationService>();
-            services.AddSingleton<INavigationViewPageProvider, NavigationViewPageProvider>();
+            services.AddNavigationViewPageProvider();
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<MainWindow>();
             services.AddSingleton<SearchViewModel>();
@@ -113,13 +114,13 @@ public partial class App
         _host.Dispose();
     }
 
-    private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    private async void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
         var logger = Services.GetRequiredService<ILogger<App>>();
         logger.LogError(e.Exception, "Unhandled exception");
 
         var dialog = Services.GetRequiredService<IMessageDialogService>();
-        var continueApp = dialog.ShowConfirmation(
+        var continueApp = await dialog.ShowConfirmation(
             $"An unexpected error occurred:\n{e.Exception.Message}\n\nDo you want to continue using the application?",
             "Unexpected Error");
 
