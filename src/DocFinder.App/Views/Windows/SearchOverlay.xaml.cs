@@ -18,16 +18,14 @@ public partial class SearchOverlay : FluentWindow
 {
     private readonly SearchOverlayViewModel _viewModel;
     private readonly IIndexer _indexer;
-    private readonly SettingsWindow _settings;
     private readonly IDocumentViewService _documentViewService;
     private readonly IMessageDialogService _dialogs;
     private ResourceDictionary? _themeDictionary;
 
-    public SearchOverlay(SearchOverlayViewModel viewModel, IIndexer indexer, SettingsWindow settings, IDocumentViewService documentViewService, IMessageDialogService dialogs)
+    public SearchOverlay(SearchOverlayViewModel viewModel, IIndexer indexer, IDocumentViewService documentViewService, IMessageDialogService dialogs)
     {
         _viewModel = viewModel;
         _indexer = indexer;
-        _settings = settings;
         _documentViewService = documentViewService;
         _dialogs = dialogs;
 
@@ -94,11 +92,6 @@ public partial class SearchOverlay : FluentWindow
     {
         _viewModel.Query = string.Empty;
         QueryTextBox.Focus();
-    }
-
-    private void Menu_Settings_Click(object sender, RoutedEventArgs e)
-    {
-        _settings.Show();
     }
 
     private async void Menu_Reindex_Click(object sender, RoutedEventArgs e)
