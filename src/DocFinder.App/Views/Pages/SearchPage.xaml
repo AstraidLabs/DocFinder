@@ -1,4 +1,4 @@
-<ui:Page
+<Page
     x:Class="DocFinder.App.Views.Pages.SearchPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -12,7 +12,7 @@
     d:DataContext="{d:DesignInstance vm:SearchViewModel, IsDesignTimeCreatable=False}"
     mc:Ignorable="d">
 
-    <ui:Page.Resources>
+    <Page.Resources>
         <converters:FileSizeConverter x:Key="FileSizeConverter" />
         <converters:UtcToLocalConverter x:Key="UtcToLocalConverter" />
 
@@ -54,7 +54,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-    </ui:Page.Resources>
+    </Page.Resources>
 
     <layout:MainLayout Background="{DynamicResource SurfaceBackgroundBrush}">
         <layout:MainLayout.Header>
@@ -204,8 +204,8 @@
 
         <layout:MainLayout.Footer>
             <Border Background="{DynamicResource ApplicationBackgroundBrush}">
-                <ui:TextBlock Margin="12,8" HorizontalAlignment="Center" Text="© 2024 DocFinder" />
+                <TextBlock Margin="12,8" HorizontalAlignment="Center" Text="© 2024 DocFinder" />
             </Border>
         </layout:MainLayout.Footer>
     </layout:MainLayout>
-</ui:Page>
+</Page>

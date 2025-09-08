@@ -1,4 +1,4 @@
-<ui:Page
+<Page
     x:Class="DocFinder.App.Views.Pages.FilesPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -48,5 +48,5 @@
             <layout:FooterView />
         </layout:MainLayout.Footer>
     </layout:MainLayout>
-</ui:Page>
+</Page>
 
