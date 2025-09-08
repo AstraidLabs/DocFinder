@@ -1,3 +1,5 @@
+using Wpf.Ui.Abstractions.Controls;
+
 namespace DocFinder.App.ViewModels.Pages;
 
 public partial class SearchViewModel : ObservableObject, INavigationAware
