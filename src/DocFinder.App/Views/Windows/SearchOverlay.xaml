@@ -80,6 +80,7 @@
 
         <!-- Body & Navigation -->
         <ui:NavigationView Grid.Row="1" PaneDisplayMode="LeftFluent">
+            <ui:NavigationView.Content>
             <Grid x:Name="SearchPage" Margin="{StaticResource Space24}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -214,6 +215,7 @@
                 </Grid>
             </Grid>
             </Grid>
+            </ui:NavigationView.Content>
         </ui:NavigationView>
 
         <!-- Footer -->
