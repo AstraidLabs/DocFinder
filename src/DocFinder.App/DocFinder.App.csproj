@@ -8,6 +8,8 @@
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>DocFinder.App</RootNamespace>
+    <AssemblyName>DocFinder.App</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="wpfui-icon.ico" />
