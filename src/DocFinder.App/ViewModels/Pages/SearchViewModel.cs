@@ -61,21 +61,17 @@ public partial class SearchViewModel : ObservableObject
         _currentQuery = RunQueryAsync(string.Empty, _cts.Token);
     }
 
-    partial void OnQueryChanged(string value)
+    private void RestartQuery(string? overrideQuery = null)
     {
         _cts.Cancel();
         _cts.Dispose();
         _cts = new CancellationTokenSource();
-        _currentQuery = RunQueryAsync(value, _cts.Token);
+        _currentQuery = RunQueryAsync(overrideQuery ?? Query, _cts.Token);
     }
 
-    partial void OnFileTypeFilterChanged(string value)
-    {
-        _cts.Cancel();
-        _cts.Dispose();
-        _cts = new CancellationTokenSource();
-        _currentQuery = RunQueryAsync(Query, _cts.Token);
-    }
+    partial void OnQueryChanged(string value) => RestartQuery(value);
+
+    partial void OnFileTypeFilterChanged(string value) => RestartQuery();
 
     private async Task RunQueryAsync(string value, CancellationToken ct)
     {
@@ -135,37 +131,13 @@ public partial class SearchViewModel : ObservableObject
         System.Diagnostics.Process.Start(psi);
     }
 
-    partial void OnFromDateChanged(DateTime? value)
-    {
-        _cts.Cancel();
-        _cts.Dispose();
-        _cts = new CancellationTokenSource();
-        _currentQuery = RunQueryAsync(Query, _cts.Token);
-    }
+    partial void OnFromDateChanged(DateTime? value) => RestartQuery();
 
-    partial void OnToDateChanged(DateTime? value)
-    {
-        _cts.Cancel();
-        _cts.Dispose();
-        _cts = new CancellationTokenSource();
-        _currentQuery = RunQueryAsync(Query, _cts.Token);
-    }
+    partial void OnToDateChanged(DateTime? value) => RestartQuery();
 
-    partial void OnAuthorFilterChanged(string value)
-    {
-        _cts.Cancel();
-        _cts.Dispose();
-        _cts = new CancellationTokenSource();
-        _currentQuery = RunQueryAsync(Query, _cts.Token);
-    }
+    partial void OnAuthorFilterChanged(string value) => RestartQuery();
 
-    partial void OnVersionFilterChanged(string value)
-    {
-        _cts.Cancel();
-        _cts.Dispose();
-        _cts = new CancellationTokenSource();
-        _currentQuery = RunQueryAsync(Query, _cts.Token);
-    }
+    partial void OnVersionFilterChanged(string value) => RestartQuery();
 
     partial void OnSortFieldChanged(string value) => UpdateSort();
     partial void OnSortAscendingChanged(bool value) => UpdateSort();
