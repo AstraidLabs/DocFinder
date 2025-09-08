@@ -41,6 +41,7 @@ public partial class SearchPage : INavigableView<SearchViewModel>
         DataContext = _viewModel;
         SizeChanged += SearchPage_SizeChanged;
         _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+        Unloaded += SearchPage_Unloaded;
         ApplyResponsiveLayout(ActualWidth);
     }
 
@@ -170,5 +171,20 @@ public partial class SearchPage : INavigableView<SearchViewModel>
             var animation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(200));
             dg.BeginAnimation(UIElement.OpacityProperty, animation);
         }
+    }
+
+    private void SearchPage_Unloaded(object? sender, RoutedEventArgs e)
+    {
+        SizeChanged -= SearchPage_SizeChanged;
+        _viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+        Unloaded -= SearchPage_Unloaded;
+
+        ResultsGrid.Loaded -= ResultsGrid_Loaded;
+        ResultsGrid.PreviewMouseRightButtonDown -= ResultsGrid_PreviewMouseRightButtonDown;
+        if (ResultsGrid.ContextMenu != null)
+            ResultsGrid.ContextMenu.Opened -= ResultsGrid_ContextMenu_Opened;
+
+        ResultsGrid.BeginAnimation(UIElement.OpacityProperty, null);
+        PreviewHost.Content = null;
     }
 }
