@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:converters="clr-namespace:DocFinder.App.Converters"
-    xmlns:layout="clr-namespace:DocFinder.App.Views.Layout"
+    xmlns:layout="clr-namespace:DocFinder.App.Views.Layout;assembly=DocFinder.App"
     Title="DocFinder" Width="900" Height="520"
     FontSize="{DynamicResource BodyFontSize}"
     WindowStartupLocation="CenterScreen"
