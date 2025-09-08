@@ -1,4 +1,4 @@
-﻿using DocFinder.App.ViewModels.Windows;
+using DocFinder.App.ViewModels.Windows;
 using Wpf.Ui;
 using Wpf.Ui.Abstractions;
 using Wpf.Ui.Appearance;
@@ -27,16 +27,16 @@ namespace DocFinder.App.Views.Windows
             InitializeComponent();
             SetPageService(navigationViewPageProvider);
 
-            navigationService.SetNavigationControl(RootNavigation);
+            navigationService.SetNavigationControl(BodyView.Navigation);
         }
 
         #region INavigationWindow methods
 
-        public INavigationView GetNavigation() => RootNavigation;
+        public INavigationView GetNavigation() => BodyView.Navigation;
 
-        public bool Navigate(Type pageType) => RootNavigation.Navigate(pageType);
+        public bool Navigate(Type pageType) => BodyView.Navigation.Navigate(pageType);
 
-        public void SetPageService(INavigationViewPageProvider navigationViewPageProvider) => RootNavigation.SetPageProviderService(navigationViewPageProvider);
+        public void SetPageService(INavigationViewPageProvider navigationViewPageProvider) => BodyView.Navigation.SetPageProviderService(navigationViewPageProvider);
 
         public void ShowWindow() => Show();
 

@@ -4,11 +4,13 @@
     <Grid Background="{Binding Background, RelativeSource={RelativeSource AncestorType=UserControl}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <ContentPresenter Grid.Row="0" Content="{Binding Header, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-        <ContentPresenter Grid.Row="1" Content="{Binding Body, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-        <ContentPresenter Grid.Row="2" Content="{Binding Footer, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        <ContentPresenter Grid.Row="1" Content="{Binding Menu, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        <ContentPresenter Grid.Row="2" Content="{Binding Body, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        <ContentPresenter Grid.Row="3" Content="{Binding Footer, RelativeSource={RelativeSource AncestorType=UserControl}}" />
     </Grid>
 </UserControl>
