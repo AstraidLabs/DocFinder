@@ -207,8 +207,7 @@
                     <ui:Button Grid.Row="1" Content="Otevřít" Command="{Binding OpenDocumentCommand}" Margin="{StaticResource MarginTopSpace16}"/>
                 </Grid>
             </Grid>
-            </Grid>
-            </Grid>
+        </Grid>
         </layout:HeaderBodyFooterLayout.Body>
 
         <layout:HeaderBodyFooterLayout.Footer>
