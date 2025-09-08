@@ -29,6 +29,24 @@
     <Resource Include="Assets\wpfui-icon-1024.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views/Layout/*.xaml" />
+    <Compile Update="Views/Layout/*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views/Pages/*.xaml" />
+    <Compile Update="Views/Pages/*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views/Windows/*.xaml" />
+    <Compile Update="Views/Windows/*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\DocFinder.Domain\DocFinder.Domain.csproj" />
     <ProjectReference Include="..\DocFinder.Indexing\DocFinder.Indexing.csproj" />
     <ProjectReference Include="..\DocFinder.Catalog\DocFinder.Catalog.csproj" />
