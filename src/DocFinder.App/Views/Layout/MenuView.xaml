@@ -1,8 +1,9 @@
 <UserControl x:Class="DocFinder.App.Views.Layout.MenuView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
     <Menu>
-        <MenuItem Header="File" />
-        <MenuItem Header="Edit" />
+        <ui:MenuItem Header="File" Command="{Binding OpenFileCommand}" />
+        <ui:MenuItem Header="Edit" Command="{Binding EditItemCommand}" />
     </Menu>
 </UserControl>

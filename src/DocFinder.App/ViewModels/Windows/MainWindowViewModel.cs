@@ -61,5 +61,17 @@ namespace DocFinder.App.ViewModels.Windows
         {
             new MenuItem { Header = "Home", Tag = "tray_home" }
         };
+
+        [RelayCommand]
+        private void OpenFile()
+        {
+            // TODO: Implement file open logic
+        }
+
+        [RelayCommand]
+        private void EditItem()
+        {
+            // TODO: Implement edit logic
+        }
     }
 }
