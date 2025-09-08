@@ -10,7 +10,10 @@ using DocFinder.Domain.Settings;
 using DocFinder.Services;
 using DocFinder.App.Services;
 using DocFinder.App.Views.Windows;
-using DocFinder.App.ViewModels;
+using DocFinder.App.ViewModels.Pages;
+using DocFinder.App.ViewModels.Windows;
+using DocFinder.App.Views.Pages;
+using Wpf.Ui;
 using DocFinder.Search;
 using DocFinder.Catalog;
 using DocFinder.Indexing;
@@ -58,10 +61,12 @@ public partial class App
                     sp.GetRequiredService<ILogger<WatcherService>>()));
             services.AddSingleton<IDocumentViewService, DocumentViewService>();
             services.AddSingleton<IMessageDialogService, MessageDialogService>();
-            services.AddSingleton<SearchOverlayViewModel>();
-            services.AddSingleton<SearchOverlay>();
+            services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<INavigationViewPageProvider, NavigationViewPageProvider>();
+            services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<MainWindow>();
+            services.AddSingleton<SearchViewModel>();
             services.AddSingleton<SettingsViewModel>();
-            services.AddSingleton<SettingsWindow>();
         }).Build();
 
     public static IServiceProvider Services => _host.Services;
@@ -87,8 +92,9 @@ public partial class App
 
         loadingWindow.Close();
 
-        var overlay = Services.GetRequiredService<SearchOverlay>();
-        overlay.Show();
+        var mainWindow = Services.GetRequiredService<MainWindow>();
+        mainWindow.Show();
+        mainWindow.Navigate(typeof(SearchPage));
     }
 
     private async void OnExit(object sender, ExitEventArgs e)
