@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:converters="clr-namespace:DocFinder.App.Converters"
+    xmlns:layout="clr-namespace:DocFinder.App.Views.Layout"
     Title="DocFinder" Width="900" Height="520"
     FontSize="{DynamicResource BodyFontSize}"
     WindowStartupLocation="CenterScreen"
@@ -63,22 +64,17 @@
             </Style>
         </ResourceDictionary>
     </ui:FluentWindow.Resources>
-    <Grid Background="{DynamicResource SurfaceBackgroundBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <layout:HeaderBodyFooterLayout Background="{DynamicResource SurfaceBackgroundBrush}">
+        <layout:HeaderBodyFooterLayout.Header>
+            <ui:TitleBar Title="DocFinder" Foreground="{DynamicResource TextPrimaryBrush}">
+                <ui:TitleBar.Icon>
+                    <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
+                </ui:TitleBar.Icon>
+            </ui:TitleBar>
+        </layout:HeaderBodyFooterLayout.Header>
 
-        <!-- Header -->
-        <ui:TitleBar Grid.Row="0" Title="DocFinder" Foreground="{DynamicResource TextPrimaryBrush}">
-            <ui:TitleBar.Icon>
-                <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
-            </ui:TitleBar.Icon>
-        </ui:TitleBar>
-
-        <!-- Body -->
-        <Grid Grid.Row="1" Margin="{StaticResource Space24}" x:Name="SearchPage">
+        <layout:HeaderBodyFooterLayout.Body>
+            <Grid Margin="{StaticResource Space24}" x:Name="SearchPage">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -212,11 +208,13 @@
                 </Grid>
             </Grid>
             </Grid>
-        </Grid>
+            </Grid>
+        </layout:HeaderBodyFooterLayout.Body>
 
-        <!-- Footer -->
-        <Border Grid.Row="2" Background="{DynamicResource ApplicationBackgroundBrush}">
-            <ui:TextBlock Margin="12,8" HorizontalAlignment="Center" Text="© 2024 DocFinder" />
-        </Border>
-    </Grid>
+        <layout:HeaderBodyFooterLayout.Footer>
+            <Border Background="{DynamicResource ApplicationBackgroundBrush}">
+                <ui:TextBlock Margin="12,8" HorizontalAlignment="Center" Text="© 2024 DocFinder" />
+            </Border>
+        </layout:HeaderBodyFooterLayout.Footer>
+    </layout:HeaderBodyFooterLayout>
 </ui:FluentWindow>
