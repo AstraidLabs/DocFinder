@@ -11,6 +11,7 @@ using DocFinder.Application.Commands;
 using DocFinder.Domain;
 using DocFinder.Domain.Settings;
 using System.IO;
+using IOFile = System.IO.File;
 
 namespace DocFinder.App.ViewModels.Pages;
 
@@ -88,7 +89,7 @@ public partial class SearchViewModel : ObservableObject
 
             var result = await _dispatcher.SendAsync<SearchDocumentsCommand, SearchResult>(command, ct);
 
-            await Application.Current.Dispatcher.InvokeAsync(() =>
+            await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 Results.Clear();
                 foreach (var hit in result.Hits)
@@ -123,7 +124,7 @@ public partial class SearchViewModel : ObservableObject
             return;
 
         var path = SelectedDocument.Path;
-        if (!File.Exists(path))
+        if (!IOFile.Exists(path))
             return;
         if (!_settings.Current.WatchedRoots.Any(r => path.StartsWith(r, StringComparison.OrdinalIgnoreCase)))
             return;

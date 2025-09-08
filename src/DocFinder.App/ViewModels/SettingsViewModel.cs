@@ -40,13 +40,13 @@ public partial class SettingsViewModel : ObservableObject, INavigationAware
         _watcherService = watcherService;
         _indexer = indexer;
         _settings = settingsService.Current;
-        _watchedRootsText = string.Join(Environment.NewLine, _settings.WatchedRoots);
+        WatchedRootsText = string.Join(Environment.NewLine, _settings.WatchedRoots);
     }
 
     [RelayCommand]
     private async Task SaveAsync(CancellationToken ct = default)
     {
-        Settings.WatchedRoots = _watchedRootsText
+        Settings.WatchedRoots = WatchedRootsText
             .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
             .Select(r => r.Trim())
             .Where(r => !string.IsNullOrWhiteSpace(r))
