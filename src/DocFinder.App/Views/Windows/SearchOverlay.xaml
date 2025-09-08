@@ -101,11 +101,6 @@
                                     <ui:SymbolIcon Symbol="Search28" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Nastavení…" Click="Menu_Settings_Click">
-                                <MenuItem.Icon>
-                                    <ui:SymbolIcon Symbol="Settings28" />
-                                </MenuItem.Icon>
-                            </MenuItem>
                             <MenuItem Header="Přeindexovat" Click="Menu_Reindex_Click">
                                 <MenuItem.Icon>
                                     <ui:SymbolIcon Symbol="ArrowClockwise28" />

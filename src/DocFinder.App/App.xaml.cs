@@ -61,7 +61,6 @@ public partial class App
             services.AddSingleton<SearchOverlayViewModel>();
             services.AddSingleton<SearchOverlay>();
             services.AddSingleton<SettingsViewModel>();
-            services.AddSingleton<SettingsWindow>();
         }).Build();
 
     public static IServiceProvider Services => _host.Services;

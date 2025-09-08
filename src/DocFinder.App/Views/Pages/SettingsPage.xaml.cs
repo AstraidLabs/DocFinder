@@ -1,18 +1,18 @@
-﻿using DocFinder.App.ViewModels.Pages;
+using DocFinder.App.ViewModels;
 using Wpf.Ui.Abstractions.Controls;
 
-namespace DocFinder.App.Views.Pages
+namespace DocFinder.App.Views.Pages;
+
+public partial class SettingsPage : INavigableView<SettingsViewModel>
 {
-    public partial class SettingsPage : INavigableView<SettingsViewModel>
+    public SettingsViewModel ViewModel { get; }
+
+    public SettingsPage(SettingsViewModel viewModel)
     {
-        public SettingsViewModel ViewModel { get; }
+        ViewModel = viewModel;
+        DataContext = this;
 
-        public SettingsPage(SettingsViewModel viewModel)
-        {
-            ViewModel = viewModel;
-            DataContext = this;
-
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }
+

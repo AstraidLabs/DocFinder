@@ -11,10 +11,11 @@ using System.Threading.Tasks;
 using Wpf.Ui.Appearance;
 using System;
 using System.Linq;
+using Wpf.Ui.Abstractions.Controls;
 
 namespace DocFinder.App.ViewModels;
 
-public partial class SettingsViewModel : ObservableObject
+public partial class SettingsViewModel : ObservableObject, INavigationAware
 {
     private readonly ISettingsService _settingsService;
     private readonly IWatcherService _watcherService;
@@ -88,4 +89,8 @@ public partial class SettingsViewModel : ObservableObject
 
         await reindexTask;
     }
+
+    public Task OnNavigatedToAsync() => Task.CompletedTask;
+
+    public Task OnNavigatedFromAsync() => Task.CompletedTask;
 }
