@@ -1,4 +1,3 @@
-using DocFinder.App.Models;
 using DocFinder.App.Views.Pages;
 ﻿using System.Collections.ObjectModel;
 using Wpf.Ui.Controls;
@@ -11,47 +10,47 @@ namespace DocFinder.App.ViewModels.Windows
         private string _applicationTitle = "WPF UI - DocFinder";
 
         [ObservableProperty]
-        private ObservableCollection<NavigationItem> _menuItems = new()
+        private ObservableCollection<NavigationViewItem> _menuItems = new()
         {
             new()
             {
-                Title = "Home",
-                Symbol = SymbolRegular.Home24,
+                Content = "Home",
+                Icon = new SymbolIcon(SymbolRegular.Home24),
                 TargetPageType = typeof(DashboardPage)
             },
             new()
             {
-                Title = "Data",
-                Symbol = SymbolRegular.DataHistogram24,
+                Content = "Data",
+                Icon = new SymbolIcon(SymbolRegular.DataHistogram24),
                 TargetPageType = typeof(DataPage)
             },
             new()
             {
-                Title = "Protocols",
-                Symbol = SymbolRegular.DocumentBulletList24,
+                Content = "Protocols",
+                Icon = new SymbolIcon(SymbolRegular.DocumentBulletList24),
                 TargetPageType = typeof(ProtocolsPage)
             },
             new()
             {
-                Title = "Files",
-                Symbol = SymbolRegular.Document24,
+                Content = "Files",
+                Icon = new SymbolIcon(SymbolRegular.Document24),
                 TargetPageType = typeof(FilesPage)
             },
             new()
             {
-                Title = "Search",
-                Symbol = SymbolRegular.Search24,
+                Content = "Search",
+                Icon = new SymbolIcon(SymbolRegular.Search24),
                 TargetPageType = typeof(SearchPage)
             }
         };
 
         [ObservableProperty]
-        private ObservableCollection<NavigationItem> _footerMenuItems = new()
+        private ObservableCollection<NavigationViewItem> _footerMenuItems = new()
         {
             new()
             {
-                Title = "Settings",
-                Symbol = SymbolRegular.Settings24,
+                Content = "Settings",
+                Icon = new SymbolIcon(SymbolRegular.Settings24),
                 TargetPageType = typeof(SettingsPage)
             }
         };
