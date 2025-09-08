@@ -25,7 +25,7 @@
         </layout:MainLayout.Menu>
         <layout:MainLayout.Body>
             <Grid>
-                <ui:Card Margin="12" Title="Data overview" />
+                <GroupBox Margin="12" Header="Data overview" />
             </Grid>
         </layout:MainLayout.Body>
         <layout:MainLayout.Footer>

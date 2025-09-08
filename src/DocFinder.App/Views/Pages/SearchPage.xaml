@@ -137,8 +137,8 @@
 
                 <!-- Filter panel -->
                 <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="{StaticResource MarginBottomSpace16}">
-                    <ui:DatePicker SelectedDate="{Binding FromDate}" Width="150" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" ToolTip="Od"/>
-                    <ui:DatePicker SelectedDate="{Binding ToDate}" Width="150" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" ToolTip="Do"/>
+                    <DatePicker SelectedDate="{Binding FromDate}" Width="150" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" ToolTip="Od"/>
+                    <DatePicker SelectedDate="{Binding ToDate}" Width="150" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" ToolTip="Do"/>
                     <ui:TextBox Text="{Binding AuthorFilter, UpdateSourceTrigger=PropertyChanged}" Width="120" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" PlaceholderEnabled="True" PlaceholderText="Autor"/>
                     <ui:TextBox Text="{Binding VersionFilter, UpdateSourceTrigger=PropertyChanged}" Width="100" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}" PlaceholderEnabled="True" PlaceholderText="Verze"/>
                     <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding SortField}" Width="140" Height="{StaticResource ControlHeight}" Margin="{StaticResource Space8}">
