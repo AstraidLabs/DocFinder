@@ -1,13 +1,13 @@
-﻿<Page
+<ui:Page
     x:Class="DocFinder.App.Views.Pages.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:helpers="clr-namespace:DocFinder.App.Helpers"
-    xmlns:local="clr-namespace:DocFinder.App.Views.Pages"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Pages"
+    xmlns:helpers="clr-namespace:DocFinder.App.Helpers"
+    xmlns:layout="clr-namespace:DocFinder.App.Views.Layout"
     Title="SettingsPage"
     d:DataContext="{d:DesignInstance vm:SettingsViewModel, IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
@@ -16,36 +16,50 @@
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
-    <Page.Resources>
+    <ui:Page.Resources>
         <helpers:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
-    </Page.Resources>
+    </ui:Page.Resources>
 
-    <StackPanel>
-        <TextBlock
-            FontSize="20"
-            FontWeight="Medium"
-            Text="Personalization" />
-        <TextBlock Margin="0,12,0,0" Text="Theme" />
-        <RadioButton
-            Margin="0,12,0,0"
-            Command="{Binding ViewModel.ChangeThemeCommand, Mode=OneWay}"
-            CommandParameter="theme_light"
-            Content="Light"
-            GroupName="themeSelect"
-            IsChecked="{Binding ViewModel.CurrentTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}" />
-        <RadioButton
-            Margin="0,8,0,0"
-            Command="{Binding ViewModel.ChangeThemeCommand, Mode=OneWay}"
-            CommandParameter="theme_dark"
-            Content="Dark"
-            GroupName="themeSelect"
-            IsChecked="{Binding ViewModel.CurrentTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}" />
+    <layout:HeaderBodyFooterLayout>
+        <layout:HeaderBodyFooterLayout.Header>
+            <layout:HeaderView />
+        </layout:HeaderBodyFooterLayout.Header>
+        <layout:HeaderBodyFooterLayout.Menu>
+            <layout:MenuView />
+        </layout:HeaderBodyFooterLayout.Menu>
+        <layout:HeaderBodyFooterLayout.Body>
+            <StackPanel>
+                <TextBlock
+                    FontSize="20"
+                    FontWeight="Medium"
+                    Text="Personalization" />
+                <TextBlock Margin="0,12,0,0" Text="Theme" />
+                <RadioButton
+                    Margin="0,12,0,0"
+                    Command="{Binding ViewModel.ChangeThemeCommand, Mode=OneWay}"
+                    CommandParameter="theme_light"
+                    Content="Light"
+                    GroupName="themeSelect"
+                    IsChecked="{Binding ViewModel.CurrentTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}" />
+                <RadioButton
+                    Margin="0,8,0,0"
+                    Command="{Binding ViewModel.ChangeThemeCommand, Mode=OneWay}"
+                    CommandParameter="theme_dark"
+                    Content="Dark"
+                    GroupName="themeSelect"
+                    IsChecked="{Binding ViewModel.CurrentTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}" />
 
-        <TextBlock
-            Margin="0,24,0,0"
-            FontSize="20"
-            FontWeight="Medium"
-            Text="About DocFinder" />
-        <TextBlock Margin="0,12,0,0" Text="{Binding ViewModel.AppVersion, Mode=OneWay}" />
-    </StackPanel>
-</Page>
+                <TextBlock
+                    Margin="0,24,0,0"
+                    FontSize="20"
+                    FontWeight="Medium"
+                    Text="About DocFinder" />
+                <TextBlock Margin="0,12,0,0" Text="{Binding ViewModel.AppVersion, Mode=OneWay}" />
+            </StackPanel>
+        </layout:HeaderBodyFooterLayout.Body>
+        <layout:HeaderBodyFooterLayout.Footer>
+            <layout:FooterView />
+        </layout:HeaderBodyFooterLayout.Footer>
+    </layout:HeaderBodyFooterLayout>
+</ui:Page>
+
