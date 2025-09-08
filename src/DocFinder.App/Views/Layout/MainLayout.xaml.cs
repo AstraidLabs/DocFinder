@@ -3,28 +3,28 @@ using System.Windows.Controls;
 
 namespace DocFinder.App.Views.Layout
 {
-    public partial class HeaderBodyFooterLayout : UserControl
+    public partial class MainLayout : UserControl
     {
-        public HeaderBodyFooterLayout()
+        public MainLayout()
         {
             InitializeComponent();
         }
 
         public static readonly DependencyProperty HeaderProperty =
             DependencyProperty.Register(
-                nameof(Header), typeof(object), typeof(HeaderBodyFooterLayout), new PropertyMetadata(null));
+                nameof(Header), typeof(object), typeof(MainLayout), new PropertyMetadata(null));
 
         public static readonly DependencyProperty MenuProperty =
             DependencyProperty.Register(
-                nameof(Menu), typeof(object), typeof(HeaderBodyFooterLayout), new PropertyMetadata(null));
+                nameof(Menu), typeof(object), typeof(MainLayout), new PropertyMetadata(null));
 
         public static readonly DependencyProperty BodyProperty =
             DependencyProperty.Register(
-                nameof(Body), typeof(object), typeof(HeaderBodyFooterLayout), new PropertyMetadata(null));
+                nameof(Body), typeof(object), typeof(MainLayout), new PropertyMetadata(null));
 
         public static readonly DependencyProperty FooterProperty =
             DependencyProperty.Register(
-                nameof(Footer), typeof(object), typeof(HeaderBodyFooterLayout), new PropertyMetadata(null));
+                nameof(Footer), typeof(object), typeof(MainLayout), new PropertyMetadata(null));
 
         public object? Header
         {

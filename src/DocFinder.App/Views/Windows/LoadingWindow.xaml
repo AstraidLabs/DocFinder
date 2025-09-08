@@ -11,28 +11,28 @@
     WindowStyle="None"
     ResizeMode="NoResize"
     ShowInTaskbar="False">
-    <layout:HeaderBodyFooterLayout Background="{DynamicResource SurfaceBackgroundBrush}">
-        <layout:HeaderBodyFooterLayout.Header>
+    <layout:MainLayout Background="{DynamicResource SurfaceBackgroundBrush}">
+        <layout:MainLayout.Header>
             <ui:TitleBar Title="DocFinder" Foreground="{DynamicResource TextPrimaryBrush}">
                 <ui:TitleBar.Icon>
                     <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
                 </ui:TitleBar.Icon>
             </ui:TitleBar>
-        </layout:HeaderBodyFooterLayout.Header>
+        </layout:MainLayout.Header>
 
-        <layout:HeaderBodyFooterLayout.Body>
+        <layout:MainLayout.Body>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="Načítání…" FontSize="16" Margin="0,0,0,12" HorizontalAlignment="Center"
                            Foreground="{DynamicResource TextPrimaryBrush}"/>
                 <ProgressBar IsIndeterminate="True" Width="200" Height="20"
                              Foreground="{DynamicResource AccentBrush}"/>
             </StackPanel>
-        </layout:HeaderBodyFooterLayout.Body>
+        </layout:MainLayout.Body>
 
-        <layout:HeaderBodyFooterLayout.Footer>
+        <layout:MainLayout.Footer>
             <Border Background="{DynamicResource ApplicationBackgroundBrush}">
                 <ui:TextBlock Margin="12,8" HorizontalAlignment="Center" Text="© 2024 DocFinder" />
             </Border>
-        </layout:HeaderBodyFooterLayout.Footer>
-    </layout:HeaderBodyFooterLayout>
+        </layout:MainLayout.Footer>
+    </layout:MainLayout>
 </ui:FluentWindow>
