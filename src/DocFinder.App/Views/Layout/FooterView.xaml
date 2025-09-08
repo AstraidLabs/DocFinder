@@ -2,12 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
-    <ui:StackPanel Background="{DynamicResource ApplicationBackgroundBrush}">
-        <ui:Separator />
-        <ui:TextBlock
+    <StackPanel Background="{DynamicResource ApplicationBackgroundBrush}">
+        <Separator />
+        <TextBlock
             Margin="12,8"
             HorizontalAlignment="Center"
             Foreground="{DynamicResource ApplicationForegroundBrush}"
             Text="{Binding FooterText}" />
-    </ui:StackPanel>
+    </StackPanel>
 </UserControl>
