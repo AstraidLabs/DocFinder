@@ -109,7 +109,7 @@ public partial class SearchPage : INavigableView<SearchViewModel>
 
     private void Menu_Exit_Click(object sender, RoutedEventArgs e)
     {
-        Application.Current.Shutdown();
+        System.Windows.Application.Current.Shutdown();
     }
 
     private void ResultsGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
