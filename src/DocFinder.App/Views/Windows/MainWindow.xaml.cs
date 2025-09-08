@@ -10,6 +10,8 @@ namespace DocFinder.App.Views.Windows
     {
         public MainWindowViewModel? ViewModel { get; }
 
+        private IServiceProvider? _serviceProvider;
+
         public MainWindow()
         {
             SystemThemeWatcher.Watch(this);
@@ -55,9 +57,6 @@ namespace DocFinder.App.Views.Windows
             System.Windows.Application.Current.Shutdown();
         }
 
-        public void SetServiceProvider(IServiceProvider serviceProvider)
-        {
-            throw new NotImplementedException();
-        }
+        public void SetServiceProvider(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
     }
 }
