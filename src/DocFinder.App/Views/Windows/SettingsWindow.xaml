@@ -24,6 +24,7 @@
 
         <!-- Body & Navigation -->
         <ui:NavigationView Grid.Row="1" PaneDisplayMode="LeftFluent">
+            <ui:NavigationView.Content>
             <StackPanel Margin="20">
                 <TextBlock Text="Source Folder"/>
                 <TextBox Text="{Binding Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}"/>
@@ -53,6 +54,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </StackPanel>
+            </ui:NavigationView.Content>
         </ui:NavigationView>
 
         <!-- Footer -->
