@@ -115,5 +115,14 @@ public partial class App
 
     private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
+        var logger = Services.GetRequiredService<ILogger<App>>();
+        logger.LogError(e.Exception, "Unhandled exception");
+
+        var dialog = Services.GetRequiredService<IMessageDialogService>();
+        var continueApp = dialog.ShowConfirmation(
+            $"An unexpected error occurred:\n{e.Exception.Message}\n\nDo you want to continue using the application?",
+            "Unexpected Error");
+
+        e.Handled = continueApp;
     }
 }
