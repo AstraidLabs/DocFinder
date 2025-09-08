@@ -25,7 +25,7 @@
         </layout:MainLayout.Menu>
         <layout:MainLayout.Body>
             <Grid>
-                <ui:Card Margin="12" Title="Protocols" />
+                <GroupBox Margin="12" Header="Protocols" />
             </Grid>
         </layout:MainLayout.Body>
         <layout:MainLayout.Footer>
