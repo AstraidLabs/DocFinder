@@ -1,16 +1,28 @@
 <UserControl x:Class="DocFinder.App.Views.Layout.BodyView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:models="clr-namespace:DocFinder.App.Models">
+    <UserControl.Resources>
+        <DataTemplate x:Key="NavigationItemTemplate" DataType="{x:Type models:NavigationItem}">
+            <ui:NavigationViewItem Content="{Binding Title}" TargetPageType="{Binding TargetPageType}">
+                <ui:NavigationViewItem.Icon>
+                    <ui:SymbolIcon Symbol="{Binding Symbol}" />
+                </ui:NavigationViewItem.Icon>
+            </ui:NavigationViewItem>
+        </DataTemplate>
+    </UserControl.Resources>
     <ui:NavigationView
         x:Name="RootNavigation"
         Padding="42,0,42,0"
         BreadcrumbBar="{Binding ElementName=BreadcrumbBar}"
         FooterMenuItemsSource="{Binding ViewModel.FooterMenuItems, Mode=OneWay}"
+        FooterMenuItemTemplate="{StaticResource NavigationItemTemplate}"
         FrameMargin="0"
         IsBackButtonVisible="Visible"
         IsPaneToggleVisible="True"
         MenuItemsSource="{Binding ViewModel.MenuItems, Mode=OneWay}"
+        MenuItemTemplate="{StaticResource NavigationItemTemplate}"
         PaneDisplayMode="LeftFluent">
         <ui:NavigationView.Header>
             <ui:BreadcrumbBar x:Name="BreadcrumbBar" Margin="42,32,42,20" />
