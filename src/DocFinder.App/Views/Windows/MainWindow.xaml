@@ -22,21 +22,18 @@
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <Grid>
-        <layout:MainLayout>
-            <layout:MainLayout.Header>
-                <layout:HeaderView />
-            </layout:MainLayout.Header>
-            <layout:MainLayout.Menu>
-                <layout:MenuView />
-            </layout:MainLayout.Menu>
-            <layout:MainLayout.Body>
-                <layout:BodyView x:Name="BodyView" />
-            </layout:MainLayout.Body>
-            <layout:MainLayout.Footer>
-                <layout:FooterView />
-            </layout:MainLayout.Footer>
-        </layout:MainLayout>
-        <ContentPresenter x:Name="RootContentDialog" />
-    </Grid>
+    <layout:MainLayout x:Name="MainLayout">
+        <layout:MainLayout.Header>
+            <layout:HeaderView />
+        </layout:MainLayout.Header>
+        <layout:MainLayout.Menu>
+            <layout:MenuView />
+        </layout:MainLayout.Menu>
+        <layout:MainLayout.Body>
+            <layout:BodyView x:Name="BodyView" />
+        </layout:MainLayout.Body>
+        <layout:MainLayout.Footer>
+            <layout:FooterView />
+        </layout:MainLayout.Footer>
+    </layout:MainLayout>
 </ui:FluentWindow>
