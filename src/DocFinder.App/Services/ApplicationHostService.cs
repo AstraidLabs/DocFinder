@@ -6,40 +6,47 @@ using DocFinder.Indexing;
 using DocFinder.Domain.Settings;
 using Microsoft.Extensions.Logging;
 using Wpf.Ui;
+using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
 
 namespace DocFinder.App.Services;
 
 public class ApplicationHostService : IHostedService
 {
     private readonly ITrayService _tray;
-    private readonly MainWindow _mainWindow;
     private readonly INavigationService _navigationService;
     private readonly IWatcherService _watcher;
     private readonly ISettingsService _settingsService;
     private readonly IIndexer _indexer;
     private readonly ILogger<ApplicationHostService> _logger;
+    private readonly IServiceProvider _serviceProvider;
+    private MainWindow? _mainWindow;
 
-    public ApplicationHostService(ITrayService tray,
-        MainWindow mainWindow,
+    public ApplicationHostService(
+        ITrayService tray,
         INavigationService navigationService,
         IWatcherService watcher,
         ISettingsService settingsService,
         IIndexer indexer,
-        ILogger<ApplicationHostService> logger)
+        ILogger<ApplicationHostService> logger,
+        IServiceProvider serviceProvider)
     {
         _tray = tray;
-        _mainWindow = mainWindow;
         _navigationService = navigationService;
         _watcher = watcher;
         _settingsService = settingsService;
         _indexer = indexer;
         _logger = logger;
+        _serviceProvider = serviceProvider;
     }
+
+    private MainWindow MainWindow => _mainWindow ??= _serviceProvider.GetRequiredService<MainWindow>();
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _watcher.Start();
-        _tray.Initialize(ToggleMainWindow, () => System.Windows.Application.Current.Shutdown(), ShowSettings);
+        Application.Current.Dispatcher.Invoke(() =>
+            _tray.Initialize(ToggleMainWindow, () => Application.Current.Shutdown(), ShowSettings));
         if (_settingsService.Current.AutoIndexOnStartup)
         {
             _ = Task.Run(async () =>
@@ -66,15 +73,17 @@ public class ApplicationHostService : IHostedService
 
     private void ToggleMainWindow()
     {
-        if (_mainWindow.IsVisible) _mainWindow.Hide();
-        else { _mainWindow.Show(); _mainWindow.Activate(); }
+        var window = MainWindow;
+        if (window.IsVisible) window.Hide();
+        else { window.Show(); window.Activate(); }
     }
 
     private void ShowSettings()
     {
-        if (!_mainWindow.IsVisible)
-            _mainWindow.Show();
-        _mainWindow.Activate();
+        var window = MainWindow;
+        if (!window.IsVisible)
+            window.Show();
+        window.Activate();
         _navigationService.Navigate(typeof(SettingsPage));
     }
 
