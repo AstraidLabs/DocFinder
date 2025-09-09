@@ -5,6 +5,7 @@ using DocFinder.App.Views.Pages;
 using Wpf.Ui;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
+using Wpf.Ui.Extensions;
 
 namespace DocFinder.App.ViewModels.Windows;
 
