@@ -117,7 +117,7 @@ public partial class App
                 logger.LogInformation("Migrations applied in {Elapsed} ms", migrateSw.ElapsedMilliseconds);
                 loadingWindow.SetProgress(50);
 
-                // ❷ Teprve teď startuj hosta
+                // Teprve teď startuj hosta
                 logger.LogInformation("Starting host");
                 var hostSw = Stopwatch.StartNew();
                 using var hostCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
