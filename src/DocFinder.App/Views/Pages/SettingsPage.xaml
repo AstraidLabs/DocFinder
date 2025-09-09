@@ -18,10 +18,7 @@
         <ui:TextBlock Grid.Row="0" Text="Settings" FontSize="28" FontWeight="Bold" Margin="0,0,0,16"/>
 
         <StackPanel Grid.Row="1" Orientation="Vertical" >
-            <ui:Card Padding="16" Margin="0,0,0,16">
-                <ui:Card.Header>
-                    <ui:TextBlock Text="Paths" FontWeight="Bold"/>
-                </ui:Card.Header>
+            <ui:Card Header="Paths" Padding="16" Margin="0,0,0,16">
                 <StackPanel>
                     <ui:TextBlock Text="Source Folder"/>
                     <ui:TextBox Text="{Binding ViewModel.Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}"/>
@@ -38,10 +35,7 @@
                 </StackPanel>
             </ui:Card>
 
-            <ui:Card Padding="16" Margin="0,0,0,16">
-                <ui:Card.Header>
-                    <ui:TextBlock Text="Indexing &amp; search" FontWeight="Bold"/>
-                </ui:Card.Header>
+            <ui:Card Header="Indexing &amp; search" Padding="16" Margin="0,0,0,16">
                 <StackPanel>
                     <ui:TextBlock Text="Polling Interval (minutes)"/>
                     <ui:TextBox Text="{Binding ViewModel.Settings.PollingMinutes, UpdateSourceTrigger=PropertyChanged}"/>
@@ -55,10 +49,7 @@
                 </StackPanel>
             </ui:Card>
 
-            <ui:Card Padding="16">
-                <ui:Card.Header>
-                    <ui:TextBlock Text="Appearance" FontWeight="Bold"/>
-                </ui:Card.Header>
+            <ui:Card Header="Appearance" Padding="16">
                 <StackPanel>
                     <ui:ComboBox SelectedValue="{Binding ViewModel.Settings.Theme}" SelectedValuePath="Tag" Margin="0,0,0,12">
                         <ui:ComboBoxItem Content="Light" Tag="Light"/>
