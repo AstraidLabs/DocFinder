@@ -33,7 +33,7 @@ public partial class FilesViewModel : ObservableObject
         Files.Clear();
         var files = await _repository.ListAsync(ct: ct);
         foreach (var f in files)
-            Files.Add(new FileItem(f.FileId, f.Path, f.FileName));
+            Files.Add(new FileItem(f.FileId, f.FilePath, f.Name));
     }
 
     /// <summary>Opens the specified file using the document opener service.</summary>
