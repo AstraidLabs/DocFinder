@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading;
 using System.Windows.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -81,10 +82,28 @@ public partial class App
 
         try
         {
+            var logger = Services.GetRequiredService<ILogger<App>>();
+
             // Load user settings before any services are started so that other
             // services (like the file watcher) receive the correct configuration.
             var settings = Services.GetRequiredService<ISettingsService>();
-            await settings.LoadAsync();
+            using var settingsCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            try
+            {
+                logger.LogInformation("Starting settings load");
+                await settings.LoadAsync(settingsCts.Token);
+                logger.LogInformation("Settings loaded");
+            }
+            catch (OperationCanceledException ex)
+            {
+                logger.LogError(ex, "Loading settings timed out");
+                throw new TimeoutException("Loading settings timed out", ex);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to load settings");
+                throw new InvalidOperationException("Failed to load settings", ex);
+            }
 
             // Apply the configured theme so that the window uses it immediately
             var themeName = settings.Current.Theme;
@@ -93,7 +112,23 @@ public partial class App
                 : ApplicationTheme.Light;
             ApplicationThemeManager.Apply(theme);
 
-            await _host.StartAsync();
+            using var hostCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            try
+            {
+                logger.LogInformation("Starting host");
+                await _host.StartAsync(hostCts.Token);
+                logger.LogInformation("Host started");
+            }
+            catch (OperationCanceledException ex)
+            {
+                logger.LogError(ex, "Starting host timed out");
+                throw new TimeoutException("Starting host timed out", ex);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to start host");
+                throw new InvalidOperationException("Failed to start host", ex);
+            }
 
             var navigation = Services.GetRequiredService<INavigationService>();
             var mainWindow = Services.GetRequiredService<MainWindow>();
@@ -136,7 +171,7 @@ public partial class App
         }
         finally
         {
-            _host.Dispose();
+            await _host.DisposeAsync();
         }
     }
 

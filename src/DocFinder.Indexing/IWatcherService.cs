@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DocFinder.Indexing;
 
-public interface IWatcherService : IDisposable
+public interface IWatcherService : IAsyncDisposable
 {
     void Start();
     void Stop();
