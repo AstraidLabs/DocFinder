@@ -32,8 +32,13 @@ public class DocumentDbContextTests
 
         var services = new ServiceCollection();
         services.AddSingleton<ILuceneIndexService>(index);
-        services.AddDbContextFactory<DocumentDbContext>(o => o.UseSqlite(connection));
-        services.AddScoped<DocumentSaveChangesInterceptor>();
+        services.AddSingleton<IAuditService, AuditService>();
+        services.AddSingleton<DocumentSaveChangesInterceptor>();
+        services.AddDbContextFactory<DocumentDbContext>((sp, o) =>
+        {
+            o.UseSqlite(connection);
+            o.AddInterceptors(sp.GetRequiredService<DocumentSaveChangesInterceptor>());
+        });
         services.AddDbContext<DocumentDbContext>((sp, o) =>
         {
             o.UseSqlite(connection);
