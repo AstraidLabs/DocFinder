@@ -4,6 +4,7 @@ using DocFinder.App.Views.Windows;
 using DocFinder.App.Views.Pages;
 using DocFinder.Indexing;
 using DocFinder.Domain.Settings;
+using Microsoft.Extensions.Logging;
 using Wpf.Ui;
 
 namespace DocFinder.App.Services;
@@ -16,13 +17,15 @@ public class ApplicationHostService : IHostedService
     private readonly IWatcherService _watcher;
     private readonly ISettingsService _settingsService;
     private readonly IIndexer _indexer;
+    private readonly ILogger<ApplicationHostService> _logger;
 
     public ApplicationHostService(ITrayService tray,
         MainWindow mainWindow,
         INavigationService navigationService,
         IWatcherService watcher,
         ISettingsService settingsService,
-        IIndexer indexer)
+        IIndexer indexer,
+        ILogger<ApplicationHostService> logger)
     {
         _tray = tray;
         _mainWindow = mainWindow;
@@ -30,16 +33,33 @@ public class ApplicationHostService : IHostedService
         _watcher = watcher;
         _settingsService = settingsService;
         _indexer = indexer;
+        _logger = logger;
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
         _watcher.Start();
         _tray.Initialize(ToggleMainWindow, () => System.Windows.Application.Current.Shutdown(), ShowSettings);
         if (_settingsService.Current.AutoIndexOnStartup)
         {
-            await _indexer.ReindexAllAsync(cancellationToken);
+            _ = Task.Run(async () =>
+            {
+                _logger.LogInformation("Starting initial reindexation");
+                try
+                {
+                    await _indexer.ReindexAllAsync(cancellationToken);
+                    _logger.LogInformation("Initial reindexation completed");
+                    _tray.ShowNotification("DocFinder", "Initial indexation completed");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Initial reindexation failed");
+                    _tray.ShowNotification("DocFinder", "Initial indexation failed");
+                }
+            }, cancellationToken);
         }
+
+        return Task.CompletedTask;
     }
 
     private void ToggleMainWindow()
