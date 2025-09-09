@@ -5,69 +5,71 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Windows;assembly=DocFinder.App"
+    xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Windows"
     Title="{Binding ApplicationTitle}"
-    Width="1100"
-    Height="650"
-    d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=True}"
-    ExtendsContentIntoTitleBar="True"
+    Width="1200" Height="720"
+    d:DataContext="{d:DesignInstance vm:MainWindowViewModel, IsDesignTimeCreatable=True}"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     WindowBackdropType="Mica"
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
+    ExtendsContentIntoTitleBar="True"
     mc:Ignorable="d">
+
     <Grid Background="{DynamicResource SurfaceBackgroundBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Title bar with theme toggle -->
+        <!-- TitleBar: použij Trailing místo RightContent -->
         <ui:TitleBar Grid.Row="0"
-                     Title="{Binding ApplicationTitle}"
-                     CloseWindowByDoubleClickOnIcon="True">
+                 Title="{Binding ApplicationTitle}"
+                 CloseWindowByDoubleClickOnIcon="True">
             <ui:TitleBar.Icon>
-                <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
+                <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png"/>
             </ui:TitleBar.Icon>
-            <ui:TitleBar.RightContent>
-                <ui:ThemeSwitch />
-            </ui:TitleBar.RightContent>
+            <ui:TitleBar.Trailing>
+                <ui:ToggleSwitch IsChecked="{Binding IsDarkTheme}" Content="Dark"/>
+            </ui:TitleBar.Trailing>
         </ui:TitleBar>
 
-        <!-- Navigation view with frame -->
+        <!-- NavigationView bez child obsahu, odkazuje na Frame -->
         <ui:NavigationView Grid.Row="1"
-                           x:Name="RootNavigation"
-                           BreadcrumbBar="{Binding ElementName=BreadcrumbBar}"
-                           FooterMenuItemsSource="{Binding FooterMenuItems}"
-                           FrameMargin="0"
-                           IsBackButtonVisible="True"
-                           IsPaneToggleVisible="True"
-                           MenuItemsSource="{Binding MenuItems}"
-                           PaneDisplayMode="Left">
+                       x:Name="RootNavigation"
+                       PaneDisplayMode="Left"
+                       IsPaneToggleVisible="True"
+                       IsBackButtonVisible="Visible"
+                       MenuItemsSource="{Binding MenuItems}"
+                       FooterMenuItemsSource="{Binding FooterMenuItems}"
+                       Frame="{Binding ElementName=RootFrame}">
             <ui:NavigationView.Header>
                 <Grid Margin="42,24,42,12">
-                    <ui:BreadcrumbBar x:Name="BreadcrumbBar" />
+                    <ui:BreadcrumbBar x:Name="BreadcrumbBar"/>
                 </Grid>
             </ui:NavigationView.Header>
-
-            <Frame x:Name="RootFrame" NavigationUIVisibility="Hidden" />
-
+            <!-- ContentOverlay mùže zùstat, ale ne vkládej další layout children mimo povolené -->
             <ui:NavigationView.ContentOverlay>
-                <Grid>
-                    <ui:SnackbarPresenter x:Name="SnackbarPresenter" />
-                    <ui:Dialog x:Name="RootDialog" />
-                </Grid>
+                <ui:SnackbarPresenter x:Name="SnackbarPresenter"/>
             </ui:NavigationView.ContentOverlay>
         </ui:NavigationView>
 
+        <!-- Host pro stránky: mimo NavigationView -->
+        <Frame x:Name="RootFrame"
+           Grid.Row="1"
+           NavigationUIVisibility="Hidden"/>
+
         <!-- Footer -->
-        <Border Grid.Row="2" Background="{DynamicResource SurfaceBackgroundBrush}">
-            <StackPanel Margin="12,8" HorizontalAlignment="Center">
-                <Separator />
-                <TextBlock HorizontalAlignment="Center"
-                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                           Text="{Binding FooterText}" />
+        <Border Grid.Row="2" Background="{DynamicResource ApplicationBackgroundBrush}">
+            <StackPanel>
+                <Separator/>
+                <TextBlock Margin="12,8"
+                   HorizontalAlignment="Center"
+                   Foreground="{DynamicResource ApplicationForegroundBrush}"
+                   Text="{Binding FooterText}"/>
             </StackPanel>
         </Border>
     </Grid>
