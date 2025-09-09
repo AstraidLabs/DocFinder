@@ -76,6 +76,9 @@ public partial class App
 
     private async void OnStartup(object sender, StartupEventArgs e)
     {
+        var loadingWindow = new LoadingWindow();
+        loadingWindow.Show();
+
         // Load user settings before any services are started so that other
         // services (like the file watcher) receive the correct configuration.
         var settings = Services.GetRequiredService<ISettingsService>();
@@ -89,6 +92,8 @@ public partial class App
         ApplicationThemeManager.Apply(theme);
 
         await _host.StartAsync();
+
+        loadingWindow.Close();
 
         var navigation = Services.GetRequiredService<INavigationService>();
         var mainWindow = Services.GetRequiredService<MainWindow>();
