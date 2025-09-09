@@ -142,7 +142,7 @@ public partial class App
             var mainWindow = Services.GetRequiredService<MainWindow>();
             mainWindow.SetServiceProvider(Services);
             navigation.SetNavigationControl(mainWindow.GetNavigation());
-            navigation.Navigate(typeof(SearchPage));
+            mainWindow.Loaded += (_, _) => navigation.Navigate(typeof(SearchPage));
             mainWindow.Show();
             uiSw.Stop();
             logger.LogInformation("UI initialized in {Elapsed} ms", uiSw.ElapsedMilliseconds);
