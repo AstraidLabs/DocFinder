@@ -33,7 +33,7 @@ public partial class MainWindowViewModel : ObservableObject
         _dialogService = dialogService;
 
         ApplicationTitle = "DocFinder";
-        IsDarkTheme = _themeService.IsDark();
+        IsDarkTheme = _themeService.GetTheme() == ApplicationTheme.Dark;
         BuildMenu();
     }
 
@@ -113,7 +113,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     partial void OnIsDarkThemeChanged(bool value)
     {
-        _themeService.Set(value ? ThemeType.Dark : ThemeType.Light);
+        _themeService.SetTheme(value ? ApplicationTheme.Dark : ApplicationTheme.Light);
         var message = value ? "Dark theme enabled" : "Light theme enabled";
         _snackbarService.Show(message);
     }

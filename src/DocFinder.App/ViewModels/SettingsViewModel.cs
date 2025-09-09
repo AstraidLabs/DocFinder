@@ -119,12 +119,18 @@ public partial class SettingsViewModel : ObservableObject
     private void ApplyTheme(string? themeName)
     {
         Settings.Theme = themeName;
-        var type = themeName?.Equals("Dark", StringComparison.OrdinalIgnoreCase) == true
-            ? ThemeType.Dark
-            : themeName?.Equals("Auto", StringComparison.OrdinalIgnoreCase) == true
-                ? ThemeType.System
-                : ThemeType.Light;
-        _themeService.Set(type);
+        if (themeName?.Equals("Dark", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            _themeService.SetTheme(ApplicationTheme.Dark);
+        }
+        else if (themeName?.Equals("Auto", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            ApplicationThemeManager.ApplySystemTheme();
+        }
+        else
+        {
+            _themeService.SetTheme(ApplicationTheme.Light);
+        }
     }
 }
 
