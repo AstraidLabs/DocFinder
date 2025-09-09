@@ -5,6 +5,7 @@ using DocFinder.Domain.Settings;
 using DocFinder.Indexing;
 using DocFinder.App.Services;
 using Wpf.Ui.Appearance;
+using Wpf.Ui;
 
 namespace DocFinder.App.ViewModels;
 
@@ -68,7 +69,7 @@ public partial class SettingsViewModel : ObservableObject
 
         IProgress<string> progress = new Progress<string>(path =>
         {
-            Application.Current.Dispatcher.InvokeAsync(() => IndexedFiles.Add(path));
+            System.Windows.Application.Current.Dispatcher.InvokeAsync(() => IndexedFiles.Add(path));
         });
 
         var enumerateTask = Task.Run(() =>
