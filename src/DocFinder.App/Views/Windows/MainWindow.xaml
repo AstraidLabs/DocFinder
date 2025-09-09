@@ -25,42 +25,36 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- TitleBar: použij Trailing místo RightContent -->
+        <!-- TitleBar with toggle for switching theme -->
         <ui:TitleBar Grid.Row="0"
                  Title="{Binding ApplicationTitle}"
                  CloseWindowByDoubleClickOnIcon="True">
             <ui:TitleBar.Icon>
                 <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png"/>
             </ui:TitleBar.Icon>
-            <ui:TitleBar.Trailing>
+            <ui:TitleBar.TrailingContent>
                 <ui:ToggleSwitch IsChecked="{Binding IsDarkTheme}" Content="Dark"/>
-            </ui:TitleBar.Trailing>
+            </ui:TitleBar.TrailingContent>
         </ui:TitleBar>
 
-        <!-- NavigationView bez child obsahu, odkazuje na Frame -->
+        <!-- NavigationView hosting application pages -->
         <ui:NavigationView Grid.Row="1"
                        x:Name="RootNavigation"
                        PaneDisplayMode="Left"
                        IsPaneToggleVisible="True"
                        IsBackButtonVisible="Visible"
                        MenuItemsSource="{Binding MenuItems}"
-                       FooterMenuItemsSource="{Binding FooterMenuItems}"
-                       Frame="{Binding ElementName=RootFrame}">
+                       FooterMenuItemsSource="{Binding FooterMenuItems}">
             <ui:NavigationView.Header>
                 <Grid Margin="42,24,42,12">
                     <ui:BreadcrumbBar x:Name="BreadcrumbBar"/>
                 </Grid>
             </ui:NavigationView.Header>
-            <!-- ContentOverlay mùže zùstat, ale ne vkládej další layout children mimo povolené -->
+            <!-- ContentOverlay holds transient components like snackbars -->
             <ui:NavigationView.ContentOverlay>
                 <ui:SnackbarPresenter x:Name="SnackbarPresenter"/>
             </ui:NavigationView.ContentOverlay>
         </ui:NavigationView>
-
-        <!-- Host pro stránky: mimo NavigationView -->
-        <Frame x:Name="RootFrame"
-           Grid.Row="1"
-           NavigationUIVisibility="Hidden"/>
 
         <!-- Footer -->
         <Border Grid.Row="2" Background="{DynamicResource ApplicationBackgroundBrush}">
