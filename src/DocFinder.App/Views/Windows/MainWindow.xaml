@@ -8,7 +8,7 @@
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Windows;assembly=DocFinder.App"
     Title="{Binding ApplicationTitle}"
     Width="1200" Height="720"
-    d:DataContext="{d:DesignInstance vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
+    d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
     ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
