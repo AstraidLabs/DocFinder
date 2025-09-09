@@ -12,9 +12,9 @@
     Width="300"
     Height="200">
     <Grid Background="{DynamicResource ApplicationBackgroundBrush}">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <ui:ProgressRing Width="48" Height="48" IsIndeterminate="True" />
-            <TextBlock x:Name="StatusText" Text="Loading..." Margin="0,12,0,0" HorizontalAlignment="Center" />
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="250">
+            <ProgressBar x:Name="Progress" Height="20" Minimum="0" Maximum="100" />
+            <TextBlock x:Name="StatusText" Text="Loading..." Margin="0,12,0,0" HorizontalAlignment="Center" TextAlignment="Center" />
         </StackPanel>
     </Grid>
 </ui:FluentWindow>
