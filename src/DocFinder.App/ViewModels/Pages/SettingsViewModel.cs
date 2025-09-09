@@ -6,7 +6,7 @@ using DocFinder.Indexing;
 using DocFinder.App.Services;
 using Wpf.Ui.Appearance;
 
-namespace DocFinder.App.ViewModels;
+namespace DocFinder.App.ViewModels.Pages;
 
 /// <summary>
 /// View model backing the application settings page.
