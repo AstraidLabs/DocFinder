@@ -79,39 +79,65 @@ public partial class App
         var loadingWindow = new LoadingWindow();
         loadingWindow.Show();
 
-        // Load user settings before any services are started so that other
-        // services (like the file watcher) receive the correct configuration.
-        var settings = Services.GetRequiredService<ISettingsService>();
-        await settings.LoadAsync();
+        try
+        {
+            // Load user settings before any services are started so that other
+            // services (like the file watcher) receive the correct configuration.
+            var settings = Services.GetRequiredService<ISettingsService>();
+            await settings.LoadAsync();
 
-        // Apply the configured theme so that the window uses it immediately
-        var themeName = settings.Current.Theme;
-        var theme = themeName.Equals("Dark", StringComparison.OrdinalIgnoreCase)
-            ? ApplicationTheme.Dark
-            : ApplicationTheme.Light;
-        ApplicationThemeManager.Apply(theme);
+            // Apply the configured theme so that the window uses it immediately
+            var themeName = settings.Current.Theme;
+            var theme = themeName.Equals("Dark", StringComparison.OrdinalIgnoreCase)
+                ? ApplicationTheme.Dark
+                : ApplicationTheme.Light;
+            ApplicationThemeManager.Apply(theme);
 
-        await _host.StartAsync();
+            await _host.StartAsync();
 
-        loadingWindow.Close();
+            var navigation = Services.GetRequiredService<INavigationService>();
+            var mainWindow = Services.GetRequiredService<MainWindow>();
+            mainWindow.SetServiceProvider(Services);
+            navigation.SetNavigationControl(mainWindow.GetNavigation());
+            navigation.Navigate(typeof(SearchPage));
+            mainWindow.Show();
+        }
+        catch (Exception ex)
+        {
+            var logger = Services.GetRequiredService<ILogger<App>>();
+            logger.LogError(ex, "Failed to start application");
 
-        var navigation = Services.GetRequiredService<INavigationService>();
-        var mainWindow = Services.GetRequiredService<MainWindow>();
-        mainWindow.SetServiceProvider(Services);
-        navigation.SetNavigationControl(mainWindow.GetNavigation());
-        navigation.Navigate(typeof(SearchPage));
-        mainWindow.Show();
+            var dialog = Services.GetRequiredService<IMessageDialogService>();
+            await dialog.ShowError($"Failed to start application: {ex.Message}", "Startup Error");
+
+            Shutdown();
+        }
+        finally
+        {
+            loadingWindow.Close();
+        }
     }
 
     private async void OnExit(object sender, ExitEventArgs e)
     {
-        // Persist user changes.  Like .NET user scoped settings, values are only
-        // written when SaveAsync is called explicitly.
-        var settings = Services.GetRequiredService<ISettingsService>();
-        await settings.SaveAsync(settings.Current);
+        try
+        {
+            // Persist user changes.  Like .NET user scoped settings, values are only
+            // written when SaveAsync is called explicitly.
+            var settings = Services.GetRequiredService<ISettingsService>();
+            await settings.SaveAsync(settings.Current);
 
-        await _host.StopAsync();
-        _host.Dispose();
+            await _host.StopAsync();
+        }
+        catch (Exception ex)
+        {
+            var logger = Services.GetRequiredService<ILogger<App>>();
+            logger.LogError(ex, "Error during application shutdown");
+        }
+        finally
+        {
+            _host.Dispose();
+        }
     }
 
     private async void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -119,11 +145,19 @@ public partial class App
         var logger = Services.GetRequiredService<ILogger<App>>();
         logger.LogError(e.Exception, "Unhandled exception");
 
-        var dialog = Services.GetRequiredService<IMessageDialogService>();
-        var continueApp = await dialog.ShowConfirmation(
-            $"An unexpected error occurred:\n{e.Exception.Message}\n\nDo you want to continue using the application?",
-            "Unexpected Error");
+        try
+        {
+            var dialog = Services.GetRequiredService<IMessageDialogService>();
+            var continueApp = await dialog.ShowConfirmation(
+                $"An unexpected error occurred:\n{e.Exception.Message}\n\nDo you want to continue using the application?",
+                "Unexpected Error");
 
-        e.Handled = continueApp;
+            e.Handled = continueApp;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to process unhandled exception");
+            e.Handled = false;
+        }
     }
 }
