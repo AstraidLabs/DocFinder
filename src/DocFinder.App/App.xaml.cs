@@ -175,7 +175,7 @@ public partial class App
         }
         finally
         {
-            await _host.DisposeAsync();
+            _host.Dispose();
         }
     }
 
