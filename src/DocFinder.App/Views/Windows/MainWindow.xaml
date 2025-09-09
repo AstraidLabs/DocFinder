@@ -5,10 +5,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Windows"
+    xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Windows;assembly=DocFinder.App"
     Title="{Binding ApplicationTitle}"
     Width="1200" Height="720"
-    d:DataContext="{d:DesignInstance vm:MainWindowViewModel, IsDesignTimeCreatable=True}"
+    d:DataContext="{d:DesignInstance vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
     ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
@@ -26,7 +26,8 @@
         </Grid.RowDefinitions>
 
         <!-- TitleBar with toggle for switching theme -->
-        <ui:TitleBar Grid.Row="0"
+        <ui:TitleBar x:Name="TitleBar"
+                 Grid.Row="0"
                  Title="{Binding ApplicationTitle}"
                  CloseWindowByDoubleClickOnIcon="True">
             <ui:TitleBar.Icon>
@@ -44,11 +45,13 @@
                        IsPaneToggleVisible="True"
                        IsBackButtonVisible="Visible"
                        MenuItemsSource="{Binding MenuItems}"
-                       FooterMenuItemsSource="{Binding FooterMenuItems}">
+                       FooterMenuItemsSource="{Binding FooterMenuItems}"
+                       BreadcrumbBar="{Binding ElementName=BreadcrumbBar}"
+                       TitleBar="{Binding ElementName=TitleBar}">
             <ui:NavigationView.Header>
-                <Grid Margin="42,24,42,12">
+                <StackPanel Margin="42,24,42,12">
                     <ui:BreadcrumbBar x:Name="BreadcrumbBar"/>
-                </Grid>
+                </StackPanel>
             </ui:NavigationView.Header>
             <!-- ContentOverlay holds transient components like snackbars -->
             <ui:NavigationView.ContentOverlay>
