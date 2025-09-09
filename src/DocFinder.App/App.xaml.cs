@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows.Threading;
@@ -86,29 +87,27 @@ public partial class App
         try
         {
             var logger = Services.GetRequiredService<ILogger<App>>();
-
-            // Load user settings before any services are started so that other
-            // services (like the file watcher) receive the correct configuration.
             var settings = Services.GetRequiredService<ISettingsService>();
-            using var settingsCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            try
+
+            await Task.Run(async () =>
             {
                 logger.LogInformation("Starting settings load");
-                await settings.LoadAsync(settingsCts.Token);
-                logger.LogInformation("Settings loaded");
+                var settingsSw = Stopwatch.StartNew();
+                using var settingsCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                await settings.LoadAsync(settingsCts.Token).ConfigureAwait(false);
+                settingsSw.Stop();
+                logger.LogInformation("Settings loaded in {Elapsed} ms", settingsSw.ElapsedMilliseconds);
                 loadingWindow.SetProgress(33);
                 loadingWindow.SetStatus("Starting host...");
-            }
-            catch (OperationCanceledException ex)
-            {
-                logger.LogError(ex, "Loading settings timed out");
-                throw new TimeoutException("Loading settings timed out", ex);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Failed to load settings");
-                throw new InvalidOperationException("Failed to load settings", ex);
-            }
+
+                logger.LogInformation("Starting host");
+                var hostSw = Stopwatch.StartNew();
+                using var hostCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                await _host.StartAsync(hostCts.Token).ConfigureAwait(false);
+                hostSw.Stop();
+                logger.LogInformation("Host started in {Elapsed} ms", hostSw.ElapsedMilliseconds);
+                loadingWindow.SetProgress(66);
+            }).ConfigureAwait(true);
 
             // Apply the configured theme so that the window uses it immediately
             var themeName = settings.Current.Theme;
@@ -117,32 +116,16 @@ public partial class App
                 : ApplicationTheme.Light;
             ApplicationThemeManager.Apply(theme);
 
-            using var hostCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            try
-            {
-                logger.LogInformation("Starting host");
-                await _host.StartAsync(hostCts.Token);
-                logger.LogInformation("Host started");
-                loadingWindow.SetProgress(66);
-                loadingWindow.SetStatus("Initializing UI...");
-            }
-            catch (OperationCanceledException ex)
-            {
-                logger.LogError(ex, "Starting host timed out");
-                throw new TimeoutException("Starting host timed out", ex);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Failed to start host");
-                throw new InvalidOperationException("Failed to start host", ex);
-            }
-
+            loadingWindow.SetStatus("Initializing UI...");
+            var uiSw = Stopwatch.StartNew();
             var navigation = Services.GetRequiredService<INavigationService>();
             var mainWindow = Services.GetRequiredService<MainWindow>();
             mainWindow.SetServiceProvider(Services);
             navigation.SetNavigationControl(mainWindow.GetNavigation());
             navigation.Navigate(typeof(SearchPage));
             mainWindow.Show();
+            uiSw.Stop();
+            logger.LogInformation("UI initialized in {Elapsed} ms", uiSw.ElapsedMilliseconds);
             loadingWindow.SetProgress(100);
         }
         catch (Exception ex)
