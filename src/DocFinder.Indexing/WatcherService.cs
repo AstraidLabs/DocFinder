@@ -105,16 +105,19 @@ public sealed class WatcherService : IWatcherService
         }
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         Stop();
         _queue.Writer.TryComplete();
         _cts.Cancel();
         try
         {
-            _worker.Wait();
+            await _worker;
         }
-        catch (AggregateException) { }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            _logger.LogError(ex, "Watcher worker failed during dispose");
+        }
         _cts.Dispose();
     }
 }
