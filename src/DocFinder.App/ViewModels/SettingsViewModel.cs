@@ -1,26 +1,24 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using DocFinder.Domain.Settings;
-using DocFinder.Services;
-using DocFinder.Indexing;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Wpf.Ui.Appearance;
-using System;
 using System.Linq;
-using Wpf.Ui.Abstractions.Controls;
-using System.Windows;
+using DocFinder.Domain.Settings;
+using DocFinder.Indexing;
+using DocFinder.App.Services;
+using Wpf.Ui.Appearance;
 
 namespace DocFinder.App.ViewModels;
 
-public partial class SettingsViewModel : ObservableObject, INavigationAware
+/// <summary>
+/// View model backing the application settings page.
+/// </summary>
+public partial class SettingsViewModel : ObservableObject
 {
     private readonly ISettingsService _settingsService;
     private readonly IWatcherService _watcherService;
     private readonly IIndexer _indexer;
+    private readonly IThemeService _themeService;
 
+    /// <summary>Current application settings.</summary>
     [ObservableProperty]
     private AppSettings _settings = new();
 
@@ -34,15 +32,22 @@ public partial class SettingsViewModel : ObservableObject, INavigationAware
     [ObservableProperty]
     private bool _isIndexing;
 
-    public SettingsViewModel(ISettingsService settingsService, IWatcherService watcherService, IIndexer indexer)
+    public SettingsViewModel(
+        ISettingsService settingsService,
+        IWatcherService watcherService,
+        IIndexer indexer,
+        IThemeService themeService)
     {
         _settingsService = settingsService;
         _watcherService = watcherService;
         _indexer = indexer;
-        _settings = settingsService.Current;
-        WatchedRootsText = string.Join(Environment.NewLine, _settings.WatchedRoots);
+        _themeService = themeService;
+
+        Settings = settingsService.Current;
+        WatchedRootsText = string.Join(Environment.NewLine, Settings.WatchedRoots);
     }
 
+    /// <summary>Persist settings and restart indexing.</summary>
     [RelayCommand]
     private async Task SaveAsync(CancellationToken ct = default)
     {
@@ -54,23 +59,16 @@ public partial class SettingsViewModel : ObservableObject, INavigationAware
 
         await _settingsService.SaveAsync(Settings, ct);
 
-        // Restart file watchers to reflect the updated roots
         _watcherService.UpdateRoots(Settings.WatchedRoots);
 
-        // Apply the selected theme immediately
-        var themeName = string.IsNullOrWhiteSpace(Settings.Theme) ? "Light" : Settings.Theme;
-        var theme = themeName.Equals("Dark", StringComparison.OrdinalIgnoreCase)
-            ? ApplicationTheme.Dark
-            : ApplicationTheme.Light;
-        ApplicationThemeManager.Apply(theme);
+        ApplyTheme(Settings.Theme);
 
-        // Enumerate and index files from the configured source root concurrently
         IndexedFiles.Clear();
         IsIndexing = true;
 
         IProgress<string> progress = new Progress<string>(path =>
         {
-            System.Windows.Application.Current.Dispatcher.InvokeAsync(() => IndexedFiles.Add(path));
+            Application.Current.Dispatcher.InvokeAsync(() => IndexedFiles.Add(path));
         });
 
         var enumerateTask = Task.Run(() =>
@@ -85,7 +83,6 @@ public partial class SettingsViewModel : ObservableObject, INavigationAware
             }
         }, ct);
 
-        // Start reindexing concurrently without wrapping in an extra Task
         var reindexTask = _indexer.ReindexAllAsync(ct);
 
         try
@@ -98,7 +95,36 @@ public partial class SettingsViewModel : ObservableObject, INavigationAware
         }
     }
 
-    public Task OnNavigatedToAsync() => Task.CompletedTask;
+    /// <summary>Switch to light theme.</summary>
+    [RelayCommand]
+    private void SetLightTheme()
+    {
+        ApplyTheme("Light");
+    }
 
-    public Task OnNavigatedFromAsync() => Task.CompletedTask;
+    /// <summary>Switch to dark theme.</summary>
+    [RelayCommand]
+    private void SetDarkTheme()
+    {
+        ApplyTheme("Dark");
+    }
+
+    /// <summary>Switch theme based on system settings.</summary>
+    [RelayCommand]
+    private void SetAutoTheme()
+    {
+        ApplyTheme("Auto");
+    }
+
+    private void ApplyTheme(string? themeName)
+    {
+        Settings.Theme = themeName;
+        var type = themeName?.Equals("Dark", StringComparison.OrdinalIgnoreCase) == true
+            ? ThemeType.Dark
+            : themeName?.Equals("Auto", StringComparison.OrdinalIgnoreCase) == true
+                ? ThemeType.System
+                : ThemeType.Light;
+        _themeService.Set(type);
+    }
 }
+

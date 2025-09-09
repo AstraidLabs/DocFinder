@@ -1,14 +1,15 @@
-﻿namespace DocFinder.App.ViewModels.Pages
-{
-    public partial class DashboardViewModel : ObservableObject
-    {
-        [ObservableProperty]
-        private int _counter = 0;
+namespace DocFinder.App.ViewModels.Pages;
 
-        [RelayCommand]
-        private void OnCounterIncrement()
-        {
-            Counter++;
-        }
-    }
+/// <summary>
+/// Simple dashboard view model with a counter.
+/// </summary>
+public partial class DashboardViewModel : ObservableObject
+{
+    [ObservableProperty]
+    private int _counter;
+
+    /// <summary>Increments the counter.</summary>
+    [RelayCommand]
+    private void CounterIncrement() => Counter++;
 }
+
