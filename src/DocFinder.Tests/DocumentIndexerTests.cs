@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using DocumentFormat.OpenXml;
@@ -12,6 +13,8 @@ using DocFinder.Indexing;
 using DocFinder.Search;
 using Lucene.Net.Store;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using DocFinder.Services;
 using Xunit;
 
 namespace DocFinder.Tests;
@@ -29,6 +32,19 @@ public class DocumentIndexerTests
         public Task SaveAsync(AppSettings settings, System.Threading.CancellationToken ct = default) => Task.CompletedTask;
     }
 
+    private sealed class TestFactory : IDbContextFactory<DocumentDbContext>
+    {
+        private readonly DbContextOptions<DocumentDbContext> _options;
+
+        public TestFactory(DbContextOptions<DocumentDbContext> options)
+            => _options = options;
+
+        public DocumentDbContext CreateDbContext() => new DocumentDbContext(_options);
+
+        public ValueTask<DocumentDbContext> CreateDbContextAsync(CancellationToken cancellationToken = default)
+            => new ValueTask<DocumentDbContext>(new DocumentDbContext(_options));
+    }
+
     [Fact(Skip = "Indexer disabled for protocol migration")]
     public async Task IndexFileStoresData()
     {
@@ -43,7 +59,12 @@ public class DocumentIndexerTests
         }
 
         var settings = new FakeSettingsService(temp);
-        var catalog = new CatalogRepository(Path.Combine(temp, "catalog.db"));
+        var dbPath = Path.Combine(temp, "catalog.db");
+        var options = new DbContextOptionsBuilder<DocumentDbContext>()
+            .UseSqlite($"Data Source={dbPath}")
+            .Options;
+        var factory = new TestFactory(options);
+        var catalog = new CatalogRepository(factory);
         using var search = new LuceneSearchService(new RAMDirectory());
         var extractors = new IContentExtractor[]
         {
@@ -79,7 +100,12 @@ public class DocumentIndexerTests
         }
 
         var settings = new FakeSettingsService(temp);
-        var catalog = new CatalogRepository(Path.Combine(temp, "catalog.db"));
+        var dbPath = Path.Combine(temp, "catalog.db");
+        var options = new DbContextOptionsBuilder<DocumentDbContext>()
+            .UseSqlite($"Data Source={dbPath}")
+            .Options;
+        var factory = new TestFactory(options);
+        var catalog = new CatalogRepository(factory);
         using var search = new LuceneSearchService(new RAMDirectory());
         var extractors = new IContentExtractor[]
         {
