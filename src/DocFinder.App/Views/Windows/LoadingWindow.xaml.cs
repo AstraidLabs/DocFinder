@@ -11,11 +11,11 @@ public partial class LoadingWindow : FluentWindow
 
     public void SetStatus(string message)
     {
-        Dispatcher.Invoke(() => StatusText.Text = message);
+        Dispatcher.BeginInvoke(new Action(() => StatusText.Text = message));
     }
 
     public void SetProgress(double value)
     {
-        Dispatcher.Invoke(() => Progress.Value = value);
+        Dispatcher.BeginInvoke(new Action(() => Progress.Value = value));
     }
 }

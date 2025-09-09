@@ -44,10 +44,12 @@ public class ApplicationHostService : IHostedService
         {
             _ = Task.Run(async () =>
             {
-                _logger.LogInformation("Starting initial reindexation");
                 try
                 {
-                    await _indexer.ReindexAllAsync(cancellationToken);
+                    await Task.Delay(1000);
+                    _logger.LogInformation("Starting initial reindexation");
+                    using var reindexCts = new CancellationTokenSource();
+                    await _indexer.ReindexAllAsync(reindexCts.Token);
                     _logger.LogInformation("Initial reindexation completed");
                     _tray.ShowNotification("DocFinder", "Initial indexation completed");
                 }
@@ -56,7 +58,7 @@ public class ApplicationHostService : IHostedService
                     _logger.LogError(ex, "Initial reindexation failed");
                     _tray.ShowNotification("DocFinder", "Initial indexation failed");
                 }
-            }, cancellationToken);
+            });
         }
 
         return Task.CompletedTask;
