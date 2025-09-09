@@ -64,6 +64,7 @@ public partial class App
                     sp.GetRequiredService<ILogger<WatcherService>>()));
             services.AddSingleton<IDocumentViewService, DocumentViewService>();
             services.AddSingleton<IMessageDialogService, MessageDialogService>();
+            services.AddSingleton<ISnackbarService, SnackbarService>();
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddNavigationViewPageProvider();
             services.AddSingleton<MainWindowViewModel>();
