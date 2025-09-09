@@ -13,6 +13,9 @@ namespace DocFinder.App.Views.Windows
 
         public MainLayout MainLayoutControl => MainLayout;
 
+        private BodyView BodyView => (BodyView?)MainLayoutControl.Body
+            ?? throw new InvalidOperationException("BodyView not found");
+
         private IServiceProvider? _serviceProvider;
 
         public MainWindow()

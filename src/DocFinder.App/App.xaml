@@ -9,14 +9,17 @@
     ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
         <ResourceDictionary>
-            <SolidColorBrush x:Key="TextFillColorPrimaryBrush" Color="Black" />
-            <SolidColorBrush x:Key="ControlStrokeColorDefaultBrush" Color="#FFABADB3" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
                 <ResourceDictionary Source="Resources/DesignTokens.xaml" />
                 <ResourceDictionary Source="Resources/Theme.Light.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <SolidColorBrush x:Key="TextFillColorPrimaryBrush" Color="Black" />
+            <SolidColorBrush x:Key="ControlStrokeColorDefaultBrush" Color="#FFABADB3" />
+            <!-- Fallback brush if Wpf.Ui resources are missing -->
+            <SolidColorBrush x:Key="ApplicationBackgroundBrush" Color="#0F0F0F" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
