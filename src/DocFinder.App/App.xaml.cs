@@ -15,7 +15,6 @@ using DocFinder.App.Views.Windows;
 using DocFinder.App.Views.Pages;
 using DocFinder.App.ViewModels.Pages;
 using DocFinder.App.ViewModels.Windows;
-using DocFinder.App.ViewModels;
 using DocFinder.Search;
 using DocFinder.Catalog;
 using DocFinder.Indexing;
