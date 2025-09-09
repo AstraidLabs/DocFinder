@@ -96,7 +96,7 @@ public partial class App
                 settingsSw.Stop();
                 logger.LogInformation("Settings loaded in {Elapsed} ms", settingsSw.ElapsedMilliseconds);
                 loadingWindow.SetProgress(33);
-                loadingWindow.SetStatus("Starting host...");
+                loadingWindow.SetStatus("Applying database migrations...");
 
                 //MIGRACE – před startem hosta, v samostatném scope, bez dalších otevřených připojení
                 logger.LogInformation("Applying database migrations");
@@ -116,6 +116,7 @@ public partial class App
                 migrateSw.Stop();
                 logger.LogInformation("Migrations applied in {Elapsed} ms", migrateSw.ElapsedMilliseconds);
                 loadingWindow.SetProgress(50);
+                loadingWindow.SetStatus("Starting host...");
 
                 // Teprve teď startuj hosta
                 logger.LogInformation("Starting host");
