@@ -1,15 +1,11 @@
 using System;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using DocFinder.App.Services;
 using DocFinder.App.ViewModels.Pages;
-using DocFinder.Indexing;
-using Wpf.Ui;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Abstractions.Controls;
 
@@ -18,24 +14,15 @@ namespace DocFinder.App.Views.Pages;
 public partial class SearchPage : INavigableView<SearchViewModel>
 {
     private readonly SearchViewModel _viewModel;
-    private readonly IIndexer _indexer;
     private readonly IDocumentViewService _documentViewService;
-    private readonly IMessageDialogService _dialogs;
-    private readonly INavigationService _navigationService;
 
     public SearchViewModel ViewModel => _viewModel;
 
     public SearchPage(SearchViewModel viewModel,
-        IIndexer indexer,
-        IDocumentViewService documentViewService,
-        IMessageDialogService dialogs,
-        INavigationService navigationService)
+        IDocumentViewService documentViewService)
     {
         _viewModel = viewModel;
-        _indexer = indexer;
         _documentViewService = documentViewService;
-        _dialogs = dialogs;
-        _navigationService = navigationService;
 
         InitializeComponent();
         DataContext = _viewModel;
@@ -64,54 +51,6 @@ public partial class SearchPage : INavigableView<SearchViewModel>
         }
     }
 
-    private void Menu_NewSearch_Click(object sender, RoutedEventArgs e)
-    {
-        _viewModel.Query = string.Empty;
-        QueryTextBox.Focus();
-    }
-
-    private async void Menu_Reindex_Click(object sender, RoutedEventArgs e)
-    {
-        if (!await _dialogs.ShowConfirmation("Přeindexovat všechny dokumenty?", "DocFinder"))
-            return;
-
-        try
-        {
-            await _indexer.ReindexAllAsync();
-            await _dialogs.ShowInformation("Přeindexování dokončeno", "DocFinder");
-        }
-        catch (Exception ex)
-        {
-            await _dialogs.ShowError($"Přeindexování selhalo: {ex.Message}", "DocFinder");
-        }
-    }
-
-    private void Menu_PauseResume_Click(object sender, RoutedEventArgs e)
-    {
-        if (_indexer.State == IndexingState.Indexing)
-        {
-            _indexer.Pause();
-            PauseResumeMenuItem.Header = "Pokračovat v indexaci";
-            PauseResumeIcon.Symbol = SymbolRegular.PlayCircle24;
-        }
-        else
-        {
-            _indexer.Resume();
-            PauseResumeMenuItem.Header = "Pozastavit indexaci";
-            PauseResumeIcon.Symbol = SymbolRegular.PauseCircle24;
-        }
-    }
-
-    private void Menu_Settings_Click(object sender, RoutedEventArgs e)
-    {
-        _navigationService.Navigate(typeof(SettingsPage));
-    }
-
-    private void Menu_Exit_Click(object sender, RoutedEventArgs e)
-    {
-        System.Windows.Application.Current.Shutdown();
-    }
-
     private void ResultsGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
         var depObj = e.OriginalSource as DependencyObject;
@@ -121,32 +60,6 @@ public partial class SearchPage : INavigableView<SearchViewModel>
             row.IsSelected = true;
         else if (sender is System.Windows.Controls.DataGrid grid)
             grid.UnselectAll();
-    }
-
-    private void ResultsGrid_ContextMenu_Opened(object sender, RoutedEventArgs e)
-    {
-        if (sender is not System.Windows.Controls.ContextMenu menu)
-            return;
-
-        var items = menu.Items.OfType<System.Windows.Controls.MenuItem>().ToList();
-        var openDetail = items.FirstOrDefault(i => i.Header?.ToString() == "Otevřít detail souboru");
-
-        var doc = _viewModel.SelectedDocument;
-        var hasDoc = doc != null;
-
-        if (openDetail != null)
-            openDetail.IsEnabled = hasDoc;
-    }
-
-    private async void OpenFileDetail_Click(object sender, RoutedEventArgs e)
-    {
-        var doc = _viewModel.SelectedDocument;
-        if (doc == null)
-            return;
-
-        var info = new FileInfo(doc.Path);
-        var detail = $"Název: {info.Name}\nTyp: {info.Extension}\nVelikost: {info.Length} B\nZměněno: {info.LastWriteTime}";
-        await _dialogs.ShowInformation(detail, "Detail souboru");
     }
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -181,8 +94,6 @@ public partial class SearchPage : INavigableView<SearchViewModel>
 
         ResultsGrid.Loaded -= ResultsGrid_Loaded;
         ResultsGrid.PreviewMouseRightButtonDown -= ResultsGrid_PreviewMouseRightButtonDown;
-        if (ResultsGrid.ContextMenu != null)
-            ResultsGrid.ContextMenu.Opened -= ResultsGrid_ContextMenu_Opened;
 
         ResultsGrid.BeginAnimation(UIElement.OpacityProperty, null);
         PreviewHost.Content = null;

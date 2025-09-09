@@ -6,10 +6,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using DocFinder.App.Services;
 using DocFinder.Application;
 using DocFinder.Application.Commands;
 using DocFinder.Domain;
 using DocFinder.Domain.Settings;
+using DocFinder.Indexing;
+using DocFinder.App.Views.Pages;
+using Wpf.Ui;
+using Wpf.Ui.Controls;
 using System.IO;
 using IOFile = System.IO.File;
 
@@ -19,6 +24,10 @@ public partial class SearchViewModel : ObservableObject
 {
     private readonly CommandDispatcher _dispatcher;
     private readonly ISettingsService _settings;
+    private readonly IIndexer _indexer;
+    private readonly IMessageDialogService _dialogs;
+    private readonly INavigationService _navigation;
+
     private CancellationTokenSource _cts = new();
     private Task? _currentQuery;
 
@@ -53,10 +62,26 @@ public partial class SearchViewModel : ObservableObject
     [ObservableProperty]
     private bool _sortAscending = true;
 
-    public SearchViewModel(CommandDispatcher dispatcher, ISettingsService settings)
+    [ObservableProperty]
+    private bool _isIndexing;
+
+    public string PauseResumeText => IsIndexing ? "Pozastavit indexaci" : "Pokračovat v indexaci";
+
+    public SymbolRegular PauseResumeSymbol => IsIndexing ? SymbolRegular.PauseCircle24 : SymbolRegular.PlayCircle24;
+
+    public SearchViewModel(CommandDispatcher dispatcher,
+        ISettingsService settings,
+        IIndexer indexer,
+        IMessageDialogService dialogs,
+        INavigationService navigation)
     {
         _dispatcher = dispatcher;
         _settings = settings;
+        _indexer = indexer;
+        _dialogs = dialogs;
+        _navigation = navigation;
+        _isIndexing = _indexer.State == IndexingState.Indexing;
+
         ResultsView.Source = Results;
         UpdateSort();
         _currentQuery = RunQueryAsync(string.Empty, _cts.Token);
@@ -117,7 +142,7 @@ public partial class SearchViewModel : ObservableObject
         return _currentQuery;
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanOpenDocument))]
     private void OpenDocument()
     {
         if (SelectedDocument == null)
@@ -132,6 +157,62 @@ public partial class SearchViewModel : ObservableObject
         System.Diagnostics.Process.Start(psi);
     }
 
+    private bool CanOpenDocument() => SelectedDocument != null;
+
+    [RelayCommand]
+    private void NewSearch() => Query = string.Empty;
+
+    [RelayCommand]
+    private async Task ReindexAsync()
+    {
+        if (!await _dialogs.ShowConfirmation("Přeindexovat všechny dokumenty?", "DocFinder"))
+            return;
+
+        try
+        {
+            await _indexer.ReindexAllAsync();
+            await _dialogs.ShowInformation("Přeindexování dokončeno", "DocFinder");
+        }
+        catch (Exception ex)
+        {
+            await _dialogs.ShowError($"Přeindexování selhalo: {ex.Message}", "DocFinder");
+        }
+    }
+
+    [RelayCommand]
+    private void ToggleIndexing()
+    {
+        if (IsIndexing)
+        {
+            _indexer.Pause();
+            IsIndexing = false;
+        }
+        else
+        {
+            _indexer.Resume();
+            IsIndexing = true;
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanOpenDocumentDetail))]
+    private async Task OpenDocumentDetailAsync()
+    {
+        if (SelectedDocument == null)
+            return;
+
+        var info = new FileInfo(SelectedDocument.Path);
+        var detail = $"Název: {info.Name}\nTyp: {info.Extension}\nVelikost: {info.Length} B\nZměněno: {info.LastWriteTime}";
+        await _dialogs.ShowInformation(detail, "Detail souboru");
+    }
+
+    private bool CanOpenDocumentDetail() => SelectedDocument != null;
+
+    [RelayCommand]
+    private void OpenSettings() => _navigation.Navigate(typeof(SettingsPage));
+
+    [RelayCommand]
+    private void Exit() => Application.Current.Shutdown();
+
     partial void OnFromDateChanged(DateTime? value) => RestartQuery();
 
     partial void OnToDateChanged(DateTime? value) => RestartQuery();
@@ -142,6 +223,18 @@ public partial class SearchViewModel : ObservableObject
 
     partial void OnSortFieldChanged(string value) => UpdateSort();
     partial void OnSortAscendingChanged(bool value) => UpdateSort();
+
+    partial void OnSelectedDocumentChanged(SearchHit? value)
+    {
+        OpenDocumentCommand.NotifyCanExecuteChanged();
+        OpenDocumentDetailCommand.NotifyCanExecuteChanged();
+    }
+
+    partial void OnIsIndexingChanged(bool value)
+    {
+        OnPropertyChanged(nameof(PauseResumeText));
+        OnPropertyChanged(nameof(PauseResumeSymbol));
+    }
 
     private void UpdateSort()
     {
