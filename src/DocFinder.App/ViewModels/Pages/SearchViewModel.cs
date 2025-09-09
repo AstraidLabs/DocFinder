@@ -137,7 +137,7 @@ public partial class SearchViewModel : ObservableObject
             var command = new SearchDocumentsCommand(value, filter);
             var result = await _dispatcher.SendAsync<SearchDocumentsCommand, SearchResult>(command, ct);
 
-            await Application.Current.Dispatcher.InvokeAsync(() =>
+            await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 Results.Clear();
                 foreach (var hit in result.Hits)
@@ -171,7 +171,7 @@ public partial class SearchViewModel : ObservableObject
             return;
 
         var path = SelectedDocument.Path;
-        if (!File.Exists(path))
+        if (!System.IO.File.Exists(path))
             return;
         if (!_settings.Current.WatchedRoots.Any(r => path.StartsWith(r, StringComparison.OrdinalIgnoreCase)))
             return;
@@ -239,7 +239,7 @@ public partial class SearchViewModel : ObservableObject
 
     /// <summary>Exits the application.</summary>
     [RelayCommand]
-    private void Exit() => Application.Current.Shutdown();
+    private void Exit() => System.Windows.Application.Current.Shutdown();
 
     private void UpdateSort()
     {
