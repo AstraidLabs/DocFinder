@@ -7,6 +7,7 @@ using DocFinder.App.Views.Pages;
 using Wpf.Ui.Abstractions.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Wpf.Ui;
 
 namespace DocFinder.App.ViewModels.Pages;
 
