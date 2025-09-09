@@ -13,12 +13,12 @@ namespace DocFinder.Services;
 public sealed class DocumentSaveChangesInterceptor : SaveChangesInterceptor
 {
     private readonly ILuceneIndexService? _index;
-    private readonly IDbContextFactory<DocumentDbContext> _factory;
+    private readonly IAuditService _audit;
     private List<(Protocol doc, string action)> _changes = new();
 
-    public DocumentSaveChangesInterceptor(IDbContextFactory<DocumentDbContext> factory, ILuceneIndexService? index)
+    public DocumentSaveChangesInterceptor(IAuditService audit, ILuceneIndexService? index)
     {
-        _factory = factory;
+        _audit = audit;
         _index = index;
     }
 
@@ -63,23 +63,23 @@ public sealed class DocumentSaveChangesInterceptor : SaveChangesInterceptor
 
     public override int SavedChanges(SaveChangesCompletedEventData eventData, int result)
     {
-        if (eventData.Context != null)
+        if (_changes.Count > 0)
         {
-            PostSave(eventData.Context).GetAwaiter().GetResult();
+            PostSave().GetAwaiter().GetResult();
         }
         return base.SavedChanges(eventData, result);
     }
 
     public override async ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
     {
-        if (eventData.Context != null)
+        if (_changes.Count > 0)
         {
-            await PostSave(eventData.Context, cancellationToken);
+            await PostSave(cancellationToken);
         }
         return await base.SavedChangesAsync(eventData, result, cancellationToken);
     }
 
-    private async Task PostSave(DbContext context, CancellationToken ct = default)
+    private async Task PostSave(CancellationToken ct = default)
     {
         if (_changes.Count == 0)
         {
@@ -93,9 +93,7 @@ public sealed class DocumentSaveChangesInterceptor : SaveChangesInterceptor
             .Select(c => new AuditEntry(c.doc.Id, c.action, DateTime.UtcNow, Environment.UserName))
             .ToList();
 
-        await using var auditCtx = _factory.CreateDbContext();
-        await auditCtx.AddRangeAsync(audits, ct);
-        await auditCtx.SaveChangesAsync(ct);
+        await _audit.WriteAsync(audits, ct);
 
         if (_index != null)
         {

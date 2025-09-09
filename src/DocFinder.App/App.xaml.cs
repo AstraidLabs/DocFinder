@@ -42,7 +42,8 @@ public partial class App
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<ISearchService, LuceneSearchService>();
             services.AddSingleton<ILuceneIndexService, LuceneIndexService>();
-            services.AddScoped<DocumentSaveChangesInterceptor>();
+            services.AddSingleton<IAuditService, AuditService>();
+            services.AddSingleton<DocumentSaveChangesInterceptor>();
             services.AddDbContextFactory<DocumentDbContext>((sp, o) =>
             {
                 o.UseSqlite(DocumentDbContext.DefaultConnectionString);
