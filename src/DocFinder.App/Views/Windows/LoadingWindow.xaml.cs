@@ -13,4 +13,9 @@ public partial class LoadingWindow : FluentWindow
     {
         Dispatcher.Invoke(() => StatusText.Text = message);
     }
+
+    public void SetProgress(double value)
+    {
+        Dispatcher.Invoke(() => Progress.Value = value);
+    }
 }

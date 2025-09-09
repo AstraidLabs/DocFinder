@@ -80,6 +80,7 @@ public partial class App
     {
         var loadingWindow = new LoadingWindow();
         loadingWindow.Show();
+        loadingWindow.SetProgress(0);
         loadingWindow.SetStatus("Loading settings...");
 
         try
@@ -95,6 +96,7 @@ public partial class App
                 logger.LogInformation("Starting settings load");
                 await settings.LoadAsync(settingsCts.Token);
                 logger.LogInformation("Settings loaded");
+                loadingWindow.SetProgress(33);
                 loadingWindow.SetStatus("Starting host...");
             }
             catch (OperationCanceledException ex)
@@ -121,6 +123,7 @@ public partial class App
                 logger.LogInformation("Starting host");
                 await _host.StartAsync(hostCts.Token);
                 logger.LogInformation("Host started");
+                loadingWindow.SetProgress(66);
                 loadingWindow.SetStatus("Initializing UI...");
             }
             catch (OperationCanceledException ex)
@@ -140,6 +143,7 @@ public partial class App
             navigation.SetNavigationControl(mainWindow.GetNavigation());
             navigation.Navigate(typeof(SearchPage));
             mainWindow.Show();
+            loadingWindow.SetProgress(100);
         }
         catch (Exception ex)
         {
