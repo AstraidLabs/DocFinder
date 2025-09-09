@@ -81,19 +81,14 @@ public partial class App
         var settings = Services.GetRequiredService<ISettingsService>();
         await settings.LoadAsync();
 
-        // Apply the configured theme so that the loading window uses it immediately
+        // Apply the configured theme so that the window uses it immediately
         var themeName = settings.Current.Theme;
         var theme = themeName.Equals("Dark", StringComparison.OrdinalIgnoreCase)
             ? ApplicationTheme.Dark
             : ApplicationTheme.Light;
         ApplicationThemeManager.Apply(theme);
 
-        var loadingWindow = new LoadingWindow();
-        loadingWindow.Show();
-
         await _host.StartAsync();
-
-        loadingWindow.Close();
 
         var navigation = Services.GetRequiredService<INavigationService>();
         var mainWindow = Services.GetRequiredService<MainWindow>();

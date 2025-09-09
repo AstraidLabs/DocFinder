@@ -7,8 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Windows;assembly=DocFinder.App"
-    xmlns:layout="clr-namespace:DocFinder.App.Views.Layout;assembly=DocFinder.App"
-    Title="{Binding ViewModel.ApplicationTitle, Mode=OneWay}"
+    Title="{Binding ApplicationTitle}"
     Width="1100"
     Height="650"
     d:DataContext="{d:DesignInstance vm:MainWindowViewModel, IsDesignTimeCreatable=True}"
@@ -22,18 +21,57 @@
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <layout:MainLayout x:Name="MainLayout">
-        <layout:MainLayout.Header>
-            <layout:HeaderView />
-        </layout:MainLayout.Header>
-        <layout:MainLayout.Menu>
-            <layout:MenuView />
-        </layout:MainLayout.Menu>
-        <layout:MainLayout.Body>
-            <layout:BodyView />
-        </layout:MainLayout.Body>
-        <layout:MainLayout.Footer>
-            <layout:FooterView />
-        </layout:MainLayout.Footer>
-    </layout:MainLayout>
+    <Grid Background="{DynamicResource SurfaceBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <ui:TitleBar Grid.Row="0"
+                     Title="{Binding ApplicationTitle}"
+                     CloseWindowByDoubleClickOnIcon="True">
+            <ui:TitleBar.Icon>
+                <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
+            </ui:TitleBar.Icon>
+        </ui:TitleBar>
+
+        <!-- Menu -->
+        <Menu Grid.Row="1">
+            <ui:MenuItem Header="File" Command="{Binding OpenFileCommand}" />
+            <ui:MenuItem Header="Edit" Command="{Binding EditItemCommand}" />
+        </Menu>
+
+        <!-- Content -->
+        <ui:NavigationView Grid.Row="2"
+                           x:Name="RootNavigation"
+                           Padding="42,0,42,0"
+                           BreadcrumbBar="{Binding ElementName=BreadcrumbBar}"
+                           FooterMenuItemsSource="{Binding FooterMenuItems}"
+                           FrameMargin="0"
+                           IsBackButtonVisible="Visible"
+                           IsPaneToggleVisible="True"
+                           MenuItemsSource="{Binding MenuItems}"
+                           PaneDisplayMode="LeftFluent">
+            <ui:NavigationView.Header>
+                <ui:BreadcrumbBar x:Name="BreadcrumbBar" Margin="42,32,42,20" />
+            </ui:NavigationView.Header>
+            <ui:NavigationView.ContentOverlay>
+                <Grid>
+                    <ui:SnackbarPresenter x:Name="SnackbarPresenter" />
+                </Grid>
+            </ui:NavigationView.ContentOverlay>
+        </ui:NavigationView>
+
+        <!-- Footer -->
+        <StackPanel Grid.Row="3" Background="{DynamicResource ApplicationBackgroundBrush}">
+            <Separator />
+            <TextBlock Margin="12,8"
+                       HorizontalAlignment="Center"
+                       Foreground="{DynamicResource ApplicationForegroundBrush}"
+                       Text="{Binding FooterText}" />
+        </StackPanel>
+    </Grid>
 </ui:FluentWindow>

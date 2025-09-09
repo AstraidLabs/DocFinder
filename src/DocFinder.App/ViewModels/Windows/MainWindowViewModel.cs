@@ -1,5 +1,6 @@
+using System;
+using System.Collections.ObjectModel;
 using DocFinder.App.Views.Pages;
-﻿using System.Collections.ObjectModel;
 using Wpf.Ui.Controls;
 
 namespace DocFinder.App.ViewModels.Windows
@@ -60,6 +61,9 @@ namespace DocFinder.App.ViewModels.Windows
         {
             new MenuItem { Header = "Home", Tag = "tray_home" }
         };
+
+        [ObservableProperty]
+        private string _footerText = $"© {DateTime.Now.Year} DocFinder";
 
         [RelayCommand]
         private void OpenFile()
