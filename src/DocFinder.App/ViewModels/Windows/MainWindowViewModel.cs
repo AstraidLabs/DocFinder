@@ -7,6 +7,9 @@ namespace DocFinder.App.ViewModels.Windows
 {
     public partial class MainWindowViewModel : ObservableObject
     {
+        public MainWindowViewModel()
+        {
+        }
         [ObservableProperty]
         private string _applicationTitle = "WPF UI - DocFinder";
 
