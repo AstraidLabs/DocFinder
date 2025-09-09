@@ -77,27 +77,27 @@
                         </ui:Button.Icon>
                         <ui:Button.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Nové hledání" Click="Menu_NewSearch_Click">
+                                <MenuItem Header="Nové hledání" Command="{Binding NewSearchCommand}">
                                     <MenuItem.Icon>
                                         <ui:SymbolIcon Symbol="Search28" />
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="Přeindexovat" Click="Menu_Reindex_Click">
+                                <MenuItem Header="Přeindexovat" Command="{Binding ReindexCommand}">
                                     <MenuItem.Icon>
                                         <ui:SymbolIcon Symbol="ArrowClockwise28" />
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem x:Name="PauseResumeMenuItem" Header="Pozastavit indexaci" Click="Menu_PauseResume_Click">
+                                <MenuItem Header="{Binding PauseResumeText}" Command="{Binding ToggleIndexingCommand}">
                                     <MenuItem.Icon>
-                                        <ui:SymbolIcon x:Name="PauseResumeIcon" Symbol="PauseCircle24" />
+                                        <ui:SymbolIcon Symbol="{Binding PauseResumeSymbol}" />
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="Nastavení" Click="Menu_Settings_Click">
+                                <MenuItem Header="Nastavení" Command="{Binding OpenSettingsCommand}">
                                     <MenuItem.Icon>
                                         <ui:SymbolIcon Symbol="Settings28" />
                                     </MenuItem.Icon>
                                 </MenuItem>
-                                <MenuItem Header="Ukončit" Click="Menu_Exit_Click">
+                                <MenuItem Header="Ukončit" Command="{Binding ExitCommand}">
                                     <MenuItem.Icon>
                                         <ui:SymbolIcon Symbol="Dismiss28" />
                                     </MenuItem.Icon>
@@ -163,8 +163,8 @@
                                   Loaded="ResultsGrid_Loaded"
                                   PreviewMouseRightButtonDown="ResultsGrid_PreviewMouseRightButtonDown">
                         <ui:DataGrid.ContextMenu>
-                            <ContextMenu Opened="ResultsGrid_ContextMenu_Opened">
-                                <MenuItem Header="Otevřít detail souboru" Click="OpenFileDetail_Click" />
+                            <ContextMenu>
+                                <MenuItem Header="Otevřít detail souboru" Command="{Binding OpenDocumentDetailCommand}" />
                             </ContextMenu>
                         </ui:DataGrid.ContextMenu>
                         <ui:DataGrid.Columns>
