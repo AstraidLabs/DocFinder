@@ -8,4 +8,9 @@ public partial class LoadingWindow : FluentWindow
     {
         InitializeComponent();
     }
+
+    public void SetStatus(string message)
+    {
+        Dispatcher.Invoke(() => StatusText.Text = message);
+    }
 }

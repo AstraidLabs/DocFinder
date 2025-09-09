@@ -36,6 +36,7 @@ public partial class App
         {
             services.AddHostedService<ApplicationHostService>();
             services.AddHostedService<AutomaticIndexingService>();
+            services.AddHostedService<PostStartupBackgroundService>();
             services.AddSingleton<ITrayService, TrayService>();
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<ISearchService, LuceneSearchService>();
@@ -79,6 +80,7 @@ public partial class App
     {
         var loadingWindow = new LoadingWindow();
         loadingWindow.Show();
+        loadingWindow.SetStatus("Loading settings...");
 
         try
         {
@@ -93,6 +95,7 @@ public partial class App
                 logger.LogInformation("Starting settings load");
                 await settings.LoadAsync(settingsCts.Token);
                 logger.LogInformation("Settings loaded");
+                loadingWindow.SetStatus("Starting host...");
             }
             catch (OperationCanceledException ex)
             {
@@ -118,6 +121,7 @@ public partial class App
                 logger.LogInformation("Starting host");
                 await _host.StartAsync(hostCts.Token);
                 logger.LogInformation("Host started");
+                loadingWindow.SetStatus("Initializing UI...");
             }
             catch (OperationCanceledException ex)
             {
