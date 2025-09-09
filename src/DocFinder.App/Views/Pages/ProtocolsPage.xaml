@@ -8,15 +8,19 @@
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Pages;assembly=DocFinder.App"
     Title="ProtocolsPage"
     d:DataContext="{d:DesignInstance vm:ProtocolsViewModel, IsDesignTimeCreatable=False}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
-    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
 
-    <Grid>
-        <GroupBox Margin="12" Header="Protocols" />
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ui:TextBlock Grid.Row="0" Text="Protocols" FontSize="28" FontWeight="Bold" Margin="0,0,0,16"/>
+
+        <ui:Card Grid.Row="1" Padding="16">
+            <ui:InfoBar Title="Protocols module" Message="Manage document protocols." IsClosable="False"/>
+        </ui:Card>
     </Grid>
 </Page>
 

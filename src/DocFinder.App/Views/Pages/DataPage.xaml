@@ -8,15 +8,19 @@
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Pages;assembly=DocFinder.App"
     Title="DataPage"
     d:DataContext="{d:DesignInstance vm:DataViewModel, IsDesignTimeCreatable=False}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
-    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
 
-    <Grid>
-        <GroupBox Margin="12" Header="Data overview" />
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ui:TextBlock Grid.Row="0" Text="Data" FontSize="28" FontWeight="Bold" Margin="0,0,0,16"/>
+
+        <ui:Card Grid.Row="1" Padding="16">
+            <ui:InfoBar Title="Data overview" Message="Summary of available data." IsClosable="False"/>
+        </ui:Card>
     </Grid>
 </Page>
 
