@@ -1,5 +1,4 @@
 using DocFinder.App.ViewModels.Windows;
-using DocFinder.App.Views.Layout;
 using Wpf.Ui;
 using Wpf.Ui.Abstractions;
 using Wpf.Ui.Appearance;
@@ -10,11 +9,6 @@ namespace DocFinder.App.Views.Windows
     public partial class MainWindow : FluentWindow, INavigationWindow
     {
         public MainWindowViewModel? ViewModel { get; }
-
-        public MainLayout MainLayoutControl => MainLayout;
-
-        private BodyView BodyView => (BodyView?)MainLayoutControl.Body
-            ?? throw new InvalidOperationException("BodyView not found");
 
         private IServiceProvider? _serviceProvider;
 
@@ -31,19 +25,20 @@ namespace DocFinder.App.Views.Windows
         ) : this()
         {
             ViewModel = viewModel;
-            DataContext = this;
-            SetPageService(navigationViewPageProvider);
+            DataContext = ViewModel;
 
-            navigationService.SetNavigationControl(BodyView.Navigation);
+            SetPageService(navigationViewPageProvider);
+            navigationService.SetNavigationControl(RootNavigation);
         }
 
         #region INavigationWindow methods
 
-        public INavigationView GetNavigation() => BodyView.Navigation;
+        public INavigationView GetNavigation() => RootNavigation;
 
-        public bool Navigate(Type pageType) => BodyView.Navigation.Navigate(pageType);
+        public bool Navigate(Type pageType) => RootNavigation.Navigate(pageType);
 
-        public void SetPageService(INavigationViewPageProvider navigationViewPageProvider) => BodyView.Navigation.SetPageProviderService(navigationViewPageProvider);
+        public void SetPageService(INavigationViewPageProvider navigationViewPageProvider)
+            => RootNavigation.SetPageProviderService(navigationViewPageProvider);
 
         public void ShowWindow() => Show();
 

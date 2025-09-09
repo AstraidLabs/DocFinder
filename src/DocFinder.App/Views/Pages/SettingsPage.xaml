@@ -6,7 +6,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels;assembly=DocFinder.App"
-    xmlns:layout="clr-namespace:DocFinder.App.Views.Layout;assembly=DocFinder.App"
     Title="SettingsPage"
     d:DataContext="{d:DesignInstance vm:SettingsViewModel, IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
@@ -15,63 +14,50 @@
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
-    <layout:MainLayout>
-        <layout:MainLayout.Header>
-            <layout:HeaderView />
-        </layout:MainLayout.Header>
-        <layout:MainLayout.Menu>
-            <layout:MenuView />
-        </layout:MainLayout.Menu>
-        <layout:MainLayout.Body>
-            <StackPanel Margin="20">
-                <TextBlock Text="Source Folder" />
-                <TextBox Text="{Binding ViewModel.Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}" />
+    <StackPanel Margin="20">
+        <TextBlock Text="Source Folder" />
+        <TextBox Text="{Binding ViewModel.Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}" />
 
-                <TextBlock Margin="0,12,0,0" Text="Watched Folders (one per line)" />
-                <TextBox
-                    Text="{Binding ViewModel.WatchedRootsText, UpdateSourceTrigger=PropertyChanged}"
-                    AcceptsReturn="True"
-                    Height="80" />
+        <TextBlock Margin="0,12,0,0" Text="Watched Folders (one per line)" />
+        <TextBox
+            Text="{Binding ViewModel.WatchedRootsText, UpdateSourceTrigger=PropertyChanged}"
+            AcceptsReturn="True"
+            Height="80" />
 
-                <TextBlock Margin="0,12,0,0" Text="Index Path" />
-                <TextBox Text="{Binding ViewModel.Settings.IndexPath, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBlock Margin="0,12,0,0" Text="Index Path" />
+        <TextBox Text="{Binding ViewModel.Settings.IndexPath, UpdateSourceTrigger=PropertyChanged}" />
 
-                <TextBlock Margin="0,12,0,0" Text="Thumbnails Path" />
-                <TextBox Text="{Binding ViewModel.Settings.ThumbsPath, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBlock Margin="0,12,0,0" Text="Thumbnails Path" />
+        <TextBox Text="{Binding ViewModel.Settings.ThumbsPath, UpdateSourceTrigger=PropertyChanged}" />
 
-                <TextBlock Margin="0,12,0,0" Text="Polling Interval (minutes)" />
-                <TextBox Text="{Binding ViewModel.Settings.PollingMinutes, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBlock Margin="0,12,0,0" Text="Polling Interval (minutes)" />
+        <TextBox Text="{Binding ViewModel.Settings.PollingMinutes, UpdateSourceTrigger=PropertyChanged}" />
 
-                <CheckBox Content="Enable OCR" IsChecked="{Binding ViewModel.Settings.EnableOcr}" />
+        <CheckBox Content="Enable OCR" IsChecked="{Binding ViewModel.Settings.EnableOcr}" />
 
-                <TextBlock Margin="0,12,0,0" Text="Theme" />
-                <ComboBox SelectedValue="{Binding ViewModel.Settings.Theme}" SelectedValuePath="Content">
-                    <ComboBoxItem Content="Light" />
-                    <ComboBoxItem Content="Dark" />
-                </ComboBox>
+        <TextBlock Margin="0,12,0,0" Text="Theme" />
+        <ComboBox SelectedValue="{Binding ViewModel.Settings.Theme}" SelectedValuePath="Content">
+            <ComboBoxItem Content="Light" />
+            <ComboBoxItem Content="Dark" />
+        </ComboBox>
 
-                <CheckBox Content="Auto index on startup" IsChecked="{Binding ViewModel.Settings.AutoIndexOnStartup}" />
-                <CheckBox Content="Use fuzzy search" IsChecked="{Binding ViewModel.Settings.UseFuzzySearch}" />
+        <CheckBox Content="Auto index on startup" IsChecked="{Binding ViewModel.Settings.AutoIndexOnStartup}" />
+        <CheckBox Content="Use fuzzy search" IsChecked="{Binding ViewModel.Settings.UseFuzzySearch}" />
 
-                <TextBlock Margin="0,12,0,0" Text="Page Size" />
-                <TextBox Text="{Binding ViewModel.Settings.PageSize, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBlock Margin="0,12,0,0" Text="Page Size" />
+        <TextBox Text="{Binding ViewModel.Settings.PageSize, UpdateSourceTrigger=PropertyChanged}" />
 
-                <Button Content="Save" Command="{Binding ViewModel.SaveCommand}" Margin="0,20,0,0" />
+        <Button Content="Save" Command="{Binding ViewModel.SaveCommand}" Margin="0,20,0,0" />
 
-                <DataGrid
-                    ItemsSource="{Binding ViewModel.IndexedFiles}"
-                    Margin="0,20,0,0"
-                    Height="150"
-                    AutoGenerateColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Soubor" Binding="{Binding}" />
-                    </DataGrid.Columns>
-                </DataGrid>
-            </StackPanel>
-        </layout:MainLayout.Body>
-        <layout:MainLayout.Footer>
-            <layout:FooterView />
-        </layout:MainLayout.Footer>
-    </layout:MainLayout>
+        <DataGrid
+            ItemsSource="{Binding ViewModel.IndexedFiles}"
+            Margin="0,20,0,0"
+            Height="150"
+            AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Soubor" Binding="{Binding}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </StackPanel>
 </Page>
 

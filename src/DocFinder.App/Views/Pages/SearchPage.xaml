@@ -6,7 +6,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Pages;assembly=DocFinder.App"
-    xmlns:layout="clr-namespace:DocFinder.App.Views.Layout;assembly=DocFinder.App"
     xmlns:converters="clr-namespace:DocFinder.App.Converters;assembly=DocFinder.App"
     Title="SearchPage"
     d:DataContext="{d:DesignInstance vm:SearchViewModel, IsDesignTimeCreatable=False}"
@@ -56,22 +55,12 @@
         </Style>
     </Page.Resources>
 
-    <layout:MainLayout Background="{DynamicResource SurfaceBackgroundBrush}">
-        <layout:MainLayout.Header>
-            <ui:TitleBar Title="DocFinder" Foreground="{DynamicResource TextPrimaryBrush}">
-                <ui:TitleBar.Icon>
-                    <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
-                </ui:TitleBar.Icon>
-            </ui:TitleBar>
-        </layout:MainLayout.Header>
-
-        <layout:MainLayout.Body>
-            <Grid Margin="{StaticResource Space24}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+    <Grid Margin="{StaticResource Space24}" Background="{DynamicResource SurfaceBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
                 <!-- Search bar -->
                 <Grid Grid.Row="0" Margin="{StaticResource MarginBottomSpace16}">
@@ -199,13 +188,5 @@
                         <ui:Button Grid.Row="1" Content="Otevřít" Command="{Binding OpenDocumentCommand}" Margin="{StaticResource MarginTopSpace16}"/>
                     </Grid>
                 </Grid>
-            </Grid>
-        </layout:MainLayout.Body>
-
-        <layout:MainLayout.Footer>
-            <Border Background="{DynamicResource ApplicationBackgroundBrush}">
-                <TextBlock Margin="12,8" HorizontalAlignment="Center" Text="© 2024 DocFinder" />
-            </Border>
-        </layout:MainLayout.Footer>
-    </layout:MainLayout>
+    </Grid>
 </Page>

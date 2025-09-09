@@ -6,7 +6,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Pages;assembly=DocFinder.App"
-    xmlns:layout="clr-namespace:DocFinder.App.Views.Layout;assembly=DocFinder.App"
     Title="DashboardPage"
     d:DataContext="{d:DesignInstance vm:DashboardViewModel, IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
@@ -16,35 +15,22 @@
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
 
-    <layout:MainLayout>
-        <layout:MainLayout.Header>
-            <layout:HeaderView />
-        </layout:MainLayout.Header>
-        <layout:MainLayout.Menu>
-            <layout:MenuView />
-        </layout:MainLayout.Menu>
-        <layout:MainLayout.Body>
-            <Grid VerticalAlignment="Top">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+    <Grid VerticalAlignment="Top">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
 
-                <ui:Button
-                    Grid.Column="0"
-                    Command="{Binding ViewModel.CounterIncrementCommand, Mode=OneWay}"
-                    Content="Click me!"
-                    Icon="Fluent24" />
-                <TextBlock
-                    Grid.Column="1"
-                    Margin="12,0,0,0"
-                    VerticalAlignment="Center"
-                    Text="{Binding ViewModel.Counter, Mode=OneWay}" />
-            </Grid>
-        </layout:MainLayout.Body>
-        <layout:MainLayout.Footer>
-            <layout:FooterView />
-        </layout:MainLayout.Footer>
-    </layout:MainLayout>
+        <ui:Button
+            Grid.Column="0"
+            Command="{Binding ViewModel.CounterIncrementCommand, Mode=OneWay}"
+            Content="Click me!"
+            Icon="Fluent24" />
+        <TextBlock
+            Grid.Column="1"
+            Margin="12,0,0,0"
+            VerticalAlignment="Center"
+            Text="{Binding ViewModel.Counter, Mode=OneWay}" />
+    </Grid>
 </Page>
 

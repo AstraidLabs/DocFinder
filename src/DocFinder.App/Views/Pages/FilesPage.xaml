@@ -6,7 +6,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Pages;assembly=DocFinder.App"
-    xmlns:layout="clr-namespace:DocFinder.App.Views.Layout;assembly=DocFinder.App"
     Title="FilesPage"
     d:DataContext="{d:DesignInstance vm:FilesViewModel, IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
@@ -16,37 +15,24 @@
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
 
-    <layout:MainLayout>
-        <layout:MainLayout.Header>
-            <layout:HeaderView />
-        </layout:MainLayout.Header>
-        <layout:MainLayout.Menu>
-            <layout:MenuView />
-        </layout:MainLayout.Menu>
-        <layout:MainLayout.Body>
-            <Grid>
-                <ListView ItemsSource="{Binding ViewModel.Files}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Margin="4" Padding="8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" />
-                                    <TextBlock Text="{Binding Ext}" FontSize="12" />
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <EventSetter Event="MouseDoubleClick" Handler="OnFileDoubleClick" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
-            </Grid>
-        </layout:MainLayout.Body>
-        <layout:MainLayout.Footer>
-            <layout:FooterView />
-        </layout:MainLayout.Footer>
-    </layout:MainLayout>
+    <Grid>
+        <ListView ItemsSource="{Binding ViewModel.Files}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="4" Padding="8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+                            <TextBlock Text="{Binding Ext}" FontSize="12" />
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <EventSetter Event="MouseDoubleClick" Handler="OnFileDoubleClick" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+    </Grid>
 </Page>
 

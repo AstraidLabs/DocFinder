@@ -6,7 +6,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Pages;assembly=DocFinder.App"
-    xmlns:layout="clr-namespace:DocFinder.App.Views.Layout;assembly=DocFinder.App"
     Title="FileDetailPage"
     d:DataContext="{d:DesignInstance vm:FilesViewModel, IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
@@ -16,24 +15,11 @@
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
 
-    <layout:MainLayout>
-        <layout:MainLayout.Header>
-            <layout:HeaderView />
-        </layout:MainLayout.Header>
-        <layout:MainLayout.Menu>
-            <layout:MenuView />
-        </layout:MainLayout.Menu>
-        <layout:MainLayout.Body>
-            <StackPanel Margin="12">
-                <TextBlock FontSize="20" FontWeight="Medium" Text="File details" />
-                <Separator Margin="0,8" />
-                <TextBlock Text="{Binding ViewModel.SelectedFile.Name}" />
-                <TextBlock Text="{Binding ViewModel.SelectedFile.Path}" />
-            </StackPanel>
-        </layout:MainLayout.Body>
-        <layout:MainLayout.Footer>
-            <layout:FooterView />
-        </layout:MainLayout.Footer>
-    </layout:MainLayout>
+    <StackPanel Margin="12">
+        <TextBlock FontSize="20" FontWeight="Medium" Text="File details" />
+        <Separator Margin="0,8" />
+        <TextBlock Text="{Binding ViewModel.SelectedFile.Name}" />
+        <TextBlock Text="{Binding ViewModel.SelectedFile.Path}" />
+    </StackPanel>
 </Page>
 
