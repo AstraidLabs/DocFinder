@@ -10,20 +10,26 @@ namespace DocFinder.App.Views.Windows
     {
         public MainWindowViewModel? ViewModel { get; }
 
+        private readonly ISnackbarService _snackbarService;
         private IServiceProvider? _serviceProvider;
 
         public MainWindow()
         {
             InitializeComponent();
             SystemThemeWatcher.Watch(this);
+            _snackbarService = null!;
         }
 
         public MainWindow(
             MainWindowViewModel viewModel,
             INavigationViewPageProvider navigationViewPageProvider,
-            INavigationService navigationService
+            INavigationService navigationService,
+            ISnackbarService snackbarService
         ) : this()
         {
+            _snackbarService = snackbarService;
+            snackbarService.SetSnackbarPresenter(SnackbarPresenter);
+
             ViewModel = viewModel;
             DataContext = ViewModel;
 
