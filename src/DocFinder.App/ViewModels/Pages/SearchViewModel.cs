@@ -211,7 +211,7 @@ public partial class SearchViewModel : ObservableObject
     private void OpenSettings() => _navigation.Navigate(typeof(SettingsPage));
 
     [RelayCommand]
-    private void Exit() => Application.Current.Shutdown();
+    private void Exit() => System.Windows.Application.Current.Shutdown();
 
     partial void OnFromDateChanged(DateTime? value) => RestartQuery();
 
