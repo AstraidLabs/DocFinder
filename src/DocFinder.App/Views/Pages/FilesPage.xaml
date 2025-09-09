@@ -16,7 +16,12 @@
     mc:Ignorable="d">
 
     <Grid>
-        <ListView ItemsSource="{Binding ViewModel.Files}">
+        <ListView ItemsSource="{Binding Files}" SelectedItem="{Binding SelectedFile}">
+            <ListView.InputBindings>
+                <MouseBinding Gesture="LeftDoubleClick"
+                              Command="{Binding OpenFileCommand}"
+                              CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListView}}" />
+            </ListView.InputBindings>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="4" Padding="8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
@@ -27,11 +32,6 @@
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <EventSetter Event="MouseDoubleClick" Handler="OnFileDoubleClick" />
-                </Style>
-            </ListView.ItemContainerStyle>
         </ListView>
     </Grid>
 </Page>
