@@ -1,34 +1,36 @@
-using System;
 using System.Collections.ObjectModel;
-using DocFinder.Domain;
+using System.Threading;
+using System.Threading.Tasks;
 using DocFinder.App.ViewModels.Entities;
-using Wpf.Ui.Abstractions.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
+using DocFinder.Domain;
 
 namespace DocFinder.App.ViewModels.Pages;
 
-public partial class ProtocolsViewModel : ObservableObject, INavigationAware
+/// <summary>
+/// View model for listing protocols.
+/// </summary>
+public partial class ProtocolsViewModel : ObservableObject
 {
-    private bool _isInitialized;
+    private readonly IProtocolRepository _repository;
 
-    public ObservableCollection<ProtocolViewModel> Protocols { get; } = new();
+    public ObservableCollection<ProtocolItem> Protocols { get; } = new();
 
-    public Task OnNavigatedToAsync()
+    [ObservableProperty]
+    private ProtocolItem? _selectedProtocol;
+
+    public ProtocolsViewModel(IProtocolRepository repository)
     {
-        if (_isInitialized)
-            return Task.CompletedTask;
-
-        // Create sample protocol with basic domain objects
-        var fileData = new Data(Guid.NewGuid(), null, "text/plain", new byte[] { 0x0 });
-        var file = new File(Guid.NewGuid(), "/tmp/sample.txt", "sample", "txt", DateTime.UtcNow, "system", fileData);
-        var protocol = new Protocol(Guid.NewGuid(), file, "Sample protocol", "REF-001", ProtocolType.Other, DateTime.UtcNow, "Office", null, "John Doe");
-
-        Protocols.Add(new ProtocolViewModel(protocol));
-
-        _isInitialized = true;
-        return Task.CompletedTask;
+        _repository = repository;
     }
 
-    public Task OnNavigatedFromAsync() => Task.CompletedTask;
+    /// <summary>Loads protocols from the repository.</summary>
+    [RelayCommand]
+    private async Task LoadAsync(CancellationToken ct = default)
+    {
+        Protocols.Clear();
+        var list = await _repository.ListAsync(ct: ct);
+        foreach (var p in list)
+            Protocols.Add(new ProtocolItem(p.Id, p.Title, p.ReferenceNumber));
+    }
 }
 

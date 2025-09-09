@@ -1,52 +1,52 @@
-using System;
 using System.Collections.ObjectModel;
-using DocFinder.Domain;
-using DocFinder.App.ViewModels.Entities;
+using System.Threading;
+using System.Threading.Tasks;
 using DocFinder.App.Services;
-using DocFinder.App.Views.Pages;
-using Wpf.Ui.Abstractions.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Wpf.Ui;
+using DocFinder.App.ViewModels.Entities;
+using DocFinder.Domain;
 
 namespace DocFinder.App.ViewModels.Pages;
 
-public partial class FilesViewModel : ObservableObject, INavigationAware
+/// <summary>
+/// View model for displaying files.
+/// </summary>
+public partial class FilesViewModel : ObservableObject
 {
-    private bool _isInitialized;
-    private readonly INavigationService _navigationService;
+    private readonly IFileRepository _repository;
+    private readonly IDocumentOpener _opener;
 
-    public FilesViewModel(INavigationService navigationService)
-        => _navigationService = navigationService;
-
-    public ObservableCollection<FileViewModel> Files { get; } = new();
+    public ObservableCollection<FileItem> Files { get; } = new();
 
     [ObservableProperty]
-    private FileViewModel? selectedFile;
+    private FileItem? _selectedFile;
 
-    [RelayCommand]
-    private void OpenFile(FileViewModel? file)
+    public FilesViewModel(IFileRepository repository, IDocumentOpener opener)
     {
-        if (file is null)
+        _repository = repository;
+        _opener = opener;
+    }
+
+    /// <summary>Loads files from the repository.</summary>
+    [RelayCommand]
+    private async Task LoadAsync(CancellationToken ct = default)
+    {
+        Files.Clear();
+        var files = await _repository.ListAsync(ct: ct);
+        foreach (var f in files)
+            Files.Add(new FileItem(f.FileId, f.Path, f.FileName));
+    }
+
+    /// <summary>Opens the specified file using the document opener service.</summary>
+    [RelayCommand(CanExecute = nameof(CanOpenFile))]
+    private void OpenFile(FileItem? file)
+    {
+        var target = file ?? SelectedFile;
+        if (target == null)
             return;
 
-        NavigationState.SelectedFile = file;
-        _navigationService.Navigate(typeof(FileDetailPage));
+        _opener.Open(target.Path);
     }
 
-    public Task OnNavigatedToAsync()
-    {
-        if (_isInitialized)
-            return Task.CompletedTask;
-
-        var data = new Data(Guid.NewGuid(), null, "text/plain", new byte[] { 0x0 });
-        var file = new File(Guid.NewGuid(), "/tmp/file.txt", "File.txt", "txt", DateTime.UtcNow, "user", data);
-        Files.Add(new FileViewModel(file));
-
-        _isInitialized = true;
-        return Task.CompletedTask;
-    }
-
-    public Task OnNavigatedFromAsync() => Task.CompletedTask;
+    private bool CanOpenFile(FileItem? file) => (file ?? SelectedFile) != null;
 }
 
