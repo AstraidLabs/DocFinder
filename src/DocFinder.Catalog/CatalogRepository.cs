@@ -1,58 +1,39 @@
+using DocFinder.Domain;
+using DocFinder.Services;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using FileEntity = DocFinder.Domain.File;
 using DataEntity = DocFinder.Domain.Data;
-using DocFinder.Domain;
-using DocFinder.Services;
+using FileEntity = DocFinder.Domain.File;
 
 namespace DocFinder.Catalog;
 
 public sealed class CatalogRepository
 {
-    private readonly DbContextOptions<DocumentDbContext> _options;
+    private readonly IDbContextFactory<DocumentDbContext> _dbFactory;
 
-    public CatalogRepository(string? dbPath = null)
-    {
-        var connectionString = dbPath != null
-            ? $"Data Source={dbPath}"
-            : DocumentDbContext.DefaultConnectionString;
-        _options = new DbContextOptionsBuilder<DocumentDbContext>()
-            .UseSqlite(connectionString)
-            .Options;
-        using var db = new DocumentDbContext(_options);
-        db.Database.Migrate();
-    }
+    public CatalogRepository(IDbContextFactory<DocumentDbContext> dbFactory)
+        => _dbFactory = dbFactory;
 
     public async Task UpsertFileAsync(IndexDocument doc, CancellationToken ct = default)
     {
-        await using var db = new DocumentDbContext(_options);
+        await using var db = await _dbFactory.CreateDbContextAsync(ct);
+
+        // Vyhledej podle FileId nebo, u starých indexù, podle sha
         var entity = await db.Files.Include(f => f.Data)
-            .FirstOrDefaultAsync(f => f.FileId == doc.FileId, ct);
-        if (entity is null)
-        {
-            // Handle databases populated before FileId became deterministic.
-            // Sha256 is unique so we can safely look up by checksum to avoid
-            // violating the unique constraint on Sha256 when re-indexing.
-            entity = await db.Files.Include(f => f.Data)
-                .FirstOrDefaultAsync(f => f.Sha256 == doc.Sha256, ct);
-        }
+            .FirstOrDefaultAsync(f => f.FileId == doc.FileId, ct)
+            ?? await db.Files.Include(f => f.Data)
+                 .FirstOrDefaultAsync(f => f.Sha256 == doc.Sha256, ct);
 
         var bytes = await System.IO.File.ReadAllBytesAsync(doc.Path, ct);
 
         if (entity is null)
         {
             var data = new DataEntity(doc.FileId, doc.Version, doc.Ext, bytes);
-            entity = new FileEntity(
-                doc.FileId,
-                doc.Path,
-                doc.FileName,
-                doc.Ext,
-                doc.CreatedUtc,
-                doc.Author ?? string.Empty,
-                data);
+            entity = new FileEntity(doc.FileId, doc.Path, doc.FileName, doc.Ext,
+                                    doc.CreatedUtc, doc.Author ?? string.Empty, data);
             entity.Touch(doc.ModifiedUtc);
             db.Files.Add(entity);
         }
@@ -72,7 +53,7 @@ public sealed class CatalogRepository
 
     public async Task<DateTime?> GetLastModifiedUtcAsync(string path, CancellationToken ct = default)
     {
-        await using var db = new DocumentDbContext(_options);
+        await using var db = await _dbFactory.CreateDbContextAsync(ct);
         var file = await db.Files.AsNoTracking()
             .FirstOrDefaultAsync(f => f.FilePath == path, ct);
         return file?.ModifiedUtc;
@@ -80,10 +61,10 @@ public sealed class CatalogRepository
 
     public async Task<Guid?> DeleteFileAsync(string path, CancellationToken ct = default)
     {
-        await using var db = new DocumentDbContext(_options);
+        await using var db = await _dbFactory.CreateDbContextAsync(ct);
         var entity = await db.Files.FirstOrDefaultAsync(f => f.FilePath == path, ct);
-        if (entity is null)
-            return null;
+        if (entity is null) return null;
+
         var fileId = entity.FileId;
         db.Files.Remove(entity);
         await db.SaveChangesAsync(ct);

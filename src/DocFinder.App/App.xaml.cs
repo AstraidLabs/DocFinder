@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows.Threading;
@@ -100,6 +100,26 @@ public partial class App
                 loadingWindow.SetProgress(33);
                 loadingWindow.SetStatus("Starting host...");
 
+                //MIGRACE – před startem hosta, v samostatném scope, bez dalších otevřených připojení
+                logger.LogInformation("Applying database migrations");
+                var migrateSw = Stopwatch.StartNew();
+                using (var scope = Services.CreateScope())
+                {
+                    var ctxFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<DocumentDbContext>>();
+                    await using var ctx = await ctxFactory.CreateDbContextAsync();
+
+                    // (volitelné, ale pro SQLite doporučené – sníží kolize zámků)
+                    await ctx.Database.ExecuteSqlRawAsync("PRAGMA journal_mode=WAL;");
+                    await ctx.Database.ExecuteSqlRawAsync("PRAGMA busy_timeout=5000;");
+
+                    using var migrateCts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+                    await ctx.Database.MigrateAsync(migrateCts.Token);
+                }
+                migrateSw.Stop();
+                logger.LogInformation("Migrations applied in {Elapsed} ms", migrateSw.ElapsedMilliseconds);
+                loadingWindow.SetProgress(50);
+
+                // ❷ Teprve teď startuj hosta
                 logger.LogInformation("Starting host");
                 var hostSw = Stopwatch.StartNew();
                 using var hostCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));

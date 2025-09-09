@@ -45,8 +45,8 @@ public class ApplicationHostService : IHostedService
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _watcher.Start();
-        Application.Current.Dispatcher.Invoke(() =>
-            _tray.Initialize(ToggleMainWindow, () => Application.Current.Shutdown(), ShowSettings));
+        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            _tray.Initialize(ToggleMainWindow, () => System.Windows.Application.Current.Shutdown(), ShowSettings));
         if (_settingsService.Current.AutoIndexOnStartup)
         {
             _ = Task.Run(async () =>

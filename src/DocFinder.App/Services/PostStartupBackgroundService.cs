@@ -22,7 +22,7 @@ public class PostStartupBackgroundService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await Application.Current.Dispatcher.InvokeAsync(async () =>
+        await System.Windows.Application.Current.Dispatcher.InvokeAsync(async () =>
         {
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             if (!mainWindow.IsLoaded)
