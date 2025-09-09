@@ -8,18 +8,22 @@
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Pages;assembly=DocFinder.App"
     Title="FileDetailPage"
     d:DataContext="{d:DesignInstance vm:FilesViewModel, IsDesignTimeCreatable=False}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
-    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
 
-    <StackPanel Margin="12">
-        <TextBlock FontSize="20" FontWeight="Medium" Text="File details" />
-        <Separator Margin="0,8" />
-        <TextBlock Text="{Binding ViewModel.SelectedFile.Name}" />
-        <TextBlock Text="{Binding ViewModel.SelectedFile.Path}" />
-    </StackPanel>
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ui:TextBlock Grid.Row="0" Text="File detail" FontSize="28" FontWeight="Bold" Margin="0,0,0,16"/>
+
+        <ui:Card Grid.Row="1" Padding="16">
+            <StackPanel>
+                <ui:TextBlock Text="{Binding ViewModel.SelectedFile.Name}" FontSize="20" FontWeight="Bold"/>
+                <ui:TextBlock Text="{Binding ViewModel.SelectedFile.Path}" Margin="0,12,0,0"/>
+            </StackPanel>
+        </ui:Card>
+    </Grid>
 </Page>
 

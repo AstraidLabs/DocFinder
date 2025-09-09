@@ -8,29 +8,54 @@
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Pages;assembly=DocFinder.App"
     Title="DashboardPage"
     d:DataContext="{d:DesignInstance vm:DashboardViewModel, IsDesignTimeCreatable=False}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
-    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
 
-    <Grid VerticalAlignment="Top">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <ui:Button
-            Grid.Column="0"
-            Command="{Binding ViewModel.CounterIncrementCommand, Mode=OneWay}"
-            Content="Click me!"
-            Icon="Fluent24" />
-        <TextBlock
-            Grid.Column="1"
-            Margin="12,0,0,0"
-            VerticalAlignment="Center"
-            Text="{Binding ViewModel.Counter, Mode=OneWay}" />
+        <ui:TextBlock Grid.Row="0" Text="Dashboard" FontSize="28" FontWeight="Bold" Margin="0,0,0,16"/>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ui:Card Grid.Row="0" Grid.Column="0" Padding="16" Margin="0,0,16,16">
+                <StackPanel>
+                    <ui:TextBlock Text="Documents" FontWeight="Bold"/>
+                    <ui:TextBlock Text="0" FontSize="24"/>
+                </StackPanel>
+            </ui:Card>
+
+            <ui:Card Grid.Row="0" Grid.Column="1" Padding="16" Margin="0,0,0,16">
+                <StackPanel>
+                    <ui:TextBlock Text="Indexed" FontWeight="Bold"/>
+                    <ui:TextBlock Text="0" FontSize="24"/>
+                </StackPanel>
+            </ui:Card>
+
+            <ui:Card Grid.Row="1" Grid.Column="0" Padding="16" Margin="0,0,16,0">
+                <StackPanel>
+                    <ui:TextBlock Text="Errors" FontWeight="Bold"/>
+                    <ui:TextBlock Text="0" FontSize="24"/>
+                </StackPanel>
+            </ui:Card>
+
+            <ui:Card Grid.Row="1" Grid.Column="1" Padding="16">
+                <StackPanel>
+                    <ui:Button Content="Increment" Command="{Binding ViewModel.CounterIncrementCommand}"/>
+                    <ui:TextBlock Text="{Binding ViewModel.Counter}" FontSize="24" Margin="0,12,0,0"/>
+                </StackPanel>
+            </ui:Card>
+        </Grid>
     </Grid>
 </Page>
 

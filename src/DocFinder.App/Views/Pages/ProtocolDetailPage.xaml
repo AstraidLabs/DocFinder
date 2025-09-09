@@ -8,18 +8,22 @@
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Pages;assembly=DocFinder.App"
     Title="ProtocolDetailPage"
     d:DataContext="{d:DesignInstance vm:ProtocolsViewModel, IsDesignTimeCreatable=False}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
-    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
 
-    <StackPanel Margin="12">
-        <TextBlock FontSize="20" FontWeight="Medium" Text="Protocol details" />
-        <Separator Margin="0,8" />
-        <TextBlock Text="{Binding ViewModel.SelectedProtocol.Name}" />
-        <TextBlock Text="{Binding ViewModel.SelectedProtocol.Description}" />
-    </StackPanel>
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ui:TextBlock Grid.Row="0" Text="Protocol detail" FontSize="28" FontWeight="Bold" Margin="0,0,0,16"/>
+
+        <ui:Card Grid.Row="1" Padding="16">
+            <StackPanel>
+                <ui:TextBlock Text="{Binding ViewModel.SelectedProtocol.Name}" FontSize="20" FontWeight="Bold"/>
+                <ui:TextBlock Text="{Binding ViewModel.SelectedProtocol.Description}" Margin="0,12,0,0"/>
+            </StackPanel>
+        </ui:Card>
+    </Grid>
 </Page>
 

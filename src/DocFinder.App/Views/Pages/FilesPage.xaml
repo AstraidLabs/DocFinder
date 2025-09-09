@@ -8,31 +8,34 @@
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels.Pages;assembly=DocFinder.App"
     Title="FilesPage"
     d:DataContext="{d:DesignInstance vm:FilesViewModel, IsDesignTimeCreatable=False}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
-    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
 
-    <Grid>
-        <ListView ItemsSource="{Binding Files}" SelectedItem="{Binding SelectedFile}">
-            <ListView.InputBindings>
-                <MouseBinding Gesture="LeftDoubleClick"
-                              Command="{Binding OpenFileCommand}"
-                              CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListView}}" />
-            </ListView.InputBindings>
-            <ListView.ItemTemplate>
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ui:TextBlock Grid.Row="0" Text="Files" FontSize="28" FontWeight="Bold" Margin="0,0,0,16"/>
+
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding Files}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Margin="4" Padding="8" BorderThickness="1" CornerRadius="4" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
+                    <ui:Card Padding="16" Margin="0,0,12,12" Width="200">
                         <StackPanel>
-                            <TextBlock Text="{Binding Name}" FontWeight="Bold" />
-                            <TextBlock Text="{Binding Ext}" FontSize="12" />
+                            <ui:SymbolIcon Symbol="Document24"/>
+                            <ui:TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="0,8,0,0"/>
+                            <ui:Button Content="Open" Command="{Binding DataContext.OpenFileCommand, RelativeSource={RelativeSource AncestorType=Page}}" CommandParameter="{Binding}" Margin="0,12,0,0"/>
                         </StackPanel>
-                    </Border>
+                    </ui:Card>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </Page>
 

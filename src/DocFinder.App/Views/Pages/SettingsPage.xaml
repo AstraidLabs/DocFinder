@@ -8,56 +8,74 @@
     xmlns:vm="clr-namespace:DocFinder.App.ViewModels;assembly=DocFinder.App"
     Title="SettingsPage"
     d:DataContext="{d:DesignInstance vm:SettingsViewModel, IsDesignTimeCreatable=False}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
-    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     mc:Ignorable="d">
-    <StackPanel Margin="20">
-        <TextBlock Text="Source Folder" />
-        <TextBox Text="{Binding ViewModel.Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}" />
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <TextBlock Margin="0,12,0,0" Text="Watched Folders (one per line)" />
-        <TextBox
-            Text="{Binding ViewModel.WatchedRootsText, UpdateSourceTrigger=PropertyChanged}"
-            AcceptsReturn="True"
-            Height="80" />
+        <ui:TextBlock Grid.Row="0" Text="Settings" FontSize="28" FontWeight="Bold" Margin="0,0,0,16"/>
 
-        <TextBlock Margin="0,12,0,0" Text="Index Path" />
-        <TextBox Text="{Binding ViewModel.Settings.IndexPath, UpdateSourceTrigger=PropertyChanged}" />
+        <StackPanel Grid.Row="1" Orientation="Vertical" >
+            <ui:Card Padding="16" Margin="0,0,0,16">
+                <ui:Card.Header>
+                    <ui:TextBlock Text="Paths" FontWeight="Bold"/>
+                </ui:Card.Header>
+                <StackPanel>
+                    <ui:TextBlock Text="Source Folder"/>
+                    <ui:TextBox Text="{Binding ViewModel.Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <TextBlock Margin="0,12,0,0" Text="Thumbnails Path" />
-        <TextBox Text="{Binding ViewModel.Settings.ThumbsPath, UpdateSourceTrigger=PropertyChanged}" />
+                    <ui:TextBlock Margin="0,12,0,0" Text="Watched Folders (one per line)"/>
+                    <ui:TextBox Text="{Binding ViewModel.WatchedRootsText, UpdateSourceTrigger=PropertyChanged}"
+                                 AcceptsReturn="True" Height="80"/>
 
-        <TextBlock Margin="0,12,0,0" Text="Polling Interval (minutes)" />
-        <TextBox Text="{Binding ViewModel.Settings.PollingMinutes, UpdateSourceTrigger=PropertyChanged}" />
+                    <ui:TextBlock Margin="0,12,0,0" Text="Index Path"/>
+                    <ui:TextBox Text="{Binding ViewModel.Settings.IndexPath, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <CheckBox Content="Enable OCR" IsChecked="{Binding ViewModel.Settings.EnableOcr}" />
+                    <ui:TextBlock Margin="0,12,0,0" Text="Thumbnails Path"/>
+                    <ui:TextBox Text="{Binding ViewModel.Settings.ThumbsPath, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+            </ui:Card>
 
-        <TextBlock Margin="0,12,0,0" Text="Theme" />
-        <ComboBox SelectedValue="{Binding ViewModel.Settings.Theme}" SelectedValuePath="Content">
-            <ComboBoxItem Content="Light" />
-            <ComboBoxItem Content="Dark" />
-        </ComboBox>
+            <ui:Card Padding="16" Margin="0,0,0,16">
+                <ui:Card.Header>
+                    <ui:TextBlock Text="Indexing &amp; search" FontWeight="Bold"/>
+                </ui:Card.Header>
+                <StackPanel>
+                    <ui:TextBlock Text="Polling Interval (minutes)"/>
+                    <ui:TextBox Text="{Binding ViewModel.Settings.PollingMinutes, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <CheckBox Content="Auto index on startup" IsChecked="{Binding ViewModel.Settings.AutoIndexOnStartup}" />
-        <CheckBox Content="Use fuzzy search" IsChecked="{Binding ViewModel.Settings.UseFuzzySearch}" />
+                    <ui:CheckBox Margin="0,12,0,0" Content="Enable OCR" IsChecked="{Binding ViewModel.Settings.EnableOcr}"/>
+                    <ui:CheckBox Content="Auto index on startup" IsChecked="{Binding ViewModel.Settings.AutoIndexOnStartup}"/>
+                    <ui:CheckBox Content="Use fuzzy search" IsChecked="{Binding ViewModel.Settings.UseFuzzySearch}"/>
 
-        <TextBlock Margin="0,12,0,0" Text="Page Size" />
-        <TextBox Text="{Binding ViewModel.Settings.PageSize, UpdateSourceTrigger=PropertyChanged}" />
+                    <ui:TextBlock Margin="0,12,0,0" Text="Page Size"/>
+                    <ui:TextBox Text="{Binding ViewModel.Settings.PageSize, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+            </ui:Card>
 
-        <Button Content="Save" Command="{Binding ViewModel.SaveCommand}" Margin="0,20,0,0" />
+            <ui:Card Padding="16">
+                <ui:Card.Header>
+                    <ui:TextBlock Text="Appearance" FontWeight="Bold"/>
+                </ui:Card.Header>
+                <StackPanel>
+                    <ui:ComboBox SelectedValue="{Binding ViewModel.Settings.Theme}" SelectedValuePath="Tag" Margin="0,0,0,12">
+                        <ui:ComboBoxItem Content="Light" Tag="Light"/>
+                        <ui:ComboBoxItem Content="Dark" Tag="Dark"/>
+                        <ui:ComboBoxItem Content="Auto" Tag="Auto"/>
+                    </ui:ComboBox>
 
-        <DataGrid
-            ItemsSource="{Binding ViewModel.IndexedFiles}"
-            Margin="0,20,0,0"
-            Height="150"
-            AutoGenerateColumns="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Soubor" Binding="{Binding}" />
-            </DataGrid.Columns>
-        </DataGrid>
-    </StackPanel>
+                    <ui:Button Content="Save" Appearance="Primary" Command="{Binding ViewModel.SaveCommand}" Margin="0,0,0,12"/>
+
+                    <ui:DataGrid ItemsSource="{Binding ViewModel.IndexedFiles}" AutoGenerateColumns="False" Height="150">
+                        <ui:DataGrid.Columns>
+                            <DataGridTextColumn Header="File" Binding="{Binding}"/>
+                        </ui:DataGrid.Columns>
+                    </ui:DataGrid>
+                </StackPanel>
+            </ui:Card>
+        </StackPanel>
+    </Grid>
 </Page>
 
