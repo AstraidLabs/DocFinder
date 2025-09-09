@@ -18,8 +18,9 @@
         <ui:TextBlock Grid.Row="0" Text="Settings" FontSize="28" FontWeight="Bold" Margin="0,0,0,16"/>
 
         <StackPanel Grid.Row="1" Orientation="Vertical" >
-            <ui:Card Header="Paths" Padding="16" Margin="0,0,0,16">
+            <ui:Card Padding="16" Margin="0,0,0,16">
                 <StackPanel>
+                    <ui:TextBlock Text="Paths" FontWeight="Bold" Margin="0,0,0,12"/>
                     <ui:TextBlock Text="Source Folder"/>
                     <ui:TextBox Text="{Binding ViewModel.Settings.SourceRoot, UpdateSourceTrigger=PropertyChanged}"/>
 
@@ -35,27 +36,29 @@
                 </StackPanel>
             </ui:Card>
 
-            <ui:Card Header="Indexing &amp; search" Padding="16" Margin="0,0,0,16">
+            <ui:Card Padding="16" Margin="0,0,0,16">
                 <StackPanel>
+                    <ui:TextBlock Text="Indexing &amp; search" FontWeight="Bold" Margin="0,0,0,12"/>
                     <ui:TextBlock Text="Polling Interval (minutes)"/>
                     <ui:TextBox Text="{Binding ViewModel.Settings.PollingMinutes, UpdateSourceTrigger=PropertyChanged}"/>
 
-                    <ui:CheckBox Margin="0,12,0,0" Content="Enable OCR" IsChecked="{Binding ViewModel.Settings.EnableOcr}"/>
-                    <ui:CheckBox Content="Auto index on startup" IsChecked="{Binding ViewModel.Settings.AutoIndexOnStartup}"/>
-                    <ui:CheckBox Content="Use fuzzy search" IsChecked="{Binding ViewModel.Settings.UseFuzzySearch}"/>
+                    <CheckBox Margin="0,12,0,0" Content="Enable OCR" IsChecked="{Binding ViewModel.Settings.EnableOcr}"/>
+                    <CheckBox Content="Auto index on startup" IsChecked="{Binding ViewModel.Settings.AutoIndexOnStartup}"/>
+                    <CheckBox Content="Use fuzzy search" IsChecked="{Binding ViewModel.Settings.UseFuzzySearch}"/>
 
                     <ui:TextBlock Margin="0,12,0,0" Text="Page Size"/>
                     <ui:TextBox Text="{Binding ViewModel.Settings.PageSize, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
             </ui:Card>
 
-            <ui:Card Header="Appearance" Padding="16">
+            <ui:Card Padding="16">
                 <StackPanel>
-                    <ui:ComboBox SelectedValue="{Binding ViewModel.Settings.Theme}" SelectedValuePath="Tag" Margin="0,0,0,12">
-                        <ui:ComboBoxItem Content="Light" Tag="Light"/>
-                        <ui:ComboBoxItem Content="Dark" Tag="Dark"/>
-                        <ui:ComboBoxItem Content="Auto" Tag="Auto"/>
-                    </ui:ComboBox>
+                    <ui:TextBlock Text="Appearance" FontWeight="Bold" Margin="0,0,0,12"/>
+                    <ComboBox SelectedValue="{Binding ViewModel.Settings.Theme}" SelectedValuePath="Tag" Margin="0,0,0,12">
+                        <ComboBoxItem Content="Light" Tag="Light"/>
+                        <ComboBoxItem Content="Dark" Tag="Dark"/>
+                        <ComboBoxItem Content="Auto" Tag="Auto"/>
+                    </ComboBox>
 
                     <ui:Button Content="Save" Appearance="Primary" Command="{Binding ViewModel.SaveCommand}" Margin="0,0,0,12"/>
 
