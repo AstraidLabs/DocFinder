@@ -5,7 +5,6 @@ using DocFinder.Domain.Settings;
 using DocFinder.Indexing;
 using DocFinder.App.Services;
 using Wpf.Ui.Appearance;
-using Wpf.Ui;
 
 namespace DocFinder.App.ViewModels;
 
@@ -17,7 +16,6 @@ public partial class SettingsViewModel : ObservableObject
     private readonly ISettingsService _settingsService;
     private readonly IWatcherService _watcherService;
     private readonly IIndexer _indexer;
-    private readonly IThemeService _themeService;
 
     /// <summary>Current application settings.</summary>
     [ObservableProperty]
@@ -36,13 +34,11 @@ public partial class SettingsViewModel : ObservableObject
     public SettingsViewModel(
         ISettingsService settingsService,
         IWatcherService watcherService,
-        IIndexer indexer,
-        IThemeService themeService)
+        IIndexer indexer)
     {
         _settingsService = settingsService;
         _watcherService = watcherService;
         _indexer = indexer;
-        _themeService = themeService;
 
         Settings = settingsService.Current;
         WatchedRootsText = string.Join(Environment.NewLine, Settings.WatchedRoots);
@@ -120,12 +116,12 @@ public partial class SettingsViewModel : ObservableObject
     private void ApplyTheme(string? themeName)
     {
         Settings.Theme = themeName;
-        var type = themeName?.Equals("Dark", StringComparison.OrdinalIgnoreCase) == true
-            ? ThemeType.Dark
-            : themeName?.Equals("Auto", StringComparison.OrdinalIgnoreCase) == true
-                ? ThemeType.System
-                : ThemeType.Light;
-        _themeService.Set(type);
+        if (themeName?.Equals("Dark", StringComparison.OrdinalIgnoreCase) == true)
+            ApplicationThemeManager.Apply(ApplicationTheme.Dark);
+        else if (themeName?.Equals("Auto", StringComparison.OrdinalIgnoreCase) == true)
+            ApplicationThemeManager.ApplySystemTheme();
+        else
+            ApplicationThemeManager.Apply(ApplicationTheme.Light);
     }
 }
 

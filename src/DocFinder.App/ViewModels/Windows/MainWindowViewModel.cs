@@ -14,7 +14,6 @@ namespace DocFinder.App.ViewModels.Windows;
 public partial class MainWindowViewModel : ObservableObject
 {
     private readonly INavigationService _navigationService;
-    private readonly IThemeService _themeService;
     private readonly ISnackbarService _snackbarService;
     private readonly IMessageDialogService _dialogService;
 
@@ -23,17 +22,15 @@ public partial class MainWindowViewModel : ObservableObject
     /// </summary>
     public MainWindowViewModel(
         INavigationService navigationService,
-        IThemeService themeService,
         ISnackbarService snackbarService,
         IMessageDialogService dialogService)
     {
         _navigationService = navigationService;
-        _themeService = themeService;
         _snackbarService = snackbarService;
         _dialogService = dialogService;
 
         ApplicationTitle = "DocFinder";
-        IsDarkTheme = _themeService.IsDark();
+        IsDarkTheme = ApplicationThemeManager.GetAppTheme() == ApplicationTheme.Dark;
         BuildMenu();
     }
 
@@ -113,9 +110,9 @@ public partial class MainWindowViewModel : ObservableObject
 
     partial void OnIsDarkThemeChanged(bool value)
     {
-        _themeService.Set(value ? ThemeType.Dark : ThemeType.Light);
+        ApplicationThemeManager.Apply(value ? ApplicationTheme.Dark : ApplicationTheme.Light);
         var message = value ? "Dark theme enabled" : "Light theme enabled";
-        _snackbarService.Show(message);
+        _snackbarService.Show("Theme", message, ControlAppearance.Success);
     }
 
     /// <summary>Navigates to a page based on the provided tag.</summary>
