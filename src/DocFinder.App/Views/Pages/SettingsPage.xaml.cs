@@ -1,4 +1,4 @@
-using DocFinder.App.ViewModels;
+using DocFinder.App.ViewModels.Pages;
 using Wpf.Ui.Abstractions.Controls;
 
 namespace DocFinder.App.Views.Pages;
