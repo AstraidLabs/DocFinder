@@ -9,6 +9,9 @@
     WindowStyle="None"
     ShowInTaskbar="False"
     Topmost="True"
+    UseLayoutRounding="True"
+    SnapsToDevicePixels="True"
+    TextOptions.TextFormattingMode="Display"
     Width="300"
     Height="200">
     <Grid Background="{DynamicResource ApplicationBackgroundBrush}">
